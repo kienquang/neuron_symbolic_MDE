@@ -1,0 +1,1445 @@
+[
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 2(2)",
+    "article_title": "Scope",
+    "attempts_used": 1,
+    "verbalized_constraint": "Whenever 'A_Create Application' when case:RequestedAmount >= 200.0 occurs, 'W_Complete application' must eventually occur AFTER it.",
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Application submitted with requested credit amount >= EUR 200 within Directive scope",
+        "target_semantics": "Application undergoes completeness and workflow processing",
+        "data_guard_semantics": "RequestedAmount >= 200 EUR",
+        "temporal_bound_semantics": null
+      },
+      "template_name": "Response",
+      "activation_activity": "A_Create Application",
+      "target_activity": "W_Complete application",
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 2(2)",
+      "template": "Response",
+      "activities": [
+        "A_Create Application",
+        "W_Complete application"
+      ],
+      "condition": [
+        "A.case:RequestedAmount >= 200.0",
+        "",
+        ""
+      ],
+      "decl_line": "Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | "
+    },
+    "conformance_report": {
+      "article_id": "Article 2(2)",
+      "decl_formula": "Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | ",
+      "total_cases": 31509,
+      "activated_cases_count": 28429,
+      "satisfied_cases_count": 28429,
+      "violated_cases_count": 0,
+      "vacuous_cases_count": 3080,
+      "total_event_activations": 28429,
+      "total_event_fulfillments": 28429,
+      "total_event_violations": 0,
+      "compliance_rate": 100.0,
+      "counterexample_snapshots": []
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 5(1)",
+    "article_title": "Pre-contractual information",
+    "attempts_used": 1,
+    "verbalized_constraint": "Whenever 'O_Accepted' occurs, 'O_Sent (mail and online)' when OfferedAmount >= 200.0 must have occurred BEFORE it.",
+    "ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Creditor provides pre-contractual offer information (O_Sent (mail and online))",
+        "target_semantics": "Consumer is bound by accepting the credit offer (O_Accepted)",
+        "data_guard_semantics": "OfferedAmount >= 200.0",
+        "temporal_bound_semantics": "In good time before the consumer is bound"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Accepted",
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 5(1)",
+      "template": "Precedence",
+      "activities": [
+        "O_Sent (mail and online)",
+        "O_Accepted"
+      ],
+      "condition": [
+        "A.OfferedAmount >= 200.0",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | "
+    },
+    "conformance_report": {
+      "article_id": "Article 5(1)",
+      "decl_formula": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | ",
+      "total_cases": 31509,
+      "activated_cases_count": 17228,
+      "satisfied_cases_count": 17038,
+      "violated_cases_count": 190,
+      "vacuous_cases_count": 14281,
+      "total_event_activations": 17228,
+      "total_event_fulfillments": 17038,
+      "total_event_violations": 190,
+      "compliance_rate": 98.9,
+      "counterexample_snapshots": [
+        {
+          "case_id": "Application_1007766945",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 31000.0,
+          "offered_amount": 31000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (online only)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "W_Validate application",
+            "O_Accepted",
+            "A_Pending",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Accepted",
+              "timestamp": "2016-07-12 15:37:48.632000+00:00",
+              "resource": "User_83",
+              "offered_amount": 31000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1014824736",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 10000.0,
+          "offered_amount": 10000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (online only)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "A_Incomplete",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "O_Accepted",
+            "A_Pending",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Accepted",
+              "timestamp": "2016-01-15 13:29:04.418000+00:00",
+              "resource": "User_95",
+              "offered_amount": 10000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1017028247",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 20000.0,
+          "offered_amount": 20000.0,
+          "credit_score": 908.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "W_Complete application",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (online only)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "O_Accepted",
+            "A_Pending",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Accepted",
+              "timestamp": "2016-08-15 13:12:56.020000+00:00",
+              "resource": "User_109",
+              "offered_amount": 20000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1023172078",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 17500.0,
+          "offered_amount": 17500.0,
+          "credit_score": 863.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (online only)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "O_Accepted",
+            "A_Pending",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Accepted",
+              "timestamp": "2016-06-09 10:47:03.417000+00:00",
+              "resource": "User_102",
+              "offered_amount": 17500.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1035841874",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 0.0,
+          "offered_amount": 10000.0,
+          "credit_score": 1016.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (online only)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "W_Validate application",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "A_Incomplete",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "W_Validate application",
+            "O_Returned",
+            "O_Accepted",
+            "A_Pending",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Accepted",
+              "timestamp": "2016-06-10 14:45:56.977000+00:00",
+              "resource": "User_117",
+              "offered_amount": 10000.0
+            }
+          ]
+        }
+      ]
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 8(1)",
+    "article_title": "Obligation to assess the creditworthiness of the consumer",
+    "attempts_used": 2,
+    "verbalized_constraint": "Whenever 'O_Accepted' occurs, 'W_Validate application' when CreditScore >= 0.0 must have occurred BEFORE it.",
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Creditor assesses consumer creditworthiness and validates application (W_Validate application)",
+        "target_semantics": "Conclusion/acceptance of credit offer (O_Accepted)",
+        "data_guard_semantics": "CreditScore >= 0",
+        "temporal_bound_semantics": "Before the conclusion of the credit agreement"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "O_Accepted",
+      "activation_attr": "CreditScore",
+      "activation_op": ">=",
+      "activation_val": 0.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 8(1)",
+      "template": "Precedence",
+      "activities": [
+        "W_Validate application",
+        "O_Accepted"
+      ],
+      "condition": [
+        "A.CreditScore >= 0.0",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | "
+    },
+    "conformance_report": {
+      "article_id": "Article 8(1)",
+      "decl_formula": "Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | ",
+      "total_cases": 31509,
+      "activated_cases_count": 17228,
+      "satisfied_cases_count": 17228,
+      "violated_cases_count": 0,
+      "vacuous_cases_count": 14281,
+      "total_event_activations": 17228,
+      "total_event_fulfillments": 17228,
+      "total_event_violations": 0,
+      "compliance_rate": 100.0,
+      "counterexample_snapshots": []
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": "Layer 1/2 (Syntax & Static Typing Γ)",
+        "is_valid": false,
+        "feedback": "- [Layer 2 Static Error]: Navigational Violation in δ(Activity, 'W_Check_Creditworthiness'): Activity 'W_Check_Creditworthiness' does not exist in Process Metamodel Γ. Valid activities are: ['A_Accepted', 'A_Cancelled', 'A_Complete', 'A_Concept', 'A_Create Application', 'A_Denied', 'A_Incomplete', 'A_Pending', 'A_Submitted', 'A_Validating', 'O_Accepted', 'O_Cancelled', 'O_Create Offer', 'O_Created', 'O_Refused', 'O_Returned', 'O_Sent (mail and online)', 'O_Sent (online only)', 'W_Assess potential fraud', 'W_Call after offers', 'W_Call incomplete files', 'W_Complete application', 'W_Handle leads', 'W_Personal Loan collection', 'W_Shortened completion ', 'W_Validate application'].\n- [Layer 2 Static Error]: Type Conformance Violation in Γ: Attribute 'case:LoanGoal' (Case scope) has type 'String' (samples: ['Existing loan takeover', 'Home improvement', 'Car']), which does not support ordering operator '>='. Only equality operators ('==', '!=') are permitted for 'String'."
+      },
+      {
+        "attempt": 2,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 9(2)",
+    "article_title": "Database access",
+    "attempts_used": 1,
+    "verbalized_constraint": "Whenever 'A_Denied' occurs, 'W_Validate application' when Accepted == False must have occurred BEFORE it.",
+    "ast": {
+      "article_id": "Article 9(2)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Database and application validation consultation (W_Validate application)",
+        "target_semantics": "Credit application is rejected/denied (A_Denied)",
+        "data_guard_semantics": "Accepted == False",
+        "temporal_bound_semantics": "Informed immediately upon rejection"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Denied",
+      "activation_attr": "Accepted",
+      "activation_op": "==",
+      "activation_val": false,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 9(2)",
+      "template": "Precedence",
+      "activities": [
+        "W_Validate application",
+        "A_Denied"
+      ],
+      "condition": [
+        "A.Accepted == False",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | "
+    },
+    "conformance_report": {
+      "article_id": "Article 9(2)",
+      "decl_formula": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | ",
+      "total_cases": 31509,
+      "activated_cases_count": 2406,
+      "satisfied_cases_count": 2317,
+      "violated_cases_count": 89,
+      "vacuous_cases_count": 29103,
+      "total_event_activations": 2406,
+      "total_event_fulfillments": 2317,
+      "total_event_violations": 89,
+      "compliance_rate": 96.3,
+      "counterexample_snapshots": [
+        {
+          "case_id": "Application_1021332815",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 30000.0,
+          "offered_amount": 27800.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Create Offer",
+            "O_Created",
+            "O_Cancelled",
+            "O_Cancelled",
+            "A_Denied",
+            "W_Complete application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "A_Denied",
+              "timestamp": "2016-11-17 13:18:17.508000+00:00",
+              "resource": "User_39",
+              "offered_amount": 27800.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1025327332",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 5000.0,
+          "offered_amount": 5000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Denied",
+            "O_Refused",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "A_Denied",
+              "timestamp": "2016-05-18 10:42:59.519000+00:00",
+              "resource": "User_38",
+              "offered_amount": 5000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1026537393",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 30000.0,
+          "offered_amount": 20000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Denied",
+            "O_Refused",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "A_Denied",
+              "timestamp": "2017-01-05 12:54:59.213000+00:00",
+              "resource": "User_49",
+              "offered_amount": 20000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_105880505",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 5000.0,
+          "offered_amount": 5000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Denied",
+            "O_Refused",
+            "O_Refused",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "A_Denied",
+              "timestamp": "2016-07-14 14:44:22.755000+00:00",
+              "resource": "User_41",
+              "offered_amount": 5000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1091798622",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 25000.0,
+          "offered_amount": 18500.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Denied",
+            "O_Refused",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "A_Denied",
+              "timestamp": "2016-07-20 11:09:23.882000+00:00",
+              "resource": "User_5",
+              "offered_amount": 18500.0
+            }
+          ]
+        }
+      ]
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 14(1)",
+    "article_title": "Right of withdrawal",
+    "attempts_used": 2,
+    "verbalized_constraint": "Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 14 calendar days.",
+    "ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Offer terms sent to consumer (O_Sent (mail and online))",
+        "target_semantics": "Offer returned or withdrawn within 14 calendar days (O_Returned)",
+        "data_guard_semantics": null,
+        "temporal_bound_semantics": "Within 14 calendar days"
+      },
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Returned",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 14(1)",
+      "template": "Response",
+      "activities": [
+        "O_Sent (mail and online)",
+        "O_Returned"
+      ],
+      "condition": [
+        "",
+        "",
+        "0,14,d"
+      ],
+      "decl_line": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d"
+    },
+    "conformance_report": {
+      "article_id": "Article 14(1)",
+      "decl_formula": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+      "total_cases": 31509,
+      "activated_cases_count": 31050,
+      "satisfied_cases_count": 17415,
+      "violated_cases_count": 13635,
+      "vacuous_cases_count": 459,
+      "total_event_activations": 39707,
+      "total_event_fulfillments": 22485,
+      "total_event_violations": 17222,
+      "compliance_rate": 56.09,
+      "counterexample_snapshots": [
+        {
+          "case_id": "Application_1000086665",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 5000.0,
+          "offered_amount": 5000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Cancelled",
+            "O_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-08-05 14:01:23.264000+00:00",
+              "resource": "User_5",
+              "offered_amount": 5000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1000311556",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 45000.0,
+          "offered_amount": 45000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Cancelled",
+            "O_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-04-04 16:15:45.527000+00:00",
+              "resource": "User_71",
+              "offered_amount": 45000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1000604502",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 10000.0,
+          "offered_amount": 10000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Cancelled",
+            "O_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-12-09 14:24:29.931000+00:00",
+              "resource": "User_81",
+              "offered_amount": 10000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1000610355",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 10000.0,
+          "offered_amount": 10000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 18.5,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "A_Incomplete",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "W_Validate application",
+            "A_Denied",
+            "O_Refused",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-12-01 19:57:26.541000+00:00",
+              "resource": "User_51",
+              "offered_amount": 10000.0
+            },
+            {
+              "activity": "O_Returned",
+              "timestamp": "2016-12-20 08:04:04.592000+00:00",
+              "resource": "User_123",
+              "offered_amount": 10000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1000647090",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 6500.0,
+          "offered_amount": 7000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 22.93,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "A_Denied",
+            "O_Refused",
+            "W_Validate application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-02-29 12:32:23.074000+00:00",
+              "resource": "User_42",
+              "offered_amount": 7000.0
+            },
+            {
+              "activity": "O_Returned",
+              "timestamp": "2016-03-23 10:44:30.662000+00:00",
+              "resource": "User_116",
+              "offered_amount": 7000.0
+            }
+          ]
+        }
+      ]
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": "Layer 3.1 (Roundtrip Semantic Fidelity)",
+        "is_valid": false,
+        "feedback": "[Layer 3 Semantic THRESHOLD_MISMATCH]: Clause Article 14(1) explicitly specifies a withdrawal period of 14 calendar days, but the constraint uses time_max=30. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "attempt": 2,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 14(3)",
+    "article_title": "Right of withdrawal",
+    "attempts_used": 1,
+    "verbalized_constraint": "Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.",
+    "ast": {
+      "article_id": "Article 14(3)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Consumer exercises withdrawal/cancellation of application (A_Cancelled)",
+        "target_semantics": "Linked credit offer is formally cancelled and settled no later than 30 calendar days (O_Cancelled)",
+        "data_guard_semantics": null,
+        "temporal_bound_semantics": "No later than 30 calendar days"
+      },
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 14(3)",
+      "template": "Response",
+      "activities": [
+        "A_Cancelled",
+        "O_Cancelled"
+      ],
+      "condition": [
+        "",
+        "",
+        "0,30,d"
+      ],
+      "decl_line": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d"
+    },
+    "conformance_report": {
+      "article_id": "Article 14(3)",
+      "decl_formula": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d",
+      "total_cases": 31509,
+      "activated_cases_count": 10431,
+      "satisfied_cases_count": 10270,
+      "violated_cases_count": 161,
+      "vacuous_cases_count": 21078,
+      "total_event_activations": 10431,
+      "total_event_fulfillments": 10270,
+      "total_event_violations": 161,
+      "compliance_rate": 98.46,
+      "counterexample_snapshots": [
+        {
+          "case_id": "Application_1003146166",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 30000.0,
+          "offered_amount": 30000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 30.59,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Cancelled",
+            "W_Complete application",
+            "A_Cancelled",
+            "W_Complete application"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Cancelled",
+              "timestamp": "2016-12-15 16:51:01.336000+00:00",
+              "resource": "User_96",
+              "offered_amount": 30000.0
+            },
+            {
+              "activity": "A_Cancelled",
+              "timestamp": "2017-01-15 07:00:27.348000+00:00",
+              "resource": "User_1",
+              "offered_amount": 30000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1035150389",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 27500.0,
+          "offered_amount": 27500.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "O_Returned",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "A_Incomplete",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Validate application",
+            "W_Validate application",
+            "A_Validating",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Validate application",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "A_Incomplete",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "W_Call incomplete files",
+            "O_Cancelled",
+            "A_Cancelled",
+            "W_Call incomplete files"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Cancelled",
+              "timestamp": "2016-02-17 09:12:45.767000+00:00",
+              "resource": "User_14",
+              "offered_amount": 27500.0
+            },
+            {
+              "activity": "A_Cancelled",
+              "timestamp": "2016-02-17 09:13:00.039000+00:00",
+              "resource": "User_14",
+              "offered_amount": 27500.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_104058265",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 0.0,
+          "offered_amount": 5000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "O_Cancelled",
+            "A_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Cancelled",
+              "timestamp": "2016-07-14 16:20:26.968000+00:00",
+              "resource": "User_35",
+              "offered_amount": 5000.0
+            },
+            {
+              "activity": "A_Cancelled",
+              "timestamp": "2016-07-14 16:23:11.524000+00:00",
+              "resource": "User_35",
+              "offered_amount": 5000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1070992899",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 0.0,
+          "offered_amount": 50000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Concept",
+            "W_Complete application",
+            "W_Complete application",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "O_Cancelled",
+            "A_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Cancelled",
+              "timestamp": "2016-04-25 07:53:41.184000+00:00",
+              "resource": "User_14",
+              "offered_amount": 50000.0
+            },
+            {
+              "activity": "A_Cancelled",
+              "timestamp": "2016-04-25 07:53:52.858000+00:00",
+              "resource": "User_14",
+              "offered_amount": 50000.0
+            }
+          ]
+        },
+        {
+          "case_id": "Application_1106209536",
+          "num_activations": 1,
+          "num_violations": 1,
+          "requested_amount": 10000.0,
+          "offered_amount": 8000.0,
+          "credit_score": 0.0,
+          "elapsed_days_between_relevant_events": 0.0,
+          "full_trace_sequence": [
+            "A_Create Application",
+            "A_Submitted",
+            "W_Handle leads",
+            "W_Handle leads",
+            "W_Complete application",
+            "A_Concept",
+            "A_Accepted",
+            "O_Create Offer",
+            "O_Created",
+            "O_Sent (mail and online)",
+            "W_Complete application",
+            "W_Call after offers",
+            "W_Call after offers",
+            "A_Complete",
+            "W_Call after offers",
+            "W_Call after offers",
+            "W_Call after offers",
+            "O_Cancelled",
+            "A_Cancelled",
+            "W_Call after offers"
+          ],
+          "violating_event_pairs": [
+            {
+              "activity": "O_Cancelled",
+              "timestamp": "2016-01-25 09:48:03.822000+00:00",
+              "resource": "User_14",
+              "offered_amount": 8000.0
+            },
+            {
+              "activity": "A_Cancelled",
+              "timestamp": "2016-01-25 09:48:17.588000+00:00",
+              "resource": "User_14",
+              "offered_amount": 8000.0
+            }
+          ]
+        }
+      ]
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "VERIFIED",
+    "article_id": "Article 16(4)",
+    "article_title": "Early repayment",
+    "attempts_used": 2,
+    "verbalized_constraint": "Whenever 'A_Pending' occurs, 'O_Create Offer' when OfferedAmount <= 10000.0 must have occurred BEFORE it within 365 calendar days.",
+    "ast": {
+      "article_id": "Article 16(4)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Offer created with threshold condition (O_Create Offer)",
+        "target_semantics": "Offer accepted and activated for repayment tracking (A_Pending)",
+        "data_guard_semantics": "OfferedAmount <= 10000.0 EUR threshold",
+        "temporal_bound_semantics": "Within any period of 12 months (365 days)"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "OfferedAmount",
+      "activation_op": "<=",
+      "activation_val": 10000.0,
+      "time_min": 0,
+      "time_max": 365,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 16(4)",
+      "template": "Precedence",
+      "activities": [
+        "O_Create Offer",
+        "A_Pending"
+      ],
+      "condition": [
+        "A.OfferedAmount <= 10000.0",
+        "",
+        "0,365,d"
+      ],
+      "decl_line": "Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d"
+    },
+    "conformance_report": {
+      "article_id": "Article 16(4)",
+      "decl_formula": "Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d",
+      "total_cases": 31509,
+      "activated_cases_count": 5678,
+      "satisfied_cases_count": 5678,
+      "violated_cases_count": 0,
+      "vacuous_cases_count": 25831,
+      "total_event_activations": 5678,
+      "total_event_fulfillments": 5678,
+      "total_event_violations": 0,
+      "compliance_rate": 100.0,
+      "counterexample_snapshots": []
+    },
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": "Layer 3.2 (Log-Grounded Vacuity Check)",
+        "is_valid": false,
+        "feedback": "[Layer 3 Vacuity Failure]: The constraint 'Precedence[O_Create Offer, A_Pending] | A.OfferedAmount >= 99999999.0 | | 0,365,d' had 0 activations across all 31509 cases in the BPIC 2017 log. Please select a valid activation activity or relax the attribute condition."
+      },
+      {
+        "attempt": 2,
+        "failed_layer": null,
+        "is_valid": true,
+        "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance)."
+      }
+    ]
+  },
+  {
+    "status": "BASELESS",
+    "article_id": "Article 23",
+    "article_title": "Penalties",
+    "attempts_used": 1,
+    "diagnostic_feedback": "[Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)",
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "failed_layer": "Layer 3.1 (Roundtrip Semantic Fidelity)",
+        "is_valid": false,
+        "feedback": "[Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+      }
+    ]
+  }
+]
