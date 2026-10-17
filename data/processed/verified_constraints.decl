@@ -1,0 +1,18 @@
+activity A_Cancelled
+activity A_Create Application
+activity A_Denied
+activity A_Pending
+activity O_Accepted
+activity O_Cancelled
+activity O_Create Offer
+activity O_Returned
+activity O_Sent (mail and online)
+activity W_Complete application
+activity W_Validate application
+Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | 
+Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | 
+Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | 
+Precedence[W_Validate application, A_Denied] | A.Accepted == False | | 
+Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d
+Response[A_Cancelled, O_Cancelled] |  | | 0,30,d
+Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d

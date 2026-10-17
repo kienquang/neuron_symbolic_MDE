@@ -1,0 +1,336 @@
+[
+  {
+    "article_id": "Article 2(2)",
+    "article_title": "Scope",
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Application submitted with requested credit amount >= EUR 200 within Directive scope",
+        "target_semantics": "Application undergoes completeness and workflow processing",
+        "data_guard_semantics": "RequestedAmount >= 200 EUR",
+        "temporal_bound_semantics": null
+      },
+      "template_name": "Response",
+      "activation_activity": "A_Create Application",
+      "target_activity": "W_Complete application",
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 2(2)",
+      "template": "Response",
+      "activities": [
+        "A_Create Application",
+        "W_Complete application"
+      ],
+      "condition": [
+        "A.case:RequestedAmount >= 200.0",
+        "",
+        ""
+      ],
+      "decl_line": "Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | "
+    },
+    "attempts_used": 1,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 2(2)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Consequence (Response: Activation A triggers subsequent Target B)\",\n    \"activation_semantics\": \"Application submitted with requested credit amount >= EUR 200 within Directive scope\",\n    \"target_semantics\": \"Application undergoes completeness and workflow processing\",\n    \"data_guard_semantics\": \"RequestedAmount >= 200 EUR\",\n    \"temporal_bound_semantics\": null\n  },\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": \"W_Complete application\",\n  \"activation_attr\": \"case:RequestedAmount\",\n  \"activation_op\": \">=\",\n  \"activation_val\": 200.0\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 5(1)",
+    "article_title": "Pre-contractual information",
+    "ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Creditor provides pre-contractual offer information (O_Sent (mail and online))",
+        "target_semantics": "Consumer is bound by accepting the credit offer (O_Accepted)",
+        "data_guard_semantics": "OfferedAmount >= 200.0",
+        "temporal_bound_semantics": "In good time before the consumer is bound"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Accepted",
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 5(1)",
+      "template": "Precedence",
+      "activities": [
+        "O_Sent (mail and online)",
+        "O_Accepted"
+      ],
+      "condition": [
+        "A.OfferedAmount >= 200.0",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | "
+    },
+    "attempts_used": 1,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 5(1)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Prerequisite (Precedence: Target B requires prior Activation A)\",\n    \"activation_semantics\": \"Creditor provides pre-contractual offer information (O_Sent (mail and online))\",\n    \"target_semantics\": \"Consumer is bound by accepting the credit offer (O_Accepted)\",\n    \"data_guard_semantics\": \"OfferedAmount >= 200.0\",\n    \"temporal_bound_semantics\": \"In good time before the consumer is bound\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">=\",\n  \"activation_val\": 200.0\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 8(1)",
+    "article_title": "Obligation to assess the creditworthiness of the consumer",
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Creditor assesses consumer creditworthiness and validates application (W_Validate application)",
+        "target_semantics": "Conclusion/acceptance of credit offer (O_Accepted)",
+        "data_guard_semantics": "CreditScore > 0",
+        "temporal_bound_semantics": "Before the conclusion of the credit agreement"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "O_Accepted",
+      "activation_attr": "CreditScore",
+      "activation_op": ">=",
+      "activation_val": 0.0,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 8(1)",
+      "template": "Precedence",
+      "activities": [
+        "W_Validate application",
+        "O_Accepted"
+      ],
+      "condition": [
+        "A.CreditScore >= 0.0",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | "
+    },
+    "attempts_used": 2,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 8(1)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Prerequisite (Precedence: Target B requires prior Activation A)\",\n    \"activation_semantics\": \"Creditor assesses consumer creditworthiness before concluding credit agreement\",\n    \"target_semantics\": \"Credit agreement offer is created/concluded\",\n    \"data_guard_semantics\": \"Credit assessment on valid loan goal\",\n    \"temporal_bound_semantics\": \"Before conclusion of credit agreement\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Check_Creditworthiness\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": \"case:LoanGoal\",\n  \"activation_op\": \">=\",\n  \"activation_val\": \"Home improvement\"\n}",
+        "is_valid": false,
+        "feedback": "- [Layer 2 Static Error]: Navigational Violation in δ(Activity, 'W_Check_Creditworthiness'): Activity 'W_Check_Creditworthiness' does not exist in Process Metamodel Γ. Valid activities are: ['A_Accepted', 'A_Cancelled', 'A_Complete', 'A_Concept', 'A_Create Application', 'A_Denied', 'A_Incomplete', 'A_Pending', 'A_Submitted', 'A_Validating', 'O_Accepted', 'O_Cancelled', 'O_Create Offer', 'O_Created', 'O_Refused', 'O_Returned', 'O_Sent (mail and online)', 'O_Sent (online only)', 'W_Assess potential fraud', 'W_Call after offers', 'W_Call incomplete files', 'W_Complete application', 'W_Handle leads', 'W_Personal Loan collection', 'W_Shortened completion ', 'W_Validate application'].\n- [Layer 2 Static Error]: Type Conformance Violation in Γ: Attribute 'case:LoanGoal' (Case scope) has type 'String' (samples: ['Existing loan takeover', 'Home improvement', 'Car']), which does not support ordering operator '>='. Only equality operators ('==', '!=') are permitted for 'String'."
+      },
+      {
+        "attempt": 2,
+        "raw_response": "{\n  \"article_id\": \"Article 8(1)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Prerequisite (Precedence: Target B requires prior Activation A)\",\n    \"activation_semantics\": \"Creditor assesses consumer creditworthiness and validates application (W_Validate application)\",\n    \"target_semantics\": \"Conclusion/acceptance of credit offer (O_Accepted)\",\n    \"data_guard_semantics\": \"CreditScore > 0\",\n    \"temporal_bound_semantics\": \"Before the conclusion of the credit agreement\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Validate application\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": \"CreditScore\",\n  \"activation_op\": \">=\",\n  \"activation_val\": 0.0\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 9(2)",
+    "article_title": "Database access",
+    "ast": {
+      "article_id": "Article 9(2)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Database and application validation consultation (W_Validate application)",
+        "target_semantics": "Credit application is rejected/denied (A_Denied)",
+        "data_guard_semantics": "Accepted == False",
+        "temporal_bound_semantics": "Informed immediately upon rejection"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Denied",
+      "activation_attr": "Accepted",
+      "activation_op": "==",
+      "activation_val": false,
+      "time_min": 0,
+      "time_max": null,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 9(2)",
+      "template": "Precedence",
+      "activities": [
+        "W_Validate application",
+        "A_Denied"
+      ],
+      "condition": [
+        "A.Accepted == False",
+        "",
+        ""
+      ],
+      "decl_line": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | "
+    },
+    "attempts_used": 1,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 9(2)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Prerequisite (Precedence: Target B requires prior Activation A)\",\n    \"activation_semantics\": \"Database and application validation consultation (W_Validate application)\",\n    \"target_semantics\": \"Credit application is rejected/denied (A_Denied)\",\n    \"data_guard_semantics\": \"Accepted == False\",\n    \"temporal_bound_semantics\": \"Informed immediately upon rejection\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Validate application\",\n  \"target_activity\": \"A_Denied\",\n  \"activation_attr\": \"Accepted\",\n  \"activation_op\": \"==\",\n  \"activation_val\": false\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 14(1)",
+    "article_title": "Right of withdrawal",
+    "ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Offer terms sent to consumer (O_Sent (mail and online))",
+        "target_semantics": "Offer returned or withdrawn within 14 calendar days (O_Returned)",
+        "data_guard_semantics": null,
+        "temporal_bound_semantics": "Within 14 calendar days"
+      },
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Returned",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 14(1)",
+      "template": "Response",
+      "activities": [
+        "O_Sent (mail and online)",
+        "O_Returned"
+      ],
+      "condition": [
+        "",
+        "",
+        "0,14,d"
+      ],
+      "decl_line": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d"
+    },
+    "attempts_used": 2,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 14(1)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Consequence (Response: Activation A triggers subsequent Target B)\",\n    \"activation_semantics\": \"Offer sent and concluded with consumer\",\n    \"target_semantics\": \"Consumer exercises withdrawal / offer cancelled within 14 calendar days\",\n    \"temporal_bound_semantics\": \"14 calendar days\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"time_min\": 0,\n  \"time_max\": 14,\n  \"time_unit\": \"d\"\n}",
+        "is_valid": false,
+        "feedback": "- [Layer 2 Static Error]: Req2LTL Decomposition Mismatch: Decomposition identified a Consequence/Response rule ('Consequence (Response: Activation A triggers subsequent Target B)'), but template 'Precedence' (Precedence family) was selected. Use 'Response', 'Alternate Response', or 'Chain Response' instead."
+      },
+      {
+        "attempt": 2,
+        "raw_response": "{\n  \"article_id\": \"Article 14(1)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Consequence (Response: Activation A triggers subsequent Target B)\",\n    \"activation_semantics\": \"Offer terms sent to consumer (O_Sent (mail and online))\",\n    \"target_semantics\": \"Offer returned or withdrawn within 14 calendar days (O_Returned)\",\n    \"data_guard_semantics\": null,\n    \"temporal_bound_semantics\": \"Within 14 calendar days\"\n  },\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Returned\",\n  \"time_min\": 0,\n  \"time_max\": 14,\n  \"time_unit\": \"d\"\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 14(3)",
+    "article_title": "Right of withdrawal",
+    "ast": {
+      "article_id": "Article 14(3)",
+      "decomposition": {
+        "temporal_direction": "Consequence (Response: Activation A triggers subsequent Target B)",
+        "activation_semantics": "Consumer exercises withdrawal/cancellation of application (A_Cancelled)",
+        "target_semantics": "Linked credit offer is formally cancelled and settled no later than 30 calendar days (O_Cancelled)",
+        "data_guard_semantics": null,
+        "temporal_bound_semantics": "No later than 30 calendar days"
+      },
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 14(3)",
+      "template": "Response",
+      "activities": [
+        "A_Cancelled",
+        "O_Cancelled"
+      ],
+      "condition": [
+        "",
+        "",
+        "0,30,d"
+      ],
+      "decl_line": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d"
+    },
+    "attempts_used": 1,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 14(3)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Consequence (Response: Activation A triggers subsequent Target B)\",\n    \"activation_semantics\": \"Consumer exercises withdrawal/cancellation of application (A_Cancelled)\",\n    \"target_semantics\": \"Linked credit offer is formally cancelled and settled no later than 30 calendar days (O_Cancelled)\",\n    \"data_guard_semantics\": null,\n    \"temporal_bound_semantics\": \"No later than 30 calendar days\"\n  },\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"time_min\": 0,\n  \"time_max\": 30,\n  \"time_unit\": \"d\"\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  },
+  {
+    "article_id": "Article 16(4)",
+    "article_title": "Early repayment",
+    "ast": {
+      "article_id": "Article 16(4)",
+      "decomposition": {
+        "temporal_direction": "Prerequisite (Precedence: Target B requires prior Activation A)",
+        "activation_semantics": "Offer created with threshold condition (O_Create Offer)",
+        "target_semantics": "Offer accepted and activated for repayment tracking (A_Pending)",
+        "data_guard_semantics": "OfferedAmount <= 10000.0 EUR threshold",
+        "temporal_bound_semantics": "Within any period of 12 months (365 days)"
+      },
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "OfferedAmount",
+      "activation_op": "<=",
+      "activation_val": 10000.0,
+      "time_min": 0,
+      "time_max": 365,
+      "time_unit": "d"
+    },
+    "declare4py": {
+      "article_id": "Article 16(4)",
+      "template": "Precedence",
+      "activities": [
+        "O_Create Offer",
+        "A_Pending"
+      ],
+      "condition": [
+        "A.OfferedAmount <= 10000.0",
+        "",
+        "0,365,d"
+      ],
+      "decl_line": "Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d"
+    },
+    "attempts_used": 1,
+    "verification_trace": [
+      {
+        "attempt": 1,
+        "raw_response": "{\n  \"article_id\": \"Article 16(4)\",\n  \"decomposition\": {\n    \"temporal_direction\": \"Prerequisite (Precedence: Target B requires prior Activation A)\",\n    \"activation_semantics\": \"Offer created with threshold condition (O_Create Offer)\",\n    \"target_semantics\": \"Offer accepted and activated for repayment tracking (A_Pending)\",\n    \"data_guard_semantics\": \"OfferedAmount <= 10000.0 EUR threshold\",\n    \"temporal_bound_semantics\": \"Within any period of 12 months (365 days)\"\n  },\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \"<=\",\n  \"activation_val\": 10000.0,\n  \"time_min\": 0,\n  \"time_max\": 365,\n  \"time_unit\": \"d\"\n}",
+        "is_valid": true,
+        "feedback": null
+      }
+    ]
+  }
+]
