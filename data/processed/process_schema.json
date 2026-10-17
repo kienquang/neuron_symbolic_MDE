@@ -1,0 +1,387 @@
+{
+  "dataset": "BPI Challenge 2017 (Consumer Loan Process)",
+  "valid_activities": [
+    "A_Accepted",
+    "A_Cancelled",
+    "A_Complete",
+    "A_Concept",
+    "A_Create Application",
+    "A_Denied",
+    "A_Incomplete",
+    "A_Pending",
+    "A_Submitted",
+    "A_Validating",
+    "O_Accepted",
+    "O_Cancelled",
+    "O_Create Offer",
+    "O_Created",
+    "O_Refused",
+    "O_Returned",
+    "O_Sent (mail and online)",
+    "O_Sent (online only)",
+    "W_Assess potential fraud",
+    "W_Call after offers",
+    "W_Call incomplete files",
+    "W_Complete application",
+    "W_Handle leads",
+    "W_Personal Loan collection",
+    "W_Shortened completion ",
+    "W_Validate application"
+  ],
+  "activities_by_origin": {
+    "Application": [
+      "A_Accepted",
+      "A_Cancelled",
+      "A_Complete",
+      "A_Concept",
+      "A_Create Application",
+      "A_Denied",
+      "A_Incomplete",
+      "A_Pending",
+      "A_Submitted",
+      "A_Validating"
+    ],
+    "Offer": [
+      "O_Accepted",
+      "O_Cancelled",
+      "O_Create Offer",
+      "O_Created",
+      "O_Refused",
+      "O_Returned",
+      "O_Sent (mail and online)",
+      "O_Sent (online only)"
+    ],
+    "Workflow": [
+      "W_Assess potential fraud",
+      "W_Call after offers",
+      "W_Call incomplete files",
+      "W_Complete application",
+      "W_Handle leads",
+      "W_Personal Loan collection",
+      "W_Shortened completion ",
+      "W_Validate application"
+    ]
+  },
+  "case_attributes": {
+    "case:LoanGoal": {
+      "type": "String",
+      "samples": [
+        "Existing loan takeover",
+        "Home improvement",
+        "Car"
+      ]
+    },
+    "case:concept:name": {
+      "type": "String",
+      "samples": [
+        "Application_652823628",
+        "Application_1691306052",
+        "Application_428409768"
+      ]
+    },
+    "case:ApplicationType": {
+      "type": "String",
+      "samples": [
+        "New credit",
+        "Limit raise"
+      ]
+    },
+    "case:RequestedAmount": {
+      "type": "Float",
+      "samples": [
+        "20000.0",
+        "10000.0",
+        "15000.0"
+      ]
+    }
+  },
+  "event_attributes": {
+    "Action": {
+      "type": "String",
+      "samples": [
+        "Created",
+        "statechange",
+        "Deleted"
+      ]
+    },
+    "EventID": {
+      "type": "String",
+      "samples": [
+        "Application_652823628",
+        "ApplState_1582051990",
+        "Workitem_1298499574"
+      ]
+    },
+    "EventOrigin": {
+      "type": "String",
+      "samples": [
+        "Application",
+        "Workflow",
+        "Offer"
+      ]
+    },
+    "Accepted": {
+      "type": "Boolean",
+      "samples": [
+        "True",
+        "False"
+      ]
+    },
+    "lifecycle:transition": {
+      "type": "String",
+      "samples": [
+        "complete",
+        "schedule",
+        "withdraw"
+      ]
+    },
+    "time:timestamp": {
+      "type": "Timestamp",
+      "samples": [
+        "2016-01-01 09:51:15.304000+00:00",
+        "2016-01-01 09:51:15.352000+00:00",
+        "2016-01-01 09:51:15.774000+00:00"
+      ]
+    },
+    "OfferedAmount": {
+      "type": "Float",
+      "samples": [
+        "20000.0",
+        "6000.0",
+        "15000.0"
+      ]
+    },
+    "MonthlyCost": {
+      "type": "Float",
+      "samples": [
+        "498.29",
+        "200.0",
+        "158.98"
+      ]
+    },
+    "FirstWithdrawalAmount": {
+      "type": "Float",
+      "samples": [
+        "20000.0",
+        "500.0",
+        "15000.0"
+      ]
+    },
+    "CreditScore": {
+      "type": "Float",
+      "samples": [
+        "979.0",
+        "0.0",
+        "1059.0"
+      ]
+    },
+    "Selected": {
+      "type": "Boolean",
+      "samples": [
+        "True",
+        "False"
+      ]
+    },
+    "OfferID": {
+      "type": "String",
+      "samples": [
+        "Offer_148581083",
+        "Offer_1669071500",
+        "Offer_1209840642"
+      ]
+    },
+    "NumberOfTerms": {
+      "type": "Float",
+      "samples": [
+        "44.0",
+        "33.0",
+        "120.0"
+      ]
+    },
+    "concept:name": {
+      "type": "String",
+      "samples": [
+        "A_Create Application",
+        "A_Submitted",
+        "W_Handle leads"
+      ]
+    },
+    "org:resource": {
+      "type": "String",
+      "samples": [
+        "User_1",
+        "User_17",
+        "User_52"
+      ]
+    }
+  },
+  "start_activities": [
+    "A_Create Application"
+  ],
+  "end_activities": [
+    "W_Validate application",
+    "O_Cancelled",
+    "W_Call after offers",
+    "W_Call incomplete files",
+    "W_Complete application",
+    "W_Assess potential fraud",
+    "W_Personal Loan collection",
+    "W_Shortened completion ",
+    "A_Denied",
+    "O_Sent (online only)",
+    "O_Sent (mail and online)",
+    "O_Returned"
+  ],
+  "frequent_transitions": [
+    {
+      "from": "O_Create Offer",
+      "to": "O_Created",
+      "count": 42995
+    },
+    {
+      "from": "W_Validate application",
+      "to": "A_Validating",
+      "count": 38816
+    },
+    {
+      "from": "O_Created",
+      "to": "O_Sent (mail and online)",
+      "count": 35604
+    },
+    {
+      "from": "W_Call after offers",
+      "to": "A_Complete",
+      "count": 31362
+    },
+    {
+      "from": "W_Complete application",
+      "to": "W_Call after offers",
+      "count": 31362
+    },
+    {
+      "from": "O_Sent (mail and online)",
+      "to": "W_Complete application",
+      "count": 30912
+    },
+    {
+      "from": "A_Complete",
+      "to": "W_Call after offers",
+      "count": 30396
+    },
+    {
+      "from": "A_Accepted",
+      "to": "O_Create Offer",
+      "count": 29966
+    },
+    {
+      "from": "W_Complete application",
+      "to": "A_Concept",
+      "count": 28120
+    },
+    {
+      "from": "W_Call incomplete files",
+      "to": "A_Incomplete",
+      "count": 23055
+    },
+    {
+      "from": "W_Validate application",
+      "to": "W_Call incomplete files",
+      "count": 23052
+    },
+    {
+      "from": "A_Incomplete",
+      "to": "W_Call incomplete files",
+      "count": 22277
+    },
+    {
+      "from": "A_Concept",
+      "to": "W_Complete application",
+      "count": 22264
+    },
+    {
+      "from": "W_Complete application",
+      "to": "A_Accepted",
+      "count": 22249
+    },
+    {
+      "from": "W_Call after offers",
+      "to": "W_Validate application",
+      "count": 21880
+    },
+    {
+      "from": "O_Returned",
+      "to": "W_Validate application",
+      "count": 21235
+    },
+    {
+      "from": "A_Validating",
+      "to": "O_Returned",
+      "count": 20673
+    },
+    {
+      "from": "A_Create Application",
+      "to": "A_Submitted",
+      "count": 20423
+    },
+    {
+      "from": "A_Submitted",
+      "to": "W_Handle leads",
+      "count": 20423
+    },
+    {
+      "from": "W_Handle leads",
+      "to": "W_Complete application",
+      "count": 20423
+    },
+    {
+      "from": "A_Validating",
+      "to": "W_Validate application",
+      "count": 17925
+    },
+    {
+      "from": "O_Accepted",
+      "to": "A_Pending",
+      "count": 17228
+    },
+    {
+      "from": "W_Call incomplete files",
+      "to": "W_Validate application",
+      "count": 16929
+    },
+    {
+      "from": "A_Pending",
+      "to": "W_Validate application",
+      "count": 12291
+    },
+    {
+      "from": "W_Validate application",
+      "to": "O_Accepted",
+      "count": 11738
+    },
+    {
+      "from": "A_Cancelled",
+      "to": "O_Cancelled",
+      "count": 10270
+    },
+    {
+      "from": "O_Cancelled",
+      "to": "W_Call after offers",
+      "count": 9659
+    },
+    {
+      "from": "A_Concept",
+      "to": "A_Accepted",
+      "count": 9231
+    },
+    {
+      "from": "W_Call after offers",
+      "to": "A_Cancelled",
+      "count": 8539
+    },
+    {
+      "from": "A_Create Application",
+      "to": "W_Complete application",
+      "count": 7697
+    }
+  ]
+}

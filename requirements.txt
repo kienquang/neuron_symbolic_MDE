@@ -1,0 +1,5 @@
+pymupdf>=1.28.0
+pm4py>=2.7.11
+pandas>=2.2.0
+pyarrow>=17.0.0
+rustxes>=0.2.0
