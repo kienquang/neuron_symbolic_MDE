@@ -1,0 +1,738 @@
+{
+  "pipeline_stage": "Step 4 - 3-Valued Anti-Hallucination Labeling & Accountable Audit Trail",
+  "taxonomy_labels": [
+    "ENTAILED",
+    "CONTRADICTED",
+    "BASELESS"
+  ],
+  "case_study_showcase": {
+    "scenario_1_contradicted_with_mcs": {
+      "case_id": "Application_1000610355",
+      "final_label": "CONTRADICTED",
+      "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+      "is_citation_verified": true,
+      "grounding_guard_details": {
+        "is_citation_verified": true,
+        "missing_anchors": []
+      },
+      "justification_tree": {
+        "audit_status": "CONTRADICTED",
+        "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+        "normative_node": {
+          "directive": "Directive 2008/48/EC",
+          "article_id": "Article 14(1)",
+          "article_title": "Right of withdrawal",
+          "verbatim_quote": "1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the day on which the consumer receives the contractual terms and conditions and information in accordance with Article 10, if that day is later than the date referred to in point (a) of this subparagraph."
+        },
+        "symbolic_rule_node": {
+          "declare_formula": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+          "template": "Response"
+        },
+        "trace_evidence_node": {
+          "case_id": "Application_1000610355",
+          "proof_or_counterexample": {
+            "violation_subtype": "DEADLINE_EXCEEDED",
+            "activation_event": {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-12-01 19:57:26.541000+00:00"
+            },
+            "target_event": {
+              "activity": "O_Returned",
+              "timestamp": "2016-12-20 08:04:04.592000+00:00"
+            },
+            "actual_duration_days": 18.5,
+            "allowed_max_days": 14,
+            "deviation_magnitude": "Vượt quá thời hạn quy định 4.5 ngày.",
+            "minimal_correction_mcs": "Rút ngắn thời gian thực hiện 'O_Returned' tối thiểu 4.5 ngày (về mức <= 14 ngày)."
+          }
+        }
+      },
+      "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1000610355\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(1) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d\n- Bằng chứng vi phạm (DEADLINE_EXCEEDED): Sự kiện kích hoạt 'O_Sent (mail and online)' xảy ra lúc 2016-12-01 19:57:26.541000+00:00, nhưng sự kiện phản hồi 'O_Returned' diễn ra lúc 2016-12-20 08:04:04.592000+00:00 (thời gian thực tế: 18.5 ngày so với giới hạn tối đa 14 ngày). Vượt quá thời hạn quy định 4.5 ngày.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Rút ngắn thời gian thực hiện 'O_Returned' tối thiểu 4.5 ngày (về mức <= 14 ngày)."
+    },
+    "scenario_2_entailed_compliant": {
+      "case_id": "Application_1000158214",
+      "final_label": "ENTAILED",
+      "reason_category": "COMPLIANT_WITH_EVIDENCE",
+      "is_citation_verified": true,
+      "grounding_guard_details": {
+        "is_citation_verified": true,
+        "missing_anchors": []
+      },
+      "justification_tree": {
+        "audit_status": "ENTAILED",
+        "reason_category": "COMPLIANT_WITH_EVIDENCE",
+        "normative_node": {
+          "directive": "Directive 2008/48/EC",
+          "article_id": "Article 14(1)",
+          "article_title": "Right of withdrawal",
+          "verbatim_quote": "1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the day on which the consumer receives the contractual terms and conditions and information in accordance with Article 10, if that day is later than the date referred to in point (a) of this subparagraph."
+        },
+        "symbolic_rule_node": {
+          "declare_formula": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+          "template": "Response"
+        },
+        "trace_evidence_node": {
+          "case_id": "Application_1000158214",
+          "proof_or_counterexample": {
+            "msg": "Tất cả các sự kiện 'O_Sent (mail and online)' đều được phản hồi bởi 'O_Returned' đúng hạn (3.07 ngày).",
+            "activation_event": {
+              "activity": "O_Sent (mail and online)",
+              "timestamp": "2016-06-06 08:16:46.835000+00:00"
+            },
+            "target_event": {
+              "activity": "O_Returned",
+              "timestamp": "2016-06-09 09:55:13.652000+00:00"
+            },
+            "actual_duration_days": 3.07
+          }
+        }
+      },
+      "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: ENTAILED]\n- Hồ sơ kiểm toán: Application_1000158214\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(1) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d\n- Bằng chứng tuân thủ: Tất cả các sự kiện 'O_Sent (mail and online)' đều được phản hồi bởi 'O_Returned' đúng hạn (3.07 ngày)."
+    },
+    "scenario_3_baseless_missing_log_phi": {
+      "case_id": "Application_1000086665",
+      "final_label": "BASELESS",
+      "reason_category": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+      "is_citation_verified": true,
+      "grounding_guard_details": {
+        "is_citation_verified": true,
+        "missing_anchors": []
+      },
+      "justification_tree": {
+        "audit_status": "BASELESS",
+        "reason_category": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+        "normative_node": {
+          "directive": "Directive 2008/48/EC",
+          "article_id": "Article 14(1)",
+          "article_title": "Right of withdrawal",
+          "verbatim_quote": "1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the day on which the consumer receives the contractual terms and conditions and information in accordance with Article 10, if that day is later than the date referred to in point (a) of this subparagraph."
+        },
+        "symbolic_rule_node": {
+          "declare_formula": "Response[O_Sent (mail and online), O_Returned] | A.OfferedAmount > 0.0 | | 0,14,d",
+          "template": "Response"
+        },
+        "trace_evidence_node": {
+          "case_id": "Application_1000086665",
+          "proof_or_counterexample": "Thuộc tính 'OfferedAmount' tại sự kiện 'O_Sent (mail and online)' bị khuyết (null/NaN)."
+        }
+      },
+      "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: BASELESS]\n- Hồ sơ kiểm toán: Application_1000086665\n- Căn cứ pháp lý đối chiếu: Directive 2008/48/EC - Article 14(1) (Right of withdrawal)\n- Phân loại nguyên nhân (MISSING_LOG_EVIDENCE_PHI_VIOLATION): Không đủ bằng chứng xác thực.\n- Chi tiết chẩn đoán an toàn Φ / Văn bản: Thuộc tính 'OfferedAmount' tại sự kiện 'O_Sent (mail and online)' bị khuyết (null/NaN)."
+    },
+    "scenario_4_baseless_unsupported_by_directive": {
+      "case_id": "Application_1000610355",
+      "final_label": "BASELESS",
+      "reason_category": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+      "is_citation_verified": true,
+      "grounding_guard_details": {
+        "is_citation_verified": true,
+        "missing_anchors": []
+      },
+      "justification_tree": {
+        "audit_status": "BASELESS",
+        "reason_category": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "normative_node": {
+          "directive": "Directive 2008/48/EC",
+          "article_id": "Article 23",
+          "article_title": "Penalties",
+          "verbatim_quote": "Member States shall lay down the rules on penalties applicable to infringements of the national provisions adopted pursuant to this Directive and shall take all measures necessary to ensure that they are implemented. The penalties provided for must be effective, proportionate and dissuasive."
+        },
+        "symbolic_rule_node": {
+          "declare_formula": "N/A (Halted prior to execution)",
+          "template": "N/A"
+        },
+        "trace_evidence_node": {
+          "case_id": "Application_1000610355",
+          "proof_or_counterexample": "[Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+        }
+      },
+      "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: BASELESS]\n- Hồ sơ kiểm toán: Application_1000610355\n- Căn cứ pháp lý đối chiếu: Directive 2008/48/EC - Article 23 (Penalties)\n- Phân loại nguyên nhân (UNSUPPORTED_BY_DIRECTIVE_TEXT): Không đủ bằng chứng xác thực.\n- Chi tiết chẩn đoán an toàn Φ / Văn bản: [Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+    }
+  },
+  "rule_level_audits": [
+    {
+      "rule_index": 1,
+      "article_id": "Article 2(2)",
+      "article_title": "Scope",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | ",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 28429,
+        "entailed_compliant_cases": 28429,
+        "contradicted_violated_cases": 0,
+        "baseless_inapplicable_or_null_cases": 3080
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_652823628",
+          "final_label": "ENTAILED",
+          "reason_category": "COMPLIANT_WITH_EVIDENCE",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "ENTAILED",
+            "reason_category": "COMPLIANT_WITH_EVIDENCE",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 2(2)",
+              "article_title": "Scope",
+              "verbatim_quote": "2. This Directive shall not apply to the following: (a) credit agreements which are secured either by a mortgage or by another comparable security commonly used in a Member State on immovable property or secured by a right related to immovable property; (b) credit agreements the purpose of which is to acquire or retain property rights in land or in an existing or projected building; (c) credit agreements involving a total amount of credit less than EUR 200 or more than EUR 75 000; (d) hiring or leasing agreements where an obligation to purchase the object of the agreement is not laid down either by the agreement itself or by any separate agreement; such an obligation shall be deemed to exist if it is so decided unilaterally by the creditor; (e) credit agreements in the form of an overdraft facility and where the credit has to be repaid within one month; (f) credit agreements where the credit is granted free of interest and without any other charges and credit agreements under the terms of which the credit has to be repaid within three months and only insignificant charges are payable; (g) credit agreements where the credit is granted by an employer to his employees as a secondary activity free of interest or at annual percentage rates of charge lower than those prevailing on the market and which are not offered to the public generally; (h) credit agreements which are concluded with investment firms as defined in Article 4(1) of Directive 2004/39/EC of the European Parliament and of the Council of 21 April 2004 on markets in financial instruments (1) or with credit institutions as defined in Article 4 of Directive 2006/48/EC for the purposes of allowing an investor to carry out a transaction relating to one or more of the instruments listed in Section C of Annex I to Directive 2004/39/EC, where the investment firm or credit institution granting the credit is involved in such transaction; (i) credit agreements which are the outcome of a settlement reached in court or before another statutory authority; (j) credit agreements which relate to the deferred payment, free of charge, of an existing debt; (k) credit agreements upon the conclusion of which the consumer is requested to deposit an item as security in the creditor's safe-keeping and where the liability of the consumer is strictly limited to that pledged item; (l) credit agreements which relate to loans granted to a restricted public under a statutory provision with a general interest purpose, and at lower interest rates than those prevailing on the market or free of interest or on other terms which are more favourable to the consumer than those prevailing on the market and at interest rates not higher than those prevailing on the market."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | ",
+              "template": "Response"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_652823628",
+              "proof_or_counterexample": {
+                "msg": "Tất cả các sự kiện 'A_Create Application' đều được phản hồi bởi 'W_Complete application' đúng hạn (0.0 ngày).",
+                "activation_event": {
+                  "activity": "A_Create Application",
+                  "timestamp": "2016-01-01 09:51:15.304000+00:00"
+                },
+                "target_event": {
+                  "activity": "W_Complete application",
+                  "timestamp": "2016-01-01 09:52:36.403000+00:00"
+                },
+                "actual_duration_days": 0.0
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: ENTAILED]\n- Hồ sơ kiểm toán: Application_652823628\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 2(2) (Scope)\n- Ràng buộc hình thức (DECLARE): Response[A_Create Application, W_Complete application] | A.case:RequestedAmount >= 200.0 | | \n- Bằng chứng tuân thủ: Tất cả các sự kiện 'A_Create Application' đều được phản hồi bởi 'W_Complete application' đúng hạn (0.0 ngày)."
+        }
+      ]
+    },
+    {
+      "rule_index": 2,
+      "article_id": "Article 5(1)",
+      "article_title": "Pre-contractual information",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | ",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 17228,
+        "entailed_compliant_cases": 17038,
+        "contradicted_violated_cases": 190,
+        "baseless_inapplicable_or_null_cases": 14281
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_1007766945",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 5(1)",
+              "article_title": "Pre-contractual information",
+              "verbatim_quote": "1. In good time before the consumer is bound by any credit agreement or offer, the creditor and, where applicable, the credit intermediary shall, on the basis of the credit terms and conditions offered by the creditor and, if applicable, the preferences expressed and information supplied by the consumer, provide the consumer with the information needed to compare different offers in order to take an informed decision on whether to conclude a credit agreement. Such information, on paper or on another durable medium, shall be provided by means of the Standard European Consumer Credit Information form set out in Annex II. The creditor shall be deemed to have fulfilled the information requirements in this paragraph and in Article 3, paragraphs (1) and (2) of Directive 2002/65/EC if he has supplied the Standard European Consumer Credit Information. The information in question shall specify: (a) the type of credit; (b) the identity and the geographical address of the creditor as well as, if applicable, the identity and geographical address of the credit intermediary involved; (c) the total amount of credit and the conditions governing the drawdown; (d) the duration of the credit agreement; (e) in the case of a credit in the form of deferred payment for a specific good or service and linked credit agreements, that good or service and its cash price; (f) the borrowing rate, the conditions governing the application of the borrowing rate and, where available, any index or reference rate applicable to the initial borrowing rate, as well as the periods, conditions and procedure for changing the borrowing rate; if different borrowing rates apply in different circumstances, the abovementioned information on all the applicable rates; (g) the annual percentage rate of charge and the total amount payable by the consumer, illustrated by means of a representative example mentioning all the assumptions used in order to calculate that rate; where the consumer has informed the creditor of one or more components of his preferred credit, such as the duration of the credit agreement and the total amount of credit, the creditor shall take those components into account; if a credit agreement provides different ways of drawdown with different charges or borrowing rates and the creditor uses the assumption set out in point (b) of Part II of Annex I, he shall indicate that other drawdown mechanisms for this type of credit agreement may result in higher annual percentage rates of charge; (h) the amount, number and frequency of payments to be made by the consumer and, where appropriate, the order in which payments will be allocated to different outstanding balances charged at different borrowing rates for the purposes of reimbursement; (i) where applicable, the charges for maintaining one or several accounts recording both payment transactions and drawdowns, unless the opening of an account is optional, together with the charges for using a means of payment for both payment transactions and drawdowns, any other charges deriving from the credit agreement and the conditions under which those charges may be changed; (j) where applicable, the existence of costs payable by the consumer to a notary on conclusion of the credit agreement; (k) the obligation, if any, to enter into an ancillary service contract relating to the credit agreement, in particular an insurance policy, where the conclusion of such a contract is compulsory in order to obtain the credit or to obtain it on the terms and conditions marketed; (l) the interest rate applicable in the case of late payments and the arrangements for its adjustment, and, where applicable, any charges payable for default; (m) a warning regarding the consequences of missing payments; (n) where applicable, the sureties required; (o) the existence or absence of a right of withdrawal; (p) the right of early repayment, and, where applicable, information concerning the creditor's right to compensation and the way in which that compensation will be determined in accordance with Article 16; (q) the consumer's right to be informed immediately and free of charge, pursuant to Article 9(2), of the result of a database consultation carried out for the purposes of assessing his creditworthiness; (r) the consumer's right to be supplied, on request and free of charge, with a copy of the draft credit agreement. This provision shall not apply if the creditor is at the time of the request unwilling to proceed to the conclusion of the credit agreement with the consumer; and (s) if applicable, the period of time during which the creditor is bound by the pre-contractual information. Any additional information which the creditor may provide to the consumer shall be given in a separate document which may be annexed to the Standard European Consumer Credit Information form."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | ",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1007766945",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_PREREQUISITE_ACTIVITY",
+                "target_event": {
+                  "activity": "O_Accepted",
+                  "timestamp": "2016-07-12 15:37:48.632000+00:00"
+                },
+                "missing_event": "O_Sent (mail and online)",
+                "deviation_magnitude": "Hoạt động tiền đề bắt buộc 'O_Sent (mail and online)' hoàn toàn không xuất hiện trước 'O_Accepted'.",
+                "minimal_correction_mcs": "Bắt buộc thực hiện 'O_Sent (mail and online)' trước thời điểm 2016-07-12 15:37:48.632000+00:00."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1007766945\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 5(1) (Pre-contractual information)\n- Ràng buộc hình thức (DECLARE): Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | \n- Bằng chứng vi phạm (MISSING_PREREQUISITE_ACTIVITY): Sự kiện đích 'O_Accepted' diễn ra lúc 2016-07-12 15:37:48.632000+00:00 nhưng thiếu sự kiện tiền đề bắt buộc 'O_Sent (mail and online)'. Hoạt động tiền đề bắt buộc 'O_Sent (mail and online)' hoàn toàn không xuất hiện trước 'O_Accepted'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bắt buộc thực hiện 'O_Sent (mail and online)' trước thời điểm 2016-07-12 15:37:48.632000+00:00."
+        },
+        {
+          "case_id": "Application_1014824736",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 5(1)",
+              "article_title": "Pre-contractual information",
+              "verbatim_quote": "1. In good time before the consumer is bound by any credit agreement or offer, the creditor and, where applicable, the credit intermediary shall, on the basis of the credit terms and conditions offered by the creditor and, if applicable, the preferences expressed and information supplied by the consumer, provide the consumer with the information needed to compare different offers in order to take an informed decision on whether to conclude a credit agreement. Such information, on paper or on another durable medium, shall be provided by means of the Standard European Consumer Credit Information form set out in Annex II. The creditor shall be deemed to have fulfilled the information requirements in this paragraph and in Article 3, paragraphs (1) and (2) of Directive 2002/65/EC if he has supplied the Standard European Consumer Credit Information. The information in question shall specify: (a) the type of credit; (b) the identity and the geographical address of the creditor as well as, if applicable, the identity and geographical address of the credit intermediary involved; (c) the total amount of credit and the conditions governing the drawdown; (d) the duration of the credit agreement; (e) in the case of a credit in the form of deferred payment for a specific good or service and linked credit agreements, that good or service and its cash price; (f) the borrowing rate, the conditions governing the application of the borrowing rate and, where available, any index or reference rate applicable to the initial borrowing rate, as well as the periods, conditions and procedure for changing the borrowing rate; if different borrowing rates apply in different circumstances, the abovementioned information on all the applicable rates; (g) the annual percentage rate of charge and the total amount payable by the consumer, illustrated by means of a representative example mentioning all the assumptions used in order to calculate that rate; where the consumer has informed the creditor of one or more components of his preferred credit, such as the duration of the credit agreement and the total amount of credit, the creditor shall take those components into account; if a credit agreement provides different ways of drawdown with different charges or borrowing rates and the creditor uses the assumption set out in point (b) of Part II of Annex I, he shall indicate that other drawdown mechanisms for this type of credit agreement may result in higher annual percentage rates of charge; (h) the amount, number and frequency of payments to be made by the consumer and, where appropriate, the order in which payments will be allocated to different outstanding balances charged at different borrowing rates for the purposes of reimbursement; (i) where applicable, the charges for maintaining one or several accounts recording both payment transactions and drawdowns, unless the opening of an account is optional, together with the charges for using a means of payment for both payment transactions and drawdowns, any other charges deriving from the credit agreement and the conditions under which those charges may be changed; (j) where applicable, the existence of costs payable by the consumer to a notary on conclusion of the credit agreement; (k) the obligation, if any, to enter into an ancillary service contract relating to the credit agreement, in particular an insurance policy, where the conclusion of such a contract is compulsory in order to obtain the credit or to obtain it on the terms and conditions marketed; (l) the interest rate applicable in the case of late payments and the arrangements for its adjustment, and, where applicable, any charges payable for default; (m) a warning regarding the consequences of missing payments; (n) where applicable, the sureties required; (o) the existence or absence of a right of withdrawal; (p) the right of early repayment, and, where applicable, information concerning the creditor's right to compensation and the way in which that compensation will be determined in accordance with Article 16; (q) the consumer's right to be informed immediately and free of charge, pursuant to Article 9(2), of the result of a database consultation carried out for the purposes of assessing his creditworthiness; (r) the consumer's right to be supplied, on request and free of charge, with a copy of the draft credit agreement. This provision shall not apply if the creditor is at the time of the request unwilling to proceed to the conclusion of the credit agreement with the consumer; and (s) if applicable, the period of time during which the creditor is bound by the pre-contractual information. Any additional information which the creditor may provide to the consumer shall be given in a separate document which may be annexed to the Standard European Consumer Credit Information form."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | ",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1014824736",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_PREREQUISITE_ACTIVITY",
+                "target_event": {
+                  "activity": "O_Accepted",
+                  "timestamp": "2016-01-15 13:29:04.418000+00:00"
+                },
+                "missing_event": "O_Sent (mail and online)",
+                "deviation_magnitude": "Hoạt động tiền đề bắt buộc 'O_Sent (mail and online)' hoàn toàn không xuất hiện trước 'O_Accepted'.",
+                "minimal_correction_mcs": "Bắt buộc thực hiện 'O_Sent (mail and online)' trước thời điểm 2016-01-15 13:29:04.418000+00:00."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1014824736\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 5(1) (Pre-contractual information)\n- Ràng buộc hình thức (DECLARE): Precedence[O_Sent (mail and online), O_Accepted] | A.OfferedAmount >= 200.0 | | \n- Bằng chứng vi phạm (MISSING_PREREQUISITE_ACTIVITY): Sự kiện đích 'O_Accepted' diễn ra lúc 2016-01-15 13:29:04.418000+00:00 nhưng thiếu sự kiện tiền đề bắt buộc 'O_Sent (mail and online)'. Hoạt động tiền đề bắt buộc 'O_Sent (mail and online)' hoàn toàn không xuất hiện trước 'O_Accepted'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bắt buộc thực hiện 'O_Sent (mail and online)' trước thời điểm 2016-01-15 13:29:04.418000+00:00."
+        }
+      ]
+    },
+    {
+      "rule_index": 3,
+      "article_id": "Article 8(1)",
+      "article_title": "Obligation to assess the creditworthiness of the consumer",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | ",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 17228,
+        "entailed_compliant_cases": 17228,
+        "contradicted_violated_cases": 0,
+        "baseless_inapplicable_or_null_cases": 14281
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_652823628",
+          "final_label": "ENTAILED",
+          "reason_category": "COMPLIANT_WITH_EVIDENCE",
+          "is_citation_verified": false,
+          "grounding_guard_details": {
+            "is_citation_verified": false,
+            "missing_anchors": [
+              "actual_duration_days '0.08'"
+            ]
+          },
+          "justification_tree": {
+            "audit_status": "ENTAILED",
+            "reason_category": "COMPLIANT_WITH_EVIDENCE",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 8(1)",
+              "article_title": "Obligation to assess the creditworthiness of the consumer",
+              "verbatim_quote": "1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member States whose legislation requires creditors to assess the creditworthiness of consumers on the basis of a consultation of the relevant database may retain this requirement."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | ",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_652823628",
+              "proof_or_counterexample": {
+                "msg": "Hoạt động tiền đề 'W_Validate application' (2016-01-14 13:54:49.680000+00:00) đã diễn ra hợp lệ trước 'O_Accepted' (2016-01-14 15:49:11.416000+00:00).",
+                "activation_event": {
+                  "activity": "W_Validate application",
+                  "timestamp": "2016-01-14 13:54:49.680000+00:00"
+                },
+                "target_event": {
+                  "activity": "O_Accepted",
+                  "timestamp": "2016-01-14 15:49:11.416000+00:00"
+                },
+                "actual_duration_days": 0.08
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: ENTAILED]\n- Hồ sơ kiểm toán: Application_652823628\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 8(1) (Obligation to assess the creditworthiness of the consumer)\n- Ràng buộc hình thức (DECLARE): Precedence[W_Validate application, O_Accepted] | A.CreditScore >= 0.0 | | \n- Bằng chứng tuân thủ: Hoạt động tiền đề 'W_Validate application' (2016-01-14 13:54:49.680000+00:00) đã diễn ra hợp lệ trước 'O_Accepted' (2016-01-14 15:49:11.416000+00:00)."
+        }
+      ]
+    },
+    {
+      "rule_index": 4,
+      "article_id": "Article 9(2)",
+      "article_title": "Database access",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | ",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 2406,
+        "entailed_compliant_cases": 2317,
+        "contradicted_violated_cases": 89,
+        "baseless_inapplicable_or_null_cases": 29103
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_1021332815",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 9(2)",
+              "article_title": "Database access",
+              "verbatim_quote": "2. If the credit application is rejected on the basis of consultation of a database, the creditor shall inform the consumer immediately and without charge of the result of such consultation and of the particulars of the database consulted."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | ",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1021332815",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_PREREQUISITE_ACTIVITY",
+                "target_event": {
+                  "activity": "A_Denied",
+                  "timestamp": "2016-11-17 13:18:17.508000+00:00"
+                },
+                "missing_event": "W_Validate application",
+                "deviation_magnitude": "Hoạt động tiền đề bắt buộc 'W_Validate application' hoàn toàn không xuất hiện trước 'A_Denied'.",
+                "minimal_correction_mcs": "Bắt buộc thực hiện 'W_Validate application' trước thời điểm 2016-11-17 13:18:17.508000+00:00."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1021332815\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 9(2) (Database access)\n- Ràng buộc hình thức (DECLARE): Precedence[W_Validate application, A_Denied] | A.Accepted == False | | \n- Bằng chứng vi phạm (MISSING_PREREQUISITE_ACTIVITY): Sự kiện đích 'A_Denied' diễn ra lúc 2016-11-17 13:18:17.508000+00:00 nhưng thiếu sự kiện tiền đề bắt buộc 'W_Validate application'. Hoạt động tiền đề bắt buộc 'W_Validate application' hoàn toàn không xuất hiện trước 'A_Denied'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bắt buộc thực hiện 'W_Validate application' trước thời điểm 2016-11-17 13:18:17.508000+00:00."
+        },
+        {
+          "case_id": "Application_1025327332",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 9(2)",
+              "article_title": "Database access",
+              "verbatim_quote": "2. If the credit application is rejected on the basis of consultation of a database, the creditor shall inform the consumer immediately and without charge of the result of such consultation and of the particulars of the database consulted."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[W_Validate application, A_Denied] | A.Accepted == False | | ",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1025327332",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_PREREQUISITE_ACTIVITY",
+                "target_event": {
+                  "activity": "A_Denied",
+                  "timestamp": "2016-05-18 10:42:59.519000+00:00"
+                },
+                "missing_event": "W_Validate application",
+                "deviation_magnitude": "Hoạt động tiền đề bắt buộc 'W_Validate application' hoàn toàn không xuất hiện trước 'A_Denied'.",
+                "minimal_correction_mcs": "Bắt buộc thực hiện 'W_Validate application' trước thời điểm 2016-05-18 10:42:59.519000+00:00."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1025327332\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 9(2) (Database access)\n- Ràng buộc hình thức (DECLARE): Precedence[W_Validate application, A_Denied] | A.Accepted == False | | \n- Bằng chứng vi phạm (MISSING_PREREQUISITE_ACTIVITY): Sự kiện đích 'A_Denied' diễn ra lúc 2016-05-18 10:42:59.519000+00:00 nhưng thiếu sự kiện tiền đề bắt buộc 'W_Validate application'. Hoạt động tiền đề bắt buộc 'W_Validate application' hoàn toàn không xuất hiện trước 'A_Denied'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bắt buộc thực hiện 'W_Validate application' trước thời điểm 2016-05-18 10:42:59.519000+00:00."
+        }
+      ]
+    },
+    {
+      "rule_index": 5,
+      "article_id": "Article 14(1)",
+      "article_title": "Right of withdrawal",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 31050,
+        "entailed_compliant_cases": 17415,
+        "contradicted_violated_cases": 13635,
+        "baseless_inapplicable_or_null_cases": 459
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_1000086665",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 14(1)",
+              "article_title": "Right of withdrawal",
+              "verbatim_quote": "1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the day on which the consumer receives the contractual terms and conditions and information in accordance with Article 10, if that day is later than the date referred to in point (a) of this subparagraph."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+              "template": "Response"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1000086665",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_TARGET_RESPONSE",
+                "activation_event": {
+                  "activity": "O_Sent (mail and online)",
+                  "timestamp": "2016-08-05 14:01:23.264000+00:00"
+                },
+                "missing_event": "O_Returned",
+                "deviation_magnitude": "Sự kiện kích hoạt 'O_Sent (mail and online)' đã xảy ra lúc 2016-08-05 14:01:23.264000+00:00 nhưng thiếu sự kiện phản hồi 'O_Returned'.",
+                "minimal_correction_mcs": "Bổ sung hoạt động phản hồi 'O_Returned' sau thời điểm 2016-08-05 14:01:23.264000+00:00 trong vòng tối đa 14 ngày."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1000086665\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(1) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d\n- Bằng chứng vi phạm (MISSING_TARGET_RESPONSE): Sự kiện kích hoạt 'O_Sent (mail and online)' đã xảy ra lúc 2016-08-05 14:01:23.264000+00:00 nhưng thiếu sự kiện phản hồi 'O_Returned'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bổ sung hoạt động phản hồi 'O_Returned' sau thời điểm 2016-08-05 14:01:23.264000+00:00 trong vòng tối đa 14 ngày."
+        },
+        {
+          "case_id": "Application_1000311556",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 14(1)",
+              "article_title": "Right of withdrawal",
+              "verbatim_quote": "1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the day on which the consumer receives the contractual terms and conditions and information in accordance with Article 10, if that day is later than the date referred to in point (a) of this subparagraph."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d",
+              "template": "Response"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1000311556",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_TARGET_RESPONSE",
+                "activation_event": {
+                  "activity": "O_Sent (mail and online)",
+                  "timestamp": "2016-04-04 16:15:45.527000+00:00"
+                },
+                "missing_event": "O_Returned",
+                "deviation_magnitude": "Sự kiện kích hoạt 'O_Sent (mail and online)' đã xảy ra lúc 2016-04-04 16:15:45.527000+00:00 nhưng thiếu sự kiện phản hồi 'O_Returned'.",
+                "minimal_correction_mcs": "Bổ sung hoạt động phản hồi 'O_Returned' sau thời điểm 2016-04-04 16:15:45.527000+00:00 trong vòng tối đa 14 ngày."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1000311556\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(1) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[O_Sent (mail and online), O_Returned] |  | | 0,14,d\n- Bằng chứng vi phạm (MISSING_TARGET_RESPONSE): Sự kiện kích hoạt 'O_Sent (mail and online)' đã xảy ra lúc 2016-04-04 16:15:45.527000+00:00 nhưng thiếu sự kiện phản hồi 'O_Returned'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bổ sung hoạt động phản hồi 'O_Returned' sau thời điểm 2016-04-04 16:15:45.527000+00:00 trong vòng tối đa 14 ngày."
+        }
+      ]
+    },
+    {
+      "rule_index": 6,
+      "article_id": "Article 14(3)",
+      "article_title": "Right of withdrawal",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 10431,
+        "entailed_compliant_cases": 10270,
+        "contradicted_violated_cases": 161,
+        "baseless_inapplicable_or_null_cases": 21078
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_1003146166",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 14(3)",
+              "article_title": "Right of withdrawal",
+              "verbatim_quote": "3. If the consumer exercises his right of withdrawal, he shall: (a) in order to give effect to the withdrawal before the expiry of the deadline referred to in paragraph 1, notify this to the creditor in line with the information given by the creditor pursuant to Article 10(2)(p) by means which can be proven in accordance with national law. The deadline shall be deemed to have been met if that notification, if it is on paper or on another durable medium that is available and accessible to the creditor, is dispatched before the deadline expires; and (b) pay to the creditor the capital and the interest accrued thereon from the date the credit was drawn down until the date the capital is repaid, without any undue delay and no later than 30 calendar days after the despatch by him to the creditor of notification of the withdrawal. The interest shall be calculated on the basis of the agreed borrowing rate. The creditor shall not be entitled to any other compensation from the consumer in the event of withdrawal, except compensation for any non-returnable charges paid by the creditor to any public administrative body."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d",
+              "template": "Response"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1003146166",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_TARGET_RESPONSE",
+                "activation_event": {
+                  "activity": "A_Cancelled",
+                  "timestamp": "2017-01-15 07:00:27.348000+00:00"
+                },
+                "missing_event": "O_Cancelled",
+                "deviation_magnitude": "Sự kiện kích hoạt 'A_Cancelled' đã xảy ra lúc 2017-01-15 07:00:27.348000+00:00 nhưng thiếu sự kiện phản hồi 'O_Cancelled'.",
+                "minimal_correction_mcs": "Bổ sung hoạt động phản hồi 'O_Cancelled' sau thời điểm 2017-01-15 07:00:27.348000+00:00 trong vòng tối đa 30 ngày."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1003146166\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(3) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[A_Cancelled, O_Cancelled] |  | | 0,30,d\n- Bằng chứng vi phạm (MISSING_TARGET_RESPONSE): Sự kiện kích hoạt 'A_Cancelled' đã xảy ra lúc 2017-01-15 07:00:27.348000+00:00 nhưng thiếu sự kiện phản hồi 'O_Cancelled'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bổ sung hoạt động phản hồi 'O_Cancelled' sau thời điểm 2017-01-15 07:00:27.348000+00:00 trong vòng tối đa 30 ngày."
+        },
+        {
+          "case_id": "Application_1035150389",
+          "final_label": "CONTRADICTED",
+          "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 14(3)",
+              "article_title": "Right of withdrawal",
+              "verbatim_quote": "3. If the consumer exercises his right of withdrawal, he shall: (a) in order to give effect to the withdrawal before the expiry of the deadline referred to in paragraph 1, notify this to the creditor in line with the information given by the creditor pursuant to Article 10(2)(p) by means which can be proven in accordance with national law. The deadline shall be deemed to have been met if that notification, if it is on paper or on another durable medium that is available and accessible to the creditor, is dispatched before the deadline expires; and (b) pay to the creditor the capital and the interest accrued thereon from the date the credit was drawn down until the date the capital is repaid, without any undue delay and no later than 30 calendar days after the despatch by him to the creditor of notification of the withdrawal. The interest shall be calculated on the basis of the agreed borrowing rate. The creditor shall not be entitled to any other compensation from the consumer in the event of withdrawal, except compensation for any non-returnable charges paid by the creditor to any public administrative body."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Response[A_Cancelled, O_Cancelled] |  | | 0,30,d",
+              "template": "Response"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_1035150389",
+              "proof_or_counterexample": {
+                "violation_subtype": "MISSING_TARGET_RESPONSE",
+                "activation_event": {
+                  "activity": "A_Cancelled",
+                  "timestamp": "2016-02-17 09:13:00.039000+00:00"
+                },
+                "missing_event": "O_Cancelled",
+                "deviation_magnitude": "Sự kiện kích hoạt 'A_Cancelled' đã xảy ra lúc 2016-02-17 09:13:00.039000+00:00 nhưng thiếu sự kiện phản hồi 'O_Cancelled'.",
+                "minimal_correction_mcs": "Bổ sung hoạt động phản hồi 'O_Cancelled' sau thời điểm 2016-02-17 09:13:00.039000+00:00 trong vòng tối đa 30 ngày."
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: CONTRADICTED]\n- Hồ sơ kiểm toán: Application_1035150389\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 14(3) (Right of withdrawal)\n- Ràng buộc hình thức (DECLARE): Response[A_Cancelled, O_Cancelled] |  | | 0,30,d\n- Bằng chứng vi phạm (MISSING_TARGET_RESPONSE): Sự kiện kích hoạt 'A_Cancelled' đã xảy ra lúc 2016-02-17 09:13:00.039000+00:00 nhưng thiếu sự kiện phản hồi 'O_Cancelled'.\n- Khuyến nghị khắc phục tối thiểu (Minimal Correction - MCS): Bổ sung hoạt động phản hồi 'O_Cancelled' sau thời điểm 2016-02-17 09:13:00.039000+00:00 trong vòng tối đa 30 ngày."
+        }
+      ]
+    },
+    {
+      "rule_index": 7,
+      "article_id": "Article 16(4)",
+      "article_title": "Early repayment",
+      "layer3_status": "VERIFIED",
+      "final_declare": "Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 5678,
+        "entailed_compliant_cases": 5678,
+        "contradicted_violated_cases": 0,
+        "baseless_inapplicable_or_null_cases": 25831
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_652823628",
+          "final_label": "ENTAILED",
+          "reason_category": "COMPLIANT_WITH_EVIDENCE",
+          "is_citation_verified": false,
+          "grounding_guard_details": {
+            "is_citation_verified": false,
+            "missing_anchors": [
+              "actual_duration_days '12.18'"
+            ]
+          },
+          "justification_tree": {
+            "audit_status": "ENTAILED",
+            "reason_category": "COMPLIANT_WITH_EVIDENCE",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 16(4)",
+              "article_title": "Early repayment",
+              "verbatim_quote": "4. Member States may provide that: (a) such compensation may be claimed by the creditor only on condition that the amount of the early repayment exceeds the threshold defined by national law. That threshold shall not exceed EUR 10 000 within any period of 12 months; (b) the creditor may exceptionally claim higher compensation if he can prove that the loss he suffered from early repayment exceeds the amount determined under paragraph 2. If the compensation claimed by the creditor exceeds the loss actually suffered, the consumer may claim a corresponding reduction. In this case, the loss shall consist of the difference between the initially agreed interest rate and the interest rate at which the creditor can lend out the amount repaid early on the market at the time of early repayment, and shall take into account the impact of early repayment on administrative costs."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d",
+              "template": "Precedence"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_652823628",
+              "proof_or_counterexample": {
+                "msg": "Hoạt động tiền đề 'O_Create Offer' (2016-01-02 11:29:03.994000+00:00) đã diễn ra hợp lệ trước 'A_Pending' (2016-01-14 15:49:11.420000+00:00).",
+                "activation_event": {
+                  "activity": "O_Create Offer",
+                  "timestamp": "2016-01-02 11:29:03.994000+00:00"
+                },
+                "target_event": {
+                  "activity": "A_Pending",
+                  "timestamp": "2016-01-14 15:49:11.420000+00:00"
+                },
+                "actual_duration_days": 12.18
+              }
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: ENTAILED]\n- Hồ sơ kiểm toán: Application_652823628\n- Căn cứ pháp lý: Directive 2008/48/EC - Article 16(4) (Early repayment)\n- Ràng buộc hình thức (DECLARE): Precedence[O_Create Offer, A_Pending] | A.OfferedAmount <= 10000.0 | | 0,365,d\n- Bằng chứng tuân thủ: Hoạt động tiền đề 'O_Create Offer' (2016-01-02 11:29:03.994000+00:00) đã diễn ra hợp lệ trước 'A_Pending' (2016-01-14 15:49:11.420000+00:00)."
+        }
+      ]
+    },
+    {
+      "rule_index": 8,
+      "article_id": "Article 23",
+      "article_title": "Penalties",
+      "layer3_status": "BASELESS",
+      "final_declare": "N/A (Halted at Layer 3.1 Roundtrip)",
+      "population_metrics": {
+        "total_cases": 31509,
+        "activated_cases": 0,
+        "entailed_compliant_cases": 0,
+        "contradicted_violated_cases": 0,
+        "baseless_cases": 31509
+      },
+      "audited_trace_reports": [
+        {
+          "case_id": "Application_652823628",
+          "final_label": "BASELESS",
+          "reason_category": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+          "is_citation_verified": true,
+          "grounding_guard_details": {
+            "is_citation_verified": true,
+            "missing_anchors": []
+          },
+          "justification_tree": {
+            "audit_status": "BASELESS",
+            "reason_category": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+            "normative_node": {
+              "directive": "Directive 2008/48/EC",
+              "article_id": "Article 23",
+              "article_title": "Penalties",
+              "verbatim_quote": "Member States shall lay down the rules on penalties applicable to infringements of the national provisions adopted pursuant to this Directive and shall take all measures necessary to ensure that they are implemented. The penalties provided for must be effective, proportionate and dissuasive."
+            },
+            "symbolic_rule_node": {
+              "declare_formula": "N/A (Halted prior to execution)",
+              "template": "N/A"
+            },
+            "trace_evidence_node": {
+              "case_id": "Application_652823628",
+              "proof_or_counterexample": "[Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+            }
+          },
+          "natural_language_audit_report": "[BÁO CÁO KIỂM TOÁN TUÂN THỦ - KẾT LUẬN: BASELESS]\n- Hồ sơ kiểm toán: Application_652823628\n- Căn cứ pháp lý đối chiếu: Directive 2008/48/EC - Article 23 (Penalties)\n- Phân loại nguyên nhân (UNSUPPORTED_BY_DIRECTIVE_TEXT): Không đủ bằng chứng xác thực.\n- Chi tiết chẩn đoán an toàn Φ / Văn bản: [Layer 3 Semantic BASELESS]: Article 23 regulates macro-level Member State supervision/penalties and does not prescribe an operational event-level constraint on individual loan traces. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+        }
+      ]
+    }
+  ]
+}

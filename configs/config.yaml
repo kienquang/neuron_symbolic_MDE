@@ -7,7 +7,11 @@ paths:
   processed_dir: "data/processed"
   directive_chunks_json: "data/processed/directive_chunks.json"
   process_schema_json: "data/processed/process_schema.json"
+  verified_constraints_json: "data/processed/verified_constraints.json"
+  verified_constraints_decl: "data/processed/verified_constraints.decl"
   results_dir: "results"
+  layer3_conformance_report_json: "results/layer3_conformance_report.json"
+  step4_accountable_audit_reports_json: "results/step4_accountable_audit_reports.json"
 
 preprocessing:
   directive:
@@ -17,3 +21,12 @@ preprocessing:
     min_transition_frequency: 500
     max_frequent_transitions: 30
     sample_values_count: 3
+
+synthesis_and_verification:
+  max_layer2_retries: 4
+  max_layer3_semantic_repairs: 2
+  auditor_temperature: 0.0
+  taxonomy_labels:
+    - "ENTAILED"
+    - "CONTRADICTED"
+    - "BASELESS"
