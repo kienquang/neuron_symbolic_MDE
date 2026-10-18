@@ -10,7 +10,7 @@ Dự án nghiên cứu kết hợp **Neuro-Symbolic AI** và **Model-Driven Engi
 neuron_symbolic_reasoning/
 ├── .venv/                              # Môi trường ảo Python (Python 3.13)
 ├── configs/
-│   └── config.yaml                     # Cấu hình đường dẫn dữ liệu & tham số 4 giai đoạn
+│   └── config.yaml                     # Cấu hình đường dẫn dữ liệu & tham số thực nghiệm
 ├── datasets/                           # Dữ liệu gốc (Raw Datasets)
 │   ├── directive_2008_48_EC.pdf        # Văn bản luật EU Consumer Credit Directive 2008/48/EC
 │   └── BPI Challenge 2017.xes          # Nhật ký sự kiện quy trình cho vay (31,509 hồ sơ, 1.2M+ sự kiện)
@@ -40,33 +40,39 @@ neuron_symbolic_reasoning/
 │   │   ├── __init__.py
 │   │   ├── verbalizer_roundtrip.py     # Bước 3.1: Dịch ngược tất định & kiểm tra đối chiếu Round-trip
 │   │   └── declare4py_verifier.py      # Bước 3.2 & 3.3: Kiểm tra Vacuity, Conformance & Semantic Repair
-│   └── evaluation/                     # Bước 4: Gán nhãn 3 Trạng thái & Báo cáo Giải trình Tất định
+│   └── evaluation/                     # Bước 4 & Thực nghiệm RQ1–RQ3: Gán nhãn 3 Trạng thái, Giải trình & Benchmark
 │       ├── __init__.py
 │       ├── trace_safety_classifier.py  # Bước 4.1: Tập điều kiện an toàn Φ & nhãn ENTAILED/CONTRADICTED/BASELESS
 │       ├── justification_tree.py       # Bước 4.2: Cây biện minh tất định (xpSHACL) & Minimal Correction (MCS)
-│       └── grounded_auditor.py         # Bước 4.3: Sinh báo cáo giải trình khóa nguồn & Hậu kiểm trích dẫn
+│       ├── grounded_auditor.py         # Bước 4.3: Sinh báo cáo giải trình khóa nguồn & Hậu kiểm trích dẫn
+│       ├── benchmark_builder.py        # Bộ tạo Benchmark chuẩn (28 quy tắc Tier 1/2/Trap + 1.200 traces phân tầng)
+│       └── experiment_runner.py        # Bộ chạy Ablation Study & xuất bảng kết quả RQ1, RQ2, RQ3
 ├── scripts/
 │   ├── run_phase1a.py                  # Thực thi Bước 1A
 │   ├── run_phase1b.py                  # Thực thi Bước 1B
 │   ├── run_phase2.py                   # Thực thi Bước 2 (Tầng 1 + Tầng 2 + CEGIS)
 │   ├── run_phase3.py                   # Thực thi Bước 3 (Tầng 3: Vacuity + Round-trip + Declare4Py)
-│   └── run_phase4.py                   # Thực thi Bước 4 (3-Valued Labeling + Justification Tree + Audit Report)
+│   ├── run_phase4.py                   # Thực thi Bước 4 (3-Valued Labeling + Justification Tree + Audit Report)
+│   └── run_benchmark_evaluation.py     # Thực thi Thực nghiệm Bài báo (Xuất 3 bảng chuẩn trả lời RQ1, RQ2, RQ3)
 ├── tests/
-│   ├── test_parse_directive.py         # Unit tests Bước 1A
-│   ├── test_extract_process_schema.py  # Unit tests Bước 1B
-│   ├── test_phase2_mde_synthesis.py    # Unit tests Bước 2
-│   ├── test_phase3_layer3_verifier.py  # Unit tests Bước 3
-│   └── test_phase4_accountable_audit.py# Unit tests Bước 4
+│   ├── test_parse_directive.py              # Unit tests Bước 1A
+│   ├── test_extract_process_schema.py       # Unit tests Bước 1B
+│   ├── test_phase2_mde_synthesis.py         # Unit tests Bước 2
+│   ├── test_phase3_layer3_verifier.py       # Unit tests Bước 3
+│   ├── test_phase4_accountable_audit.py     # Unit tests Bước 4
+│   └── test_phase5_benchmark_evaluation.py  # Unit tests Benchmark & Thực nghiệm RQ1–RQ3
 ├── results/
 │   ├── layer3_conformance_report.json          # Kết quả kiểm chứng tuân thủ Bước 3 trên 31,509 hồ sơ
-│   └── step4_accountable_audit_reports.json    # Kết quả giải trình kiểm toán tất định Bước 4
+│   ├── step4_accountable_audit_reports.json    # Kết quả giải trình kiểm toán tất định Bước 4
+│   ├── rq1_rq2_rq3_evaluation_tables.json      # Dữ liệu JSON của 3 bảng thực nghiệm RQ1, RQ2, RQ3
+│   └── rq1_rq2_rq3_paper_tables.md             # 3 Bảng Markdown chuẩn đưa trực tiếp vào bài báo
 ├── requirements.txt                    # Danh sách thư viện Python
 └── README.md                           # Tài liệu hướng dẫn dự án
 ```
 
 ---
 
-## Hướng dẫn chạy toàn bộ Pipeline (trong môi trường `.venv`)
+## Hướng dẫn chạy toàn bộ Pipeline & Thực nghiệm Bài báo (trong môi trường `.venv`)
 
 ```powershell
 # Bước 1A: Phân rã văn bản luật Directive 2008/48/EC -> directive_chunks.json
@@ -84,6 +90,9 @@ neuron_symbolic_reasoning/
 # Bước 4: Gán nhãn chống ảo giác 3 trạng thái & Sinh báo cáo giải trình tất định
 .\.venv\Scripts\python.exe scripts\run_phase4.py
 
-# Chạy toàn bộ bộ kiểm thử tự động (Unit Tests cho cả 4 bước)
+# Thực nghiệm RQ1, RQ2, RQ3: Chạy Ablation Study & xuất 3 bảng số liệu chuẩn cho bài báo
+.\.venv\Scripts\python.exe scripts\run_benchmark_evaluation.py
+
+# Chạy toàn bộ bộ kiểm thử tự động (15 Unit Tests cho toàn bộ dự án)
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```

@@ -88,16 +88,25 @@ def check_single_trace_semantics(
                 ),
             }
 
+        dur_days = round(elapsed_days, 2)
         return True, {
-            "msg": f"Hoạt động tiền đề '{act_a}' ({t_a_valid}) đã diễn ra hợp lệ trước '{act_b}' ({first_b_time}).",
+            "msg": (
+                f"Hoạt động tiền đề '{act_a}' ({t_a_valid}) đã diễn ra hợp lệ trước "
+                f"'{act_b}' ({first_b_time}) (khoảng cách thời gian: {dur_days} ngày)."
+            ),
             "activation_event": {"activity": act_a, "timestamp": str(t_a_valid)},
             "target_event": {"activity": act_b, "timestamp": str(first_b_time)},
-            "actual_duration_days": round(elapsed_days, 2),
+            "actual_duration_days": dur_days,
         }
 
     # Trường hợp 2: Kiểm tra mẫu Response[A, B] kèm giới hạn thời gian time_max (ngày)
     # Ví dụ: Điều 14(1) - 14 ngày lịch rút lui hoặc Điều 14(3)(b) - 30 ngày lịch hoàn trả
     if tpl in {"Response", "Alternate Response", "Chain Response"}:
+        if events_a.empty:
+            return True, {
+                "msg": f"Hoạt động kích hoạt '{act_a}' không xảy ra, quy tắc {tpl} được bảo toàn."
+            }
+
         for _, row_a in events_a.iterrows():
             t_a = row_a["time:timestamp"]
             subsequent_b = events_b[events_b["time:timestamp"] >= t_a]
