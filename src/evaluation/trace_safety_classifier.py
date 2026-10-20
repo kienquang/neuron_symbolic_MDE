@@ -8,7 +8,7 @@ Tham khảo:
 import math
 from typing import Any, Dict
 import pandas as pd
-from .justification_tree import check_single_trace_semantics
+from .justification_tree import check_single_trace_semantics, filter_activity_events
 
 
 def evaluate_trace_safety_and_status(
@@ -34,24 +34,52 @@ def evaluate_trace_safety_and_status(
 
     # 1. Kiểm tra bằng chứng văn bản luật (Text-level Evidence Sufficiency)
     if not roundtrip_passed:
+        reason_type = "UNSUPPORTED_BY_DIRECTIVE_TEXT"
+        if "OUT_OF_DIRECTIVE_SCOPE" in roundtrip_msg:
+            reason_type = "OUT_OF_DIRECTIVE_SCOPE"
+        elif "UNSUPPORTED_NUMERIC_HALLUCINATION" in roundtrip_msg:
+            reason_type = "UNSUPPORTED_NUMERIC_HALLUCINATION"
+        elif "MISSING_LOG_EVIDENCE_PHI_VIOLATION" in roundtrip_msg:
+            reason_type = "MISSING_LOG_EVIDENCE_PHI_VIOLATION"
+        return {
+            "case_id": case_id,
+            "label": "BASELESS",
+            "reason_type": reason_type,
+            "details": roundtrip_msg,
+        }
+
+    if ast_obj is None:
         return {
             "case_id": case_id,
             "label": "BASELESS",
             "reason_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-            "details": roundtrip_msg,
+            "details": roundtrip_msg or "Không có AST hợp lệ để kiểm chứng.",
         }
 
-    # 2. Kiểm tra sự tồn tại của sự kiện kích hoạt quy tắc trong hồ sơ
+    # 2. Kiểm tra sự tồn tại của thuộc tính trong lược đồ Log (VD: R27 EarlyRepaymentCompensationFee, R28 AnnualPercentageRateAPR)
+    if getattr(ast_obj, "activation_attr", None):
+        attr_col = ast_obj.activation_attr
+        alt_col = f"case:{attr_col}" if not attr_col.startswith("case:") else attr_col.replace("case:", "", 1)
+        if attr_col not in case_df.columns and alt_col not in case_df.columns:
+            return {
+                "case_id": case_id,
+                "label": "BASELESS",
+                "reason_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+                "details": (
+                    f"Vi phạm Tập điều kiện an toàn Φ: Thuộc tính '{attr_col}' được yêu cầu bởi quy tắc "
+                    f"nhưng hoàn toàn không tồn tại trong lược đồ nhật ký sự kiện BPIC 2017."
+                ),
+            }
+
+    # 3. Kiểm tra sự tồn tại của sự kiện kích hoạt quy tắc trong hồ sơ (VD: R29)
     tpl = getattr(ast_obj, "template_name", "Response")
-    act_events = case_df[case_df["concept:name"] == ast_obj.activation_activity]
+    act_events = filter_activity_events(case_df, ast_obj.activation_activity)
     tgt_events = (
-        case_df[case_df["concept:name"] == ast_obj.target_activity]
+        filter_activity_events(case_df, ast_obj.target_activity)
         if getattr(ast_obj, "target_activity", None)
         else pd.DataFrame()
     )
 
-    # Đối với Precedence[A, B]: quy tắc được kích hoạt khi B (target_activity) xảy ra.
-    # Nếu B không xảy ra và A cũng không xảy ra (hoặc với Response[A, B] mà A không xảy ra) -> Hồ sơ không kích hoạt quy tắc.
     if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
         if tgt_events.empty and act_events.empty:
             return {
@@ -70,7 +98,18 @@ def evaluate_trace_safety_and_status(
                 "reason_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
                 "details": (
                     f"Hồ sơ '{case_id}' không phát sinh hoạt động mục tiêu '{ast_obj.target_activity}' "
-                    f"của ràng buộc Precedence."
+                    f"của ràng buộc {tpl}."
+                ),
+            }
+    elif tpl == "Not Co-Existence":
+        if act_events.empty and tgt_events.empty:
+            return {
+                "case_id": case_id,
+                "label": "BASELESS",
+                "reason_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
+                "details": (
+                    f"Hồ sơ '{case_id}' không phát sinh cả hai hoạt động '{ast_obj.activation_activity}' "
+                    f"và '{ast_obj.target_activity}'."
                 ),
             }
     else:
@@ -82,7 +121,7 @@ def evaluate_trace_safety_and_status(
                 "details": f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{ast_obj.activation_activity}'.",
             }
 
-    # 3. Kiểm tra Tập điều kiện an toàn Φ đối với thuộc tính dữ liệu và thời gian (Null-dereference guard)
+    # 4. Kiểm tra Tập điều kiện an toàn Φ đối với thuộc tính dữ liệu và thời gian (Null-dereference guard - VD: R30)
     events_for_phi = act_events if not act_events.empty else tgt_events
     if getattr(ast_obj, "activation_attr", None):
         attr_col = ast_obj.activation_attr
@@ -103,7 +142,6 @@ def evaluate_trace_safety_and_status(
             )
             break
 
-    # Nếu tập Φ có bất kỳ vi phạm an toàn dữ liệu nào -> Kết luận BASELESS (không đủ bằng chứng trong log)
     if safety_conditions_phi:
         return {
             "case_id": case_id,
@@ -112,7 +150,7 @@ def evaluate_trace_safety_and_status(
             "details": "; ".join(safety_conditions_phi),
         }
 
-    # 4. Nếu tập Φ hoàn toàn an toàn (đủ bằng chứng), đánh giá giá trị logic v (Entailed vs. Contradicted)
+    # 5. Nếu tập Φ hoàn toàn an toàn (đủ bằng chứng), đánh giá giá trị logic v (Entailed vs. Contradicted)
     is_compliant, deviation_info = check_single_trace_semantics(case_df, ast_obj)
     if is_compliant:
         return {

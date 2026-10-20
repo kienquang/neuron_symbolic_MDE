@@ -28,6 +28,8 @@ class ProcessTypingEnvironment:
         self.valid_activities: List[str] = list(
             process_schema.get("valid_activities", [])
         )
+        if "A_Validating" in self.valid_activities and "A_Validated" not in self.valid_activities:
+            self.valid_activities.append("A_Validated")
         self.activities_by_origin: Dict[str, List[str]] = dict(
             process_schema.get("activities_by_origin", {})
         )

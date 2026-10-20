@@ -166,7 +166,7 @@ def generate_accountable_explanation(
     if llm_client is None:
         llm_client = DeterministicAuditNarratorClient()
 
-    tree_json_str = json.dumps(justification_tree, indent=2, ensure_ascii=False)
+    tree_json_str = json.dumps(justification_tree, indent=2, ensure_ascii=False, default=str)
     prompt = f"""Bạn là Kiểm toán viên Tuân thủ Quy trình (Compliance Auditor).
 Dựa TUYỆT ĐỐI vào Cây Biện minh Tất định (Justification Tree) dưới đây, hãy viết báo cáo giải trình bằng tiếng Việt.
 QUY TẮC BẮT BUỘC:

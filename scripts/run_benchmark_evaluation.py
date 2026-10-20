@@ -1,5 +1,6 @@
 """
-Script Chạy Thực nghiệm Tự động & Xuất 3 Bảng Số liệu Chuẩn cho Bài báo (RQ1, RQ2, RQ3):
+Script Chạy Thực nghiệm Tự động & Xuất 3 Bảng Số liệu Chuẩn cho Bài báo (RQ1, RQ2, RQ3)
+trên Bộ 30 Quy tắc Chuẩn (R01–R30: 12 Tier 1 + 10 Tier 2 + 8 Tier 3 Baseless Traps):
 - Bảng 1 (Trả lời RQ1): Kết quả Kiểm chứng Ngữ nghĩa Ràng buộc theo Độ phức tạp (Tier 1 vs. Tier 2)
 - Bảng 2 (Trả lời RQ2): Nghiên cứu Cắt bỏ Thành phần (Ablation Study - 5 cấu hình)
 - Bảng 3 (Trả lời RQ3): Hiệu quả Phát hiện Ảo giác 3 Trạng thái, Giải trình & Chi phí Thời gian
@@ -17,8 +18,10 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 from src.evaluation.benchmark_builder import (
+    BENCHMARK_RULES,
     build_normative_rule_benchmark,
     build_stratified_trace_benchmark,
+    export_benchmark_json,
 )
 from src.evaluation.experiment_runner import (
     BenchmarkExperimentLLMClient,
@@ -46,7 +49,7 @@ def main() -> None:
     out_md_path = PROJECT_ROOT / "results" / "rq1_rq2_rq3_paper_tables.md"
 
     print("=" * 96)
-    print("THỰC NGHIỆM ĐÁNH GIÁ TOÀN DIỆN (RQ1, RQ2, RQ3) TRÊN DIRECTIVE 2008/48/EC & BPIC 2017")
+    print("THỰC NGHIỆM ĐÁNH GIÁ TOÀN DIỆN (RQ1, RQ2, RQ3) TRÊN BỘ 30 QUY TẮC CHUẨN (R01-R30) & BPIC 2017")
     print("=" * 96)
 
     with open(chunks_path, "r", encoding="utf-8") as f:
@@ -56,7 +59,19 @@ def main() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         process_schema = json.load(f)
 
-    print("[1/5] Đang nạp nhật ký sự kiện BPIC 2017 và khởi tạo Bộ Benchmark Phân tầng...")
+    print("[1/5] Đang xuất benchmark_rules_30.json, benchmark_items.json và nạp nhật ký BPIC 2017...")
+    export_summary = export_benchmark_json(
+        output_rules_path=str(PROJECT_ROOT / "data" / "processed" / "benchmark_rules_30.json"),
+        output_items_path=str(PROJECT_ROOT / "data" / "processed" / "benchmark_items.json"),
+        chunks_path=str(chunks_path),
+        parquet_path=str(parquet_path),
+        max_serialized_items=300,
+    )
+    print(
+        f"      -> Đã xuất {export_summary['rules_count']} quy tắc chuẩn (R01-R30) ra benchmark_rules_30.json "
+        f"và {export_summary['items_count']} mẫu JSON độc lập ra data/processed/benchmark_items.json."
+    )
+
     df_raw = pd.read_parquet(parquet_path)
     df_raw["time:timestamp"] = pd.to_datetime(df_raw["time:timestamp"], utc=True)
 
@@ -69,7 +84,7 @@ def main() -> None:
             df_propagated.groupby("case:concept:name", sort=False)[present_offer_cols].bfill()
         )
 
-    # Khởi tạo Phần A (28 Quy tắc Luật: 10 Tier 1 + 12 Tier 2 + 6 Group 3 Baseless Traps)
+    # Khởi tạo Phần A (30 Quy tắc Luật: 12 Tier 1 + 10 Tier 2 + 8 Tier 3 Baseless Traps)
     normative_rules = build_normative_rule_benchmark(chunks_by_id)
     # Khởi tạo Phần B (1.200 Hồ sơ Kiểm thử Phân tầng: 400 ENTAILED + 400 CONTRADICTED + 400 BASELESS)
     benchmark_items = build_stratified_trace_benchmark(
@@ -79,7 +94,7 @@ def main() -> None:
         target_total_items=1200,
     )
     print(
-        f"      -> Đã khởi tạo {len(normative_rules)} quy tắc chuẩn (10 Tier 1, 12 Tier 2, 6 Group 3 Traps) "
+        f"      -> Đã khởi tạo {len(normative_rules)} quy tắc chuẩn (12 Tier 1, 10 Tier 2, 8 Tier 3 Traps) "
         f"và {len(benchmark_items)} mẫu hồ sơ vết thực thi phân tầng."
     )
 
@@ -211,9 +226,9 @@ def main() -> None:
     payload = {
         "benchmark_metadata": {
             "total_normative_rules": len(normative_rules),
-            "tier1_control_flow_rules": 10,
-            "tier2_temporal_data_rules": 12,
-            "group3_baseless_traps": 6,
+            "tier1_control_flow_rules": 12,
+            "tier2_temporal_data_rules": 10,
+            "tier3_baseless_traps": 8,
             "total_stratified_trace_items": len(benchmark_items),
             "entailed_traces": 400,
             "contradicted_traces": 400,
@@ -229,11 +244,10 @@ def main() -> None:
     with open(out_json_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
-    # Xuất thêm file Markdown chuẩn cho bài báo
     md_lines = [
-        "# Bảng Kết quả Thực nghiệm Chuẩn cho Bài báo (RQ1, RQ2, RQ3)\n",
+        "# Bảng Kết quả Thực nghiệm Chuẩn cho Bài báo (RQ1, RQ2, RQ3 — Bộ 30 Quy tắc R01–R30)\n",
         "## Bảng 1 (Trả lời RQ1): Kết quả Kiểm chứng Ngữ nghĩa Ràng buộc theo Độ phức tạp\n",
-        "### 1A. Khi tắt Vòng lặp Tự sửa (One-Shot Synthesis - Phân bố lỗi ban đầu của LLM)",
+        "### 1A. Khi tắt Vòng lặp Tự sửa (One-Shot Synthesis - Phân bố lỗi ban đầu của LLM trên R01–R22)",
         "| Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt - Strengthened (%) ↓ | Quá Lỏng - Weakened (%) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng - Vacuous (%) ↓ |",
         "| :--- | :---: | :---: | :---: | :---: | :---: |",
     ]

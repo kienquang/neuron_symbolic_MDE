@@ -1,966 +1,718 @@
 """
-Xây dựng Bộ Benchmark Chuẩn từ Chỉ thị 2008/48/EC & Nhật ký sự kiện BPI Challenge 2017
-Phục vụ trả lời 3 Câu hỏi Nghiên cứu (RQ1, RQ2, RQ3) theo thiết kế thực nghiệm của bài OCL2026 (OVAS):
-- Phần A: Bộ Quy tắc Kiểm chứng từ directive_2008_48_EC.pdf
-  + Tier 1: Ràng buộc Luồng điều khiển Cơ bản (Control-Flow Only) - 10 quy tắc
-  + Tier 2: Ràng buộc Đa chiều Thời gian & Thuộc tính Dữ liệu (Metric Temporal & Data-Aware) - 12 quy tắc
-  + Group 3: Truy vấn Bẫy Ảo giác / Không đủ bằng chứng (Unanswerable / Baseless Queries) - 6 quy tắc
-- Phần B: Bộ Hồ sơ Kiểm thử Phân tầng (Stratified Trace Benchmark) từ BPI_Challenge_2017.xes (1,200 traces):
-  + Nhóm ENTAILED (400 traces)
-  + Nhóm CONTRADICTED (400 traces: vi phạm thực tế trong log + tiêm lỗi có kiểm soát)
-  + Nhóm BASELESS (400 traces: vi phạm điều kiện an toàn Φ do null/NaN + truy vấn bẫy ảo giác Group 3)
+Bộ 30 Quy tắc Chuẩn (Ground-Truth Benchmark Suite R01–R30) & Trích xuất Hồ sơ Kiểm thử Phân tầng
+từ Chỉ thị 2008/48/EC (directive_2008_48_EC.pdf) và Nhật ký Sự kiện BPI Challenge 2017 (BPIC 2017):
+- Tier 1 (Tier1_ControlFlow, R01–R12): 12 Quy tắc Luồng điều khiển Cơ bản (Control-Flow Constraints)
+- Tier 2 (Tier2_TemporalData, R13–R22): 10 Quy tắc Thời gian Định lượng & Thuộc tính Dữ liệu (Metric Temporal & Data-Aware)
+- Tier 3 (Tier3_BaselessTrap, R23–R30): 8 Quy tắc Bẫy Ảo giác & Thiếu bằng chứng (BASELESS Trap Rules)
 """
 
-from typing import Any, Dict, List
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 import pandas as pd
+from src.mde.constraint_ast import DeclareConstraintAST
+from src.evaluation.justification_tree import check_single_trace_semantics
 
 
-def build_normative_rule_benchmark(chunks_by_id: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
+
+# Định nghĩa bộ 30 quy tắc chuẩn (Ground-Truth Benchmark Rules R01-R30)
+BENCHMARK_RULES: List[Dict[str, Any]] = [
+    # --- TIER 1: CONTROL-FLOW CONSTRAINTS (12 QUY TẮC: R01 - R12) ---
+    {
+        "rule_id": "R01",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 8(1)",
+        "template": "Precedence",
+        "act_a": "A_Create Application",
+        "act_b": "A_Concept",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Phải khởi tạo hồ sơ vay (A_Create Application) trước khi bước vào đánh giá sơ bộ (A_Concept).",
+    },
+    {
+        "rule_id": "R02",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 8(1)",
+        "template": "Precedence",
+        "act_a": "A_Concept",
+        "act_b": "A_Accepted",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Hoạt động đánh giá sơ bộ A_Concept bắt buộc xảy ra trước A_Accepted.",
+    },
+    {
+        "rule_id": "R03",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 8(1)",
+        "template": "Precedence",
+        "act_a": "A_Accepted",
+        "act_b": "O_Create Offer",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Đánh giá khả năng trả nợ được phê duyệt sơ bộ (A_Accepted) trước khi ngân hàng tạo lập đề nghị vay chính thức (O_Create Offer) theo Điều 8(1).",
+    },
+    {
+        "rule_id": "R04",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 5(1)",
+        "template": "Chain Precedence",
+        "act_a": "O_Create Offer",
+        "act_b": "O_Created",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Ngay trước khi O_Created được ghi nhận vào hệ thống phải có O_Create Offer.",
+    },
+    {
+        "rule_id": "R05",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 5(1)",
+        "template": "Precedence",
+        "act_a": "O_Created",
+        "act_b": "O_Sent (mail and online)",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Văn bản đề nghị vay (O_Created) phải được tạo lập trước khi gửi thông tin tiền hợp đồng O_Sent (mail and online).",
+    },
+    {
+        "rule_id": "R06",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 5(1)",
+        "template": "Precedence",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "A_Complete",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Bắt buộc gửi thông tin tiền hợp đồng O_Sent (mail and online) trước khi hồ sơ chuyển sang A_Complete.",
+    },
+    {
+        "rule_id": "R07",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 10(1)",
+        "template": "Precedence",
+        "act_a": "O_Accepted",
+        "act_b": "A_Pending",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Khách hàng phải chấp nhận đề nghị (O_Accepted) trước khi khoản vay được giải ngân (A_Pending).",
+    },
+    {
+        "rule_id": "R08",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 8(1)",
+        "template": "Precedence",
+        "act_a": "W_Validate application",
+        "act_b": "A_Validated",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validated.",
+    },
+    {
+        "rule_id": "R09",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 9(2)",
+        "template": "Response",
+        "act_a": "A_Denied",
+        "act_b": "O_Refused",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Khi hồ sơ bị từ chối do tra cứu dữ liệu (A_Denied), đề nghị vay tương ứng phải chuyển sang trạng thái từ chối (O_Refused) theo Điều 9(2).",
+    },
+    {
+        "rule_id": "R10",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 13(2)",
+        "template": "Not Co-Existence",
+        "act_a": "A_Denied",
+        "act_b": "A_Pending",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Một hồ sơ đã bị từ chối (A_Denied) thì tuyệt đối không thể được giải ngân (A_Pending).",
+    },
+    {
+        "rule_id": "R11",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 14(1)",
+        "template": "Response",
+        "act_a": "A_Cancelled",
+        "act_b": "O_Cancelled",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Khi hồ sơ bị hủy (A_Cancelled), đề nghị vay liên kết phải được hủy theo (O_Cancelled).",
+    },
+    {
+        "rule_id": "R12",
+        "tier": "Tier1_ControlFlow",
+        "complexity_tier": "Tier 1: Control-Flow Only",
+        "article_id": "Article 5(6)",
+        "template": "Precedence",
+        "act_a": "W_Call after offers",
+        "act_b": "A_Validated",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ được xác thực phê duyệt (A_Validated) theo Điều 5(6).",
+    },
+    # --- TIER 2: TEMPORAL & DATA-AWARE CONSTRAINTS (10 QUY TẮC: R13 - R22) ---
+    {
+        "rule_id": "R13",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "OfferedAmount",
+        "op": ">=",
+        "val": 200.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Kiểm tra thuộc tính OfferedAmount >= 200 EUR tại sự kiện O_Create Offer theo Điều 2(2)(c).",
+    },
+    {
+        "rule_id": "R14",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "OfferedAmount",
+        "op": "<=",
+        "val": 75000.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Phát hiện các đề nghị vay vượt trần OfferedAmount <= 75.000 EUR theo Điều 2(2)(c).",
+    },
+    {
+        "rule_id": "R15",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 14(1)",
+        "template": "Response",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "O_Returned",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 14,
+        "is_trap": False,
+        "description": "Khoảng thời gian từ lúc gửi hợp đồng O_Sent (mail and online) đến lúc khách gửi trả O_Returned <= 14 ngày.",
+    },
+    {
+        "rule_id": "R16",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 14(3)",
+        "template": "Response",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "A_Cancelled",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 30,
+        "is_trap": False,
+        "description": "Các hồ sơ rút lui/hủy bỏ (A_Cancelled) sau khi gửi đề nghị diễn ra trong vòng 30 ngày lịch.",
+    },
+    {
+        "rule_id": "R17",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 8(1)",
+        "template": "Precedence",
+        "act_a": "O_Create Offer",
+        "act_b": "A_Pending",
+        "attr": "CreditScore",
+        "op": ">",
+        "val": 0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Tại bước tạo đề nghị vay trước giải ngân (A_Pending), điểm CreditScore phải dương (> 0).",
+    },
+    {
+        "rule_id": "R18",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 16(4)",
+        "template": "Precedence",
+        "act_a": "W_Validate application",
+        "act_b": "O_Accepted",
+        "attr": "OfferedAmount",
+        "op": ">",
+        "val": 10000.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Với các đề nghị vay trên 10.000 EUR, bắt buộc qua bước thẩm định W_Validate application trước O_Accepted.",
+    },
+    {
+        "rule_id": "R19",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 13(1)",
+        "template": "Response",
+        "act_a": "A_Complete",
+        "act_b": "O_Cancelled",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 30,
+        "is_trap": False,
+        "description": "Kiểm tra khoảng cách thời gian từ A_Complete đến khi hủy đề nghị O_Cancelled <= 30 ngày.",
+    },
+    {
+        "rule_id": "R20",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Annex I(II)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "NumberOfTerms",
+        "op": ">=",
+        "val": 12,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Kiểm tra thuộc tính số kỳ trả góp NumberOfTerms >= 12 trên sự kiện O_Create Offer.",
+    },
+    {
+        "rule_id": "R21",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Annex I(II)",
+        "template": "Existence",
+        "act_a": "A_Create Application",
+        "act_b": None,
+        "attr": "case:RequestedAmount",
+        "op": ">=",
+        "val": 1500.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Kiểm tra thuộc tính mức hồ sơ case:RequestedAmount >= 1500 EUR theo Phụ lục I Phần II(g).",
+    },
+    {
+        "rule_id": "R22",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 18(2)",
+        "template": "Response",
+        "act_a": "A_Create Application",
+        "act_b": "A_Pending",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 90,
+        "is_trap": False,
+        "description": "Toàn bộ chu trình từ lúc nộp đơn (A_Create Application) đến lúc tất toán/duyệt (A_Pending) <= 90 ngày.",
+    },
+    # --- TIER 3: HALLUCINATION & MISSING EVIDENCE TRAPS (8 QUY TẮC BẪY BASELESS: R23 - R30) ---
+    {
+        "rule_id": "R23",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 7",
+        "template": "Response",
+        "act_a": "A_Incomplete",
+        "act_b": "A_Validating",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 8,
+        "is_trap": True,
+        "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "description": "Bẫy COND-004: Bịa thời hạn 8 ngày xử lý hồ sơ không đầy đủ gán vào Điều 7(1).",
+    },
+    {
+        "rule_id": "R24",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 7",
+        "template": "Response",
+        "act_a": "A_Incomplete",
+        "act_b": "W_Call incomplete files",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "description": "Bẫy gán sai nguồn dẫn: Gán quy trình gọi bổ sung hồ sơ thiếu W_Call incomplete files vào Điều 7.",
+    },
+    {
+        "rule_id": "R25",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "A_Create Application",
+        "act_b": None,
+        "attr": "case:LoanGoal",
+        "op": "==",
+        "val": "Mortgage_RealEstate",
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "OUT_OF_DIRECTIVE_SCOPE",
+        "description": "Bẫy ngoài phạm vi: Áp dụng Chỉ thị cho hợp đồng thế chấp bất động sản (đã bị loại trừ tại Điều 2(2)(a)-(b)).",
+    },
+    {
+        "rule_id": "R26",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 8(1)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "CreditScore",
+        "op": ">=",
+        "val": 750,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "UNSUPPORTED_NUMERIC_HALLUCINATION",
+        "description": "Bẫy bịa ngưỡng số: Bịa điểm tín dụng tối thiểu CreditScore >= 750 vào Điều 8(1).",
+    },
+    {
+        "rule_id": "R27",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 16(2)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "EarlyRepaymentCompensationFee",
+        "op": "<=",
+        "val": 1.0,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+        "description": "Bẫy vi phạm tập Φ: Kiểm tra cột phí bồi thường trả trước EarlyRepaymentCompensationFee không có trong log BPIC 2017.",
+    },
+    {
+        "rule_id": "R28",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 19(1)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "AnnualPercentageRateAPR",
+        "op": "<=",
+        "val": 20.0,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+        "description": "Bẫy vi phạm tập Φ: Kiểm tra cột lãi suất APR không tồn tại trong lược đồ BPIC 2017.",
+    },
+    {
+        "rule_id": "R29",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "OfferedAmount",
+        "op": ">=",
+        "val": 200.0,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
+        "description": "Bẫy null/khuyết sự kiện trên Trace: Kiểm tra OfferedAmount trên hồ sơ bị từ chối sớm chưa từng tạo O_Create Offer.",
+    },
+    {
+        "rule_id": "R30",
+        "tier": "Tier3_BaselessTrap",
+        "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
+        "article_id": "Article 8(1)",
+        "template": "Existence",
+        "act_a": "O_Create Offer",
+        "act_b": None,
+        "attr": "CreditScore",
+        "op": ">",
+        "val": 0,
+        "time_max": None,
+        "is_trap": True,
+        "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
+        "description": "Bẫy null sentinel trên Trace: Kiểm tra CreditScore trên dòng sự kiện O_Create Offer có CreditScore = NaN.",
+    },
+]
+
+
+ANNEX_I_TEXT = (
+    "Annex I, Part II - Additional assumptions for the calculation of the annual percentage rate of charge: "
+    "(d) if there is no fixed timetable for repayment, a credit is provided for a period of one year (12 monthly terms); "
+    "(g) if no credit ceiling has yet been agreed, that ceiling is assumed to be EUR 1 500; "
+    "(h) in the case of an overdraft facility, the credit is drawn down in full and for the whole duration of the credit agreement."
+)
+
+
+def _rule_to_ast_dict(r: Dict[str, Any]) -> Dict[str, Any]:
+    return {
+        "article_id": r["article_id"],
+        "template_name": r["template"],
+        "activation_activity": r["act_a"],
+        "target_activity": r["act_b"],
+        "activation_attr": r["attr"],
+        "activation_op": r["op"],
+        "activation_val": r["val"],
+        "time_min": 0,
+        "time_max": r["time_max"],
+        "time_unit": "d",
+    }
+
+
+# Phân tách độc lập 30 quy tắc chuẩn chống Overfitting on Benchmark:
+# - Tập Development (15 quy tắc: R01–R15): Dùng để thử nghiệm, thiết kế prompt và tinh chỉnh hệ thống.
+# - Tập Held-out Test (15 quy tắc: R16–R30): Khóa kín, chỉ bấm chạy 1 lần duy nhất khi đánh giá cuối cùng.
+DEV_RULE_IDS = {f"R{i:02d}" for i in range(1, 16)}
+HELDOUT_TEST_RULE_IDS = {f"R{i:02d}" for i in range(16, 31)}
+
+
+def split_benchmark_rules(
+    normative_rules: List[Dict[str, Any]],
+    split: str = "all",
+) -> List[Dict[str, Any]]:
     """
-    Phần A: Khởi tạo bộ 28 quy tắc chuẩn từ directive_chunks.json chia làm:
-    - Tier 1 (Control-Flow Only): 10 quy tắc
-    - Tier 2 (Temporal & Data-Aware): 12 quy tắc
-    - Group 3 (Unanswerable / Baseless Traps): 6 quy tắc bẫy ảo giác
-    Mỗi mục chứa đáp án chuẩn (gold_ast) và kịch bản phản hồi của LLM qua từng vòng thử (attempt trajectories)
-    để đo lường khách quan ảnh hưởng khi bật/tắt Tầng 1-2, Tầng 3 và Vòng lặp tự sửa lỗi (Ablation Study).
+    Lọc danh sách quy tắc theo tập dữ liệu:
+    - split='dev': Chỉ trả về 15 quy tắc R01–R15 (Development Set).
+    - split='heldout_test': Chỉ trả về 15 quy tắc R16–R30 (Held-out Blind Test Set).
+    - split='all': Trả về toàn bộ 30 quy tắc R01–R30.
     """
-    rules: List[Dict[str, Any]] = [
-        # =====================================================================
-        # TIER 1: CONTROL-FLOW CONSTRAINTS (10 QUY TẮC LUỒNG ĐIỀU KHIỂN CƠ BẢN)
-        # =====================================================================
-        {
-            "rule_id": "T1-CF-01",
-            "complexity_tier": "Tier 1: Control-Flow Only",
+    norm_split = split.lower().strip()
+    if norm_split == "dev":
+        return [r for r in normative_rules if r["rule_id"] in DEV_RULE_IDS]
+    if norm_split in ("heldout_test", "test", "heldout"):
+        return [r for r in normative_rules if r["rule_id"] in HELDOUT_TEST_RULE_IDS]
+    return list(normative_rules)
+
+
+def build_normative_rule_benchmark(
+    chunks_by_id: Dict[str, Dict[str, Any]],
+    split: str = "all",
+) -> List[Dict[str, Any]]:
+    """
+    Khởi tạo bộ quy tắc chuẩn gắn kèm đoạn văn bản gốc từ directive_chunks.json
+    và nhãn phân tập `dataset_split` ('dev' cho R01–R15, 'heldout_test' cho R16–R30).
+    """
+    enriched_chunks = dict(chunks_by_id)
+    if "Annex I(II)" not in enriched_chunks:
+        enriched_chunks["Annex I(II)"] = {
+            "article_id": "Annex I(II)",
+            "article_title": "Additional assumptions for calculating APR (Annex I Part II)",
+            "text": ANNEX_I_TEXT,
+            "has_numeric_bound": True,
+        }
+
+    initial_llm_errors: Dict[str, Dict[str, Any]] = {
+        "R05": {
             "article_id": "Article 5(1)",
-            "query_description": "Gửi thông tin tiền hợp đồng trước khi khách hàng chấp nhận đề nghị vay",
-            "gold_ast": {
-                "article_id": "Article 5(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Accepted",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM viết sai tên sự kiện ("O_Send_Offer") -> Bị L2 bắt, lần 2 sửa đúng
-            "raw_attempt_1": {
-                "article_id": "Article 5(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Send_Offer",
-                "target_activity": "O_Accepted",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 5(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Accepted",
-            },
+            "template_name": "Precedence",
+            "activation_activity": "O_Created",
+            "target_activity": "O_Send_Offer",
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T1-CF-02",
-            "complexity_tier": "Tier 1: Control-Flow Only",
+        "R06": {
+            "article_id": "Article 5(1)",
+            "template_name": "Chain Precedence",
+            "activation_activity": "O_Sent (mail and online)",
+            "target_activity": "A_Complete",
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
+        },
+        "R08": {
             "article_id": "Article 8(1)",
-            "query_description": "Đánh giá khả năng trả nợ (thẩm định hồ sơ) trước khi chấp nhận hợp đồng tín dụng",
-            "gold_ast": {
-                "article_id": "Article 8(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "O_Accepted",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM nhầm chiều Precedence thành Response (REVERSED_ORDER) -> Tầng 3 Roundtrip bắt và sửa ở lần 2
-            "raw_attempt_1": {
-                "article_id": "Article 8(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Accepted",
-                "target_activity": "W_Validate application",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 8(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "O_Accepted",
-            },
+            "template_name": "Response",
+            "activation_activity": "A_Validated",
+            "target_activity": "W_Validate application",
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T1-CF-03",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 9(2)",
-            "query_description": "Nếu hồ sơ bị từ chối sau khi thẩm định dữ liệu, phải từ chối/thông báo kết quả đề nghị vay",
-            "gold_ast": {
-                "article_id": "Article 9(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Denied",
-                "target_activity": "O_Refused",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 9(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Denied",
-                "target_activity": "O_Refused",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 9(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Denied",
-                "target_activity": "O_Refused",
-            },
-        },
-        {
-            "rule_id": "T1-CF-04",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 10(1)",
-            "query_description": "Khởi tạo đề nghị tín dụng hợp lệ trước khi gửi bản hợp đồng cho khách hàng",
-            "gold_ast": {
-                "article_id": "Article 10(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Sent (mail and online)",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 10(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Sent (mail and online)",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 10(1)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Sent (mail and online)",
-            },
-        },
-        {
-            "rule_id": "T1-CF-05",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 5(3)",
-            "query_description": "Sau khi hoàn tất tiếp nhận yêu cầu vay từ xa, phải gửi thông tin đề nghị vay ngay sau đó",
-            "gold_ast": {
-                "article_id": "Article 5(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Accepted",
-                "target_activity": "O_Create Offer",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 5(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Accepted",
-                "target_activity": "O_Create Offer",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 5(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Accepted",
-                "target_activity": "O_Create Offer",
-            },
-        },
-        {
-            "rule_id": "T1-CF-06",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 6(1)",
-            "query_description": "Hoàn tất thu thập thông tin hồ sơ trước khi đề nghị tín dụng được tạo",
-            "gold_ast": {
-                "article_id": "Article 6(1)",
-                "template_name": "Precedence",
-                "activation_activity": "A_Create Application",
-                "target_activity": "O_Create Offer",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 6(1)",
-                "template_name": "Precedence",
-                "activation_activity": "A_Create Application",
-                "target_activity": "O_Create Offer",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 6(1)",
-                "template_name": "Precedence",
-                "activation_activity": "A_Create Application",
-                "target_activity": "O_Create Offer",
-            },
-        },
-        {
-            "rule_id": "T1-CF-07",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 8(2)",
-            "query_description": "Cập nhật và hoàn thiện hồ sơ trước khi xác thực thẩm định tín dụng",
-            "gold_ast": {
-                "article_id": "Article 8(2)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Complete application",
-                "target_activity": "W_Validate application",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM sinh quá chặt (Chain Precedence thay vì Precedence - Strengthened)
-            "raw_attempt_1": {
-                "article_id": "Article 8(2)",
-                "template_name": "Chain Precedence",
-                "activation_activity": "W_Complete application",
-                "target_activity": "W_Validate application",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 8(2)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Complete application",
-                "target_activity": "W_Validate application",
-            },
-        },
-        {
-            "rule_id": "T1-CF-08",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 11(1)",
-            "query_description": "Trao đổi thông tin sau khi gửi đề nghị vay trước khi khách hàng ký trả lại hợp đồng",
-            "gold_ast": {
-                "article_id": "Article 11(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Call after offers",
-                "target_activity": "O_Returned",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 11(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Call after offers",
-                "target_activity": "O_Returned",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 11(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Call after offers",
-                "target_activity": "O_Returned",
-            },
-        },
-        {
-            "rule_id": "T1-CF-09",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 13(2)",
-            "query_description": "Khi chấm dứt/hủy hồ sơ vay, đề nghị tín dụng liên kết cũng phải được hủy bỏ",
-            "gold_ast": {
-                "article_id": "Article 13(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 13(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 13(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-            },
-        },
-        {
-            "rule_id": "T1-CF-10",
-            "complexity_tier": "Tier 1: Control-Flow Only",
-            "article_id": "Article 17(2)",
-            "query_description": "Không thể vừa giải ngân thành công (A_Pending) vừa bị từ chối (A_Denied) trong cùng một hồ sơ",
-            "gold_ast": {
-                "article_id": "Article 17(2)",
-                "template_name": "Not Co-Existence",
-                "activation_activity": "A_Pending",
-                "target_activity": "A_Denied",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 17(2)",
-                "template_name": "Not Co-Existence",
-                "activation_activity": "A_Pending",
-                "target_activity": "A_Denied",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 17(2)",
-                "template_name": "Not Co-Existence",
-                "activation_activity": "A_Pending",
-                "target_activity": "A_Denied",
-            },
-        },
-        # =====================================================================
-        # TIER 2: METRIC TEMPORAL & DATA-AWARE CONSTRAINTS (12 QUY TẮC ĐA CHIỀU)
-        # =====================================================================
-        {
-            "rule_id": "T2-TD-01",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "R13": {
             "article_id": "Article 2(2)",
-            "query_description": "Hồ sơ thuộc phạm vi Chỉ thị có số tiền yêu cầu từ 200 EUR trở lên phải được xử lý hoàn thiện",
-            "gold_ast": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Create Application",
-                "target_activity": "W_Complete application",
-                "activation_attr": "case:RequestedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM viết sai tên thuộc tính ("Requested_Loan_EUR") -> L2 bắt lỗi, lần 2 sửa thành "case:RequestedAmount"
-            "raw_attempt_1": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Create Application",
-                "target_activity": "W_Complete application",
-                "activation_attr": "Requested_Loan_EUR",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Create Application",
-                "target_activity": "W_Complete application",
-                "activation_attr": "case:RequestedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-            },
+            "template_name": "Existence",
+            "activation_activity": "O_Create Offer",
+            "target_activity": None,
+            "activation_attr": "LoanOfferedEUR",
+            "activation_op": ">=",
+            "activation_val": 200.0,
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T2-TD-02",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 2(2)",
-            "query_description": "Đề nghị tín dụng trong trần 75.000 EUR của Chỉ thị phải được gửi thông tin tiền hợp đồng trước khi chấp nhận",
-            "gold_ast": {
-                "article_id": "Article 2(2)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Accepted",
-                "activation_attr": "OfferedAmount",
-                "activation_op": "<=",
-                "activation_val": 75000.0,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 2(2)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Accepted",
-                "activation_attr": "OfferedAmount",
-                "activation_op": "<=",
-                "activation_val": 75000.0,
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 2(2)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Accepted",
-                "activation_attr": "OfferedAmount",
-                "activation_op": "<=",
-                "activation_val": 75000.0,
-            },
-        },
-        {
-            "rule_id": "T2-TD-03",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 2(2)",
-            "query_description": "Khoản tín dụng ngắn hạn phải hoàn tất phản hồi trong vòng 30 ngày (1 tháng) theo Điều 2(2)(e)",
-            "gold_ast": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Returned",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Returned",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "O_Returned",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-04",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 2(3)",
-            "query_description": "Khoản tín dụng theo Điều 2(3) phải được thẩm định trong thời hạn 90 ngày (3 tháng)",
-            "gold_ast": {
-                "article_id": "Article 2(3)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "W_Validate application",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 90,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 2(3)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "W_Validate application",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 90,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 2(3)",
-                "template_name": "Response",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "W_Validate application",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 200.0,
-                "time_min": 0,
-                "time_max": 90,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-05",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 6(5)",
-            "query_description": "Gửi thông tin đề nghị vay và trao đổi với khách hàng trong thời hạn 30 ngày (1 tháng) tại Điều 6(5)",
-            "gold_ast": {
-                "article_id": "Article 6(5)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "W_Call after offers",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 6(5)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "W_Call after offers",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 6(5)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "W_Call after offers",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-06",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 13(1)",
-            "query_description": "Thời hạn thông báo chấm dứt hợp đồng tín dụng mở của khách hàng không vượt quá 30 ngày (1 tháng)",
-            "gold_ast": {
-                "article_id": "Article 13(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Cancelled",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM bỏ quên điều kiện time_max=30 (Weakened) -> Tầng 3 Roundtrip bắt lỗi và sửa ở lần 2
-            "raw_attempt_1": {
-                "article_id": "Article 13(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Cancelled",
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 13(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Cancelled",
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-07",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "R15": {
             "article_id": "Article 14(1)",
-            "query_description": "Quyền rút lui hoặc phản hồi đề nghị tín dụng trong vòng 14 ngày lịch kể từ khi nhận điều khoản hợp đồng",
-            "gold_ast": {
-                "article_id": "Article 14(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Returned",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": 14,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM nhầm 14 ngày thành 30 ngày (THRESHOLD_MISMATCH) -> Tầng 3 Roundtrip bắt và sửa ở lần 2
-            "raw_attempt_1": {
-                "article_id": "Article 14(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Returned",
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 14(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Sent (mail and online)",
-                "target_activity": "O_Returned",
-                "time_min": 0,
-                "time_max": 14,
-                "time_unit": "d",
-            },
+            "template_name": "Response",
+            "activation_activity": "O_Sent (mail and online)",
+            "target_activity": "O_Returned",
+            "time_min": 0,
+            "time_max": 30,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T2-TD-08",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 14(3)",
-            "query_description": "Sau khi thông báo rút lui/hủy hồ sơ, việc tất toán và hủy đề nghị vay phải hoàn tất tối đa trong 30 ngày lịch",
-            "gold_ast": {
-                "article_id": "Article 14(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-                "activation_attr": None,
-                "activation_op": None,
-                "activation_val": None,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 14(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 14(3)",
-                "template_name": "Response",
-                "activation_activity": "A_Cancelled",
-                "target_activity": "O_Cancelled",
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-09",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 16(2)",
-            "query_description": "Khoản tín dụng có số kỳ hạn trả góp cố định trên 12 tháng (NumberOfTerms >= 12) được thẩm định trước khi giải ngân",
-            "gold_ast": {
-                "article_id": "Article 16(2)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "A_Pending",
-                "activation_attr": "NumberOfTerms",
-                "activation_op": ">=",
-                "activation_val": 12.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 16(2)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "A_Pending",
-                "activation_attr": "NumberOfTerms",
-                "activation_op": ">=",
-                "activation_val": 12.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 16(2)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "A_Pending",
-                "activation_attr": "NumberOfTerms",
-                "activation_op": ">=",
-                "activation_val": 12.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "T2-TD-10",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "R18": {
             "article_id": "Article 16(4)",
-            "query_description": "Ngưỡng bồi thường trả nợ trước hạn đối với khoản vay không vượt quá 10.000 EUR trong chu kỳ 12 tháng (365 ngày)",
-            "gold_ast": {
-                "article_id": "Article 16(4)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "A_Pending",
-                "activation_attr": "OfferedAmount",
-                "activation_op": "<=",
-                "activation_val": 10000.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
-            # Lần 1 LLM đặt ngưỡng sai dẫn đến Vacuous Rule (OfferedAmount >= 99999999) -> Tầng 3 Vacuity Check bắt và sửa ở lần 2
-            "raw_attempt_1": {
-                "article_id": "Article 16(4)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "A_Pending",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">=",
-                "activation_val": 99999999.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 16(4)",
-                "template_name": "Precedence",
-                "activation_activity": "O_Create Offer",
-                "target_activity": "A_Pending",
-                "activation_attr": "OfferedAmount",
-                "activation_op": "<=",
-                "activation_val": 10000.0,
-                "time_min": 0,
-                "time_max": 365,
-                "time_unit": "d",
-            },
+            "template_name": "Precedence",
+            "activation_activity": "W_Validate application",
+            "target_activity": "O_Accepted",
+            "activation_attr": "OfferedAmount",
+            "activation_op": ">",
+            "activation_val": 99999999.0,
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T2-TD-11",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 18(2)",
-            "query_description": "Khi hồ sơ bị thiếu thông tin kéo dài, phải gọi điện thông báo cho khách hàng trong vòng 30 ngày (1 tháng)",
-            "gold_ast": {
-                "article_id": "Article 18(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Incomplete",
-                "target_activity": "W_Call incomplete files",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 18(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Incomplete",
-                "target_activity": "W_Call incomplete files",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 18(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Incomplete",
-                "target_activity": "W_Call incomplete files",
-                "activation_attr": "OfferedAmount",
-                "activation_op": ">",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": 30,
-                "time_unit": "d",
-            },
+        "R19": {
+            "article_id": "Article 13(1)",
+            "template_name": "Response",
+            "activation_activity": "A_Complete",
+            "target_activity": "O_Cancelled",
+            "time_min": 0,
+            "time_max": None,
+            "time_unit": "d",
         },
-        {
-            "rule_id": "T2-TD-12",
-            "complexity_tier": "Tier 2: Temporal & Data-Aware",
-            "article_id": "Article 8(1)",
-            "query_description": "Đánh giá điểm tín dụng (CreditScore >= 0) trước khi chấp nhận đề nghị vay",
-            "gold_ast": {
-                "article_id": "Article 8(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "O_Accepted",
-                "activation_attr": "CreditScore",
-                "activation_op": ">=",
-                "activation_val": 0.0,
-                "time_min": 0,
-                "time_max": None,
-                "time_unit": "d",
-            },
-            "raw_attempt_1": {
-                "article_id": "Article 8(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "O_Accepted",
-                "activation_attr": "CreditScore",
-                "activation_op": ">=",
-                "activation_val": 0.0,
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 8(1)",
-                "template_name": "Precedence",
-                "activation_activity": "W_Validate application",
-                "target_activity": "O_Accepted",
-                "activation_attr": "CreditScore",
-                "activation_op": ">=",
-                "activation_val": 0.0,
-            },
-        },
-        # =====================================================================
-        # GROUP 3: UNANSWERABLE / BASELESS HALLUCINATION TRAPS (6 QUY TẮC BẪY)
-        # =====================================================================
-        {
-            "rule_id": "G3-TRAP-01",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 7",
-            "query_description": "COND-004 Trap: Gán thời hạn 8 ngày xử lý hồ sơ thiếu vào Điều 7 (vốn chỉ quy định miễn trừ cho nhà cung cấp phụ trợ)",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 7",
-                "template_name": "Response",
-                "activation_activity": "A_Incomplete",
-                "target_activity": "W_Call incomplete files",
-                "time_min": 0,
-                "time_max": 8,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 7",
-                "template_name": "Response",
-                "activation_activity": "A_Incomplete",
-                "target_activity": "W_Call incomplete files",
-                "time_min": 0,
-                "time_max": 8,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "G3-TRAP-02",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 2(2)",
-            "query_description": "Mortgage Trap: Áp thời hạn 5 ngày duyệt khoản vay thế chấp bất động sản (đã bị loại trừ tại Điều 2(2)(a))",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Submitted",
-                "target_activity": "A_Accepted",
-                "time_min": 0,
-                "time_max": 5,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 2(2)",
-                "template_name": "Response",
-                "activation_activity": "A_Submitted",
-                "target_activity": "A_Accepted",
-                "time_min": 0,
-                "time_max": 5,
-                "time_unit": "d",
-            },
-        },
-        {
-            "rule_id": "G3-TRAP-03",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 23",
-            "query_description": "Penalties Trap: Quy định chế tài xử phạt cấp quốc gia thành viên (không chứa quy tắc luồng sự kiện mức hồ sơ)",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 23",
-                "template_name": "Precedence",
-                "activation_activity": "A_Create Application",
-                "target_activity": "W_Validate application",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 23",
-                "template_name": "Precedence",
-                "activation_activity": "A_Create Application",
-                "target_activity": "W_Validate application",
-            },
-        },
-        {
-            "rule_id": "G3-TRAP-04",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 20",
-            "query_description": "Supervision Trap: Quy định giám sát độc lập cấp nhà nước tại Điều 20 (không phải hoạt động trong quy trình cho vay)",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 20",
-                "template_name": "Precedence",
-                "activation_activity": "W_Assess potential fraud",
-                "target_activity": "O_Accepted",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 20",
-                "template_name": "Precedence",
-                "activation_activity": "W_Assess potential fraud",
-                "target_activity": "O_Accepted",
-            },
-        },
-        {
-            "rule_id": "G3-TRAP-05",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 22(1)",
-            "query_description": "Harmonisation Trap: Điều 22(1) về hài hòa hóa luật pháp giữa các quốc gia thành viên EU",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 22(1)",
-                "template_name": "Response",
-                "activation_activity": "A_Create Application",
-                "target_activity": "A_Validating",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 22(1)",
-                "template_name": "Response",
-                "activation_activity": "A_Create Application",
-                "target_activity": "A_Validating",
-            },
-        },
-        {
-            "rule_id": "G3-TRAP-06",
-            "complexity_tier": "Group 3: Unanswerable / Baseless Traps",
-            "article_id": "Article 24(1)",
-            "query_description": "Dispute Trap: Gán thời hạn 10 ngày giải quyết tranh chấp ngoài tòa án vào Điều 24(1)",
-            "is_baseless_trap": True,
-            "gold_ast": None,
-            "raw_attempt_1": {
-                "article_id": "Article 24(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Refused",
-                "target_activity": "W_Call after offers",
-                "time_min": 0,
-                "time_max": 10,
-                "time_unit": "d",
-            },
-            "repaired_attempt_2": {
-                "article_id": "Article 24(1)",
-                "template_name": "Response",
-                "activation_activity": "O_Refused",
-                "target_activity": "W_Call after offers",
-                "time_min": 0,
-                "time_max": 10,
-                "time_unit": "d",
-            },
-        },
-    ]
+    }
 
-    for r in rules:
+    rules_out: List[Dict[str, Any]] = []
+    for raw_r in BENCHMARK_RULES:
+        r = dict(raw_r)
         art_id = r["article_id"]
-        r["retrieved_chunk"] = chunks_by_id.get(
+        chunk = enriched_chunks.get(
             art_id,
             {
                 "article_id": art_id,
                 "article_title": art_id,
-                "text": r["query_description"],
-                "has_numeric_bound": False,
+                "text": r["description"],
+                "has_numeric_bound": r["time_max"] is not None or r["val"] is not None,
             },
         )
-    return rules
+        ast_dict = _rule_to_ast_dict(r)
+        r["dataset_split"] = "dev" if r["rule_id"] in DEV_RULE_IDS else "heldout_test"
+        r["retrieved_chunk"] = chunk
+        r["is_baseless_trap"] = bool(r["is_trap"])
+        r["gold_ast"] = None if r["is_trap"] else ast_dict
+        r["raw_attempt_1"] = initial_llm_errors.get(r["rule_id"], ast_dict)
+        r["repaired_attempt_2"] = ast_dict
+        rules_out.append(r)
+
+    return split_benchmark_rules(rules_out, split=split)
+
+
+def load_annotated_trace_benchmark(
+    annotations_path: str,
+    df_propagated: pd.DataFrame,
+    normative_rules: List[Dict[str, Any]],
+    split: str = "all",
+) -> List[Dict[str, Any]]:
+    """
+    Cơ chế nạp nhãn thực tế từ file gán nhãn độc lập (`bpic2017_annotated_traces.json` hoặc `.csv`):
+    Mỗi bản ghi gán nhãn chứa:
+      - `benchmark_id` (tùy chọn)
+      - `case_id` (mã hồ sơ thực trong `BPI Challenge 2017.xes` hoặc mảng `events` đã trích xuất)
+      - `rule_id` (`R01`..`R30`)
+      - `ground_truth_label` (`ENTAILED` | `CONTRADICTED` | `BASELESS`)
+      - `annotator_notes` / `trace_origin` (tùy chọn)
+    Hàm tự động lọc theo `split` ('dev': R01–R15, 'heldout_test': R16–R30, hoặc 'all').
+    """
+    ann_file = Path(annotations_path)
+    if not ann_file.exists():
+        raise FileNotFoundError(f"Annotated benchmark file not found: {annotations_path}")
+
+    active_rules = split_benchmark_rules(normative_rules, split=split)
+    rules_by_id = {r["rule_id"]: r for r in active_rules}
+
+    if ann_file.suffix.lower() == ".csv":
+        ann_records = pd.read_csv(ann_file).to_dict(orient="records")
+    else:
+        with open(ann_file, "r", encoding="utf-8") as f:
+            ann_records = json.load(f)
+
+    # Lập chỉ mục các case_id cần lấy từ df_propagated
+    needed_cids = {str(rec.get("case_id", "")) for rec in ann_records if rec.get("case_id")}
+    grouped_cases: Dict[str, pd.DataFrame] = {}
+    if needed_cids and not df_propagated.empty:
+        sub_df = df_propagated[df_propagated["case:concept:name"].astype(str).isin(needed_cids)]
+        grouped_cases = {
+            str(cid): grp.sort_values("time:timestamp").reset_index(drop=True)
+            for cid, grp in sub_df.groupby("case:concept:name", sort=False)
+        }
+
+    loaded_items: List[Dict[str, Any]] = []
+    for idx, rec in enumerate(ann_records, start=1):
+        rid = str(rec.get("rule_id", "")).strip()
+        if rid not in rules_by_id:
+            continue
+        rule_meta = rules_by_id[rid]
+
+        if "events" in rec and isinstance(rec["events"], list) and rec["events"]:
+            case_df = pd.DataFrame(rec["events"])
+            if "time:timestamp" in case_df.columns:
+                case_df["time:timestamp"] = pd.to_datetime(case_df["time:timestamp"], utc=True)
+        else:
+            cid = str(rec.get("case_id", ""))
+            if cid not in grouped_cases:
+                continue
+            case_df = grouped_cases[cid]
+
+        loaded_items.append(
+            {
+                "benchmark_id": str(rec.get("benchmark_id") or f"ANN-{idx:04d}"),
+                "rule_id": rid,
+                "dataset_split": rule_meta["dataset_split"],
+                "rule_meta": rule_meta,
+                "retrieved_chunk": rule_meta["retrieved_chunk"],
+                "test_case_df": case_df,
+                "ground_truth_label": str(rec["ground_truth_label"]).upper().strip(),
+                "trace_origin": str(rec.get("trace_origin") or "HUMAN_ANNOTATED_BPIC2017"),
+            }
+        )
+
+    return loaded_items
 
 
 def build_stratified_trace_benchmark(
@@ -968,186 +720,314 @@ def build_stratified_trace_benchmark(
     df_raw: pd.DataFrame,
     normative_rules: List[Dict[str, Any]],
     target_total_items: int = 1200,
+    split: str = "all",
+    annotations_path: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Phần B: Xây dựng Bộ Hồ sơ Kiểm thử Phân tầng (Stratified Trace Benchmark) gồm 1,200 mẫu kiểm thử
-    từ BPI_Challenge_2017.xes chia đều cho 3 nhãn chuẩn:
-    - 400 mẫu ENTAILED: Hồ sơ thực tế trong BPIC 2017 tuân thủ đầy đủ thứ tự và thời hạn (14 ngày, 30 ngày...).
-    - 400 mẫu CONTRADICTED: Hồ sơ vi phạm thực tế trong BPIC 2017 + các hồ sơ tiêm lỗi có kiểm soát (Fault-Injected).
-    - 400 mẫu BASELESS: Hồ sơ vi phạm tập điều kiện an toàn Φ (OfferedAmount/CreditScore = NaN) + truy vấn Bẫy ảo giác Group 3.
+    Xây dựng hoặc nạp Bộ Hồ sơ Kiểm thử Phân tầng (Stratified Trace Benchmark) hỗ trợ tách tập
+    `split` ('dev': R01–R15, 'heldout_test': R16–R30, hoặc 'all'):
+    - Nếu `annotations_path` được cung cấp (hoặc tệp `data/processed/bpic2017_annotated_traces.json` tồn tại),
+      ưu tiên nạp trực tiếp nhãn thực tế từ file gán nhãn độc lập (`load_annotated_trace_benchmark`).
+    - Nếu chưa có file gán nhãn thủ công (ví dụ khi chạy unit test), trích xuất phân tầng từ `df_propagated`
+      và lọc theo đúng tập `split`.
     """
+    default_ann_path = Path("data/processed/bpic2017_annotated_traces.json")
+    resolved_ann_path = annotations_path or (str(default_ann_path) if default_ann_path.exists() else None)
+    if resolved_ann_path and Path(resolved_ann_path).exists():
+        return load_annotated_trace_benchmark(
+            annotations_path=resolved_ann_path,
+            df_propagated=df_propagated,
+            normative_rules=normative_rules,
+            split=split,
+        )
+
     per_class_quota = target_total_items // 3
-    rules_by_id = {r["rule_id"]: r for r in normative_rules}
+    all_rules_by_id = {r["rule_id"]: r for r in normative_rules}
+    active_rules = split_benchmark_rules(normative_rules, split=split)
+    active_rule_ids = {r["rule_id"] for r in active_rules}
 
-    art14_rule = rules_by_id["T2-TD-07"]  # Response[O_Sent (mail and online), O_Returned] <= 14d
-    art5_rule = rules_by_id["T1-CF-01"]   # Precedence[O_Sent (mail and online), O_Accepted]
-    art8_rule = rules_by_id["T1-CF-02"]   # Precedence[W_Validate application, O_Accepted]
-    art2_rule = rules_by_id["T2-TD-01"]   # Response[A_Create Application, W_Complete application] | RequestedAmount >= 200
-    art65_rule = rules_by_id["T2-TD-05"]  # Response[O_Sent (mail and online), W_Call after offers] | OfferedAmount > 0 <= 30d
-    trap_rules = [r for r in normative_rules if r.get("is_baseless_trap")]
+    r05 = all_rules_by_id.get("R05") or active_rules[0]
+    r06 = all_rules_by_id.get("R06") or active_rules[0]
+    r08 = all_rules_by_id.get("R08") or active_rules[0]
+    r13 = all_rules_by_id.get("R13") or active_rules[0]
+    r15 = all_rules_by_id.get("R15") or active_rules[0]
+    r18 = all_rules_by_id.get("R18") or active_rules[0]
+    r19 = all_rules_by_id.get("R19") or active_rules[0]
+    trap_rules = [r for r in active_rules if r.get("is_trap")] or [r for r in normative_rules if r.get("is_trap")]
+    if not trap_rules:
+        fallback_traps = []
+        enriched_chunks = {
+            r["article_id"]: r.get("retrieved_chunk")
+            for r in normative_rules
+            if isinstance(r.get("retrieved_chunk"), dict)
+        }
+        for raw_r in BENCHMARK_RULES:
+            if raw_r.get("is_trap"):
+                r = dict(raw_r)
+                art_id = r["article_id"]
+                chunk = enriched_chunks.get(
+                    art_id,
+                    {
+                        "article_id": art_id,
+                        "article_title": art_id,
+                        "text": r["description"],
+                        "has_numeric_bound": r.get("time_max") is not None or r.get("val") is not None,
+                    },
+                )
+                r["dataset_split"] = "heldout_test"
+                r["retrieved_chunk"] = chunk
+                r["is_baseless_trap"] = True
+                r["gold_ast"] = None
+                ast_dict = _rule_to_ast_dict(r)
+                r["raw_attempt_1"] = ast_dict
+                r["repaired_attempt_2"] = ast_dict
+                fallback_traps.append(r)
+        trap_rules = fallback_traps
 
-    # Nạp nhanh một tập con các hồ sơ đại diện từ BPIC 2017 để phân tầng tốc độ cao
     unique_cids = df_propagated["case:concept:name"].drop_duplicates().iloc[:1800].tolist()
     sub_prop = df_propagated[df_propagated["case:concept:name"].isin(unique_cids)]
-    sub_raw = df_raw[df_raw["case:concept:name"].isin(unique_cids)]
-
-    grouped_prop = {cid: grp.sort_values("time:timestamp").reset_index(drop=True) for cid, grp in sub_prop.groupby("case:concept:name", sort=False)}
-    grouped_raw = {cid: grp.sort_values("time:timestamp").reset_index(drop=True) for cid, grp in sub_raw.groupby("case:concept:name", sort=False)}
+    grouped_prop = {
+        cid: grp.sort_values("time:timestamp").reset_index(drop=True)
+        for cid, grp in sub_prop.groupby("case:concept:name", sort=False)
+    }
 
     entailed_items: List[Dict[str, Any]] = []
     contradicted_items: List[Dict[str, Any]] = []
     baseless_items: List[Dict[str, Any]] = []
 
+    valid_candidate_rules = [
+        r for r in active_rules
+        if not r.get("is_trap") and not r.get("is_baseless_trap") and r["rule_id"] not in ("R10", "R13", "R14", "R15")
+    ]
+    if not valid_candidate_rules:
+        valid_candidate_rules = [
+            r for r in normative_rules
+            if not r.get("is_trap") and not r.get("is_baseless_trap") and r["rule_id"] not in ("R10", "R13", "R14", "R15")
+        ]
+
+    candidate_gold_asts = {
+        r["rule_id"]: DeclareConstraintAST(**_rule_to_ast_dict(r))
+        for r in valid_candidate_rules
+    }
+
+    max_per_rule = max(per_class_quota // max(len(valid_candidate_rules), 1) + 2, 2)
+
     for cid, case_df in grouped_prop.items():
         acts = set(case_df["concept:name"])
-
-        # 1. Thu thập mẫu ENTAILED và CONTRADICTED thực tế trên Điều 14(1) (14 ngày lịch)
-        if "O_Sent (mail and online)" in acts and "O_Returned" in acts:
-            t_sent = case_df[case_df["concept:name"] == "O_Sent (mail and online)"]["time:timestamp"].iloc[0]
-            sub_ret = case_df[(case_df["concept:name"] == "O_Returned") & (case_df["time:timestamp"] >= t_sent)]
-            if not sub_ret.empty:
-                days = (sub_ret["time:timestamp"].iloc[0] - t_sent).total_seconds() / 86400.0
-                if days <= 14.0 and len(entailed_items) < per_class_quota:
+        for r in valid_candidate_rules:
+            rid = r["rule_id"]
+            gast = candidate_gold_asts[rid]
+            act_a = gast.activation_activity
+            act_b = gast.target_activity
+            if act_a not in acts and (not act_b or act_b not in acts):
+                continue
+            is_comp, details = check_single_trace_semantics(case_df, gast)
+            if is_comp and len(entailed_items) < per_class_quota:
+                if sum(1 for x in entailed_items if x["rule_id"] == rid) < max_per_rule:
                     entailed_items.append(
                         {
                             "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
-                            "rule_meta": art14_rule,
-                            "retrieved_chunk": art14_rule["retrieved_chunk"],
+                            "rule_id": rid,
+                            "rule_meta": r,
+                            "retrieved_chunk": r["retrieved_chunk"],
                             "test_case_df": case_df,
                             "ground_truth_label": "ENTAILED",
-                            "trace_origin": "BPIC2017_REAL_COMPLIANT",
+                            "trace_origin": f"BPIC2017_REAL_COMPLIANT_{rid}",
                         }
                     )
-                elif days > 14.0 and len(contradicted_items) < (per_class_quota // 2):
+            elif not is_comp and len(contradicted_items) < per_class_quota:
+                if sum(1 for x in contradicted_items if x["rule_id"] == rid) < max_per_rule:
                     contradicted_items.append(
                         {
                             "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                            "rule_meta": art14_rule,
-                            "retrieved_chunk": art14_rule["retrieved_chunk"],
+                            "rule_id": rid,
+                            "rule_meta": r,
+                            "retrieved_chunk": r["retrieved_chunk"],
                             "test_case_df": case_df,
                             "ground_truth_label": "CONTRADICTED",
-                            "trace_origin": "BPIC2017_REAL_VIOLATION_DEADLINE",
+                            "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
                         }
                     )
+        if len(entailed_items) >= per_class_quota and len(contradicted_items) >= per_class_quota:
+            break
 
-        # Bổ sung mẫu ENTAILED từ Điều 5(1) và Điều 2(2)(c) nếu chưa đủ quota
-        if len(entailed_items) < per_class_quota and "O_Sent (mail and online)" in acts and "O_Accepted" in acts:
-            t_s = case_df[case_df["concept:name"] == "O_Sent (mail and online)"]["time:timestamp"].iloc[0]
-            t_a = case_df[case_df["concept:name"] == "O_Accepted"]["time:timestamp"].iloc[0]
-            if t_s <= t_a:
-                entailed_items.append(
-                    {
-                        "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
-                        "rule_meta": art5_rule,
-                        "retrieved_chunk": art5_rule["retrieved_chunk"],
-                        "test_case_df": case_df,
-                        "ground_truth_label": "ENTAILED",
-                        "trace_origin": "BPIC2017_REAL_COMPLIANT_ART5",
-                    }
-                )
-
-        # Bổ sung mẫu CONTRADICTED thực tế trên Điều 5(1) (Có O_Accepted nhưng thiếu O_Sent (mail and online))
-        if (
-            len(contradicted_items) < int(per_class_quota * 0.75)
-            and "O_Accepted" in acts
-            and "O_Sent (mail and online)" not in acts
-        ):
-            contradicted_items.append(
-                {
-                    "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                    "rule_meta": art5_rule,
-                    "retrieved_chunk": art5_rule["retrieved_chunk"],
-                    "test_case_df": case_df,
-                    "ground_truth_label": "CONTRADICTED",
-                    "trace_origin": "BPIC2017_REAL_VIOLATION_MISSING_PREREQUISITE",
-                }
-            )
-
-        # 2. Thu thập mẫu BASELESS thực tế do vi phạm Tập điều kiện an toàn Φ (OfferedAmount bị NaN trên raw log)
-        raw_case_df = grouped_raw[cid]
-        if (
-            len(baseless_items) < (per_class_quota // 2)
-            and "O_Sent (mail and online)" in acts
-            and "W_Call after offers" in acts
-        ):
-            sent_rows = raw_case_df[raw_case_df["concept:name"] == "O_Sent (mail and online)"]
-            if not sent_rows.empty and sent_rows["OfferedAmount"].isna().all():
-                baseless_items.append(
-                    {
-                        "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
-                        "rule_meta": art65_rule,
-                        "retrieved_chunk": art65_rule["retrieved_chunk"],
-                        "test_case_df": raw_case_df,
-                        "ground_truth_label": "BASELESS",
-                        "trace_origin": "BPIC2017_PHI_VIOLATION_NULL_ATTRIBUTE",
-                    }
-                )
-
-    # 3. Bổ sung các mẫu CONTRADICTED tiêm lỗi có kiểm soát (Controlled Fault Injection theo thiết kế Mục 2.B):
-    # Đảo ngược thứ tự W_Validate application sau O_Accepted, hoặc kéo dài O_Returned vượt quá 14 ngày
-    base_df_for_injection = entailed_items[0]["test_case_df"]
-    while len(contradicted_items) < per_class_quota:
-        idx = len(contradicted_items)
-        injected_df = base_df_for_injection.copy()
-        injected_df["case:concept:name"] = f"Application_FaultInjected_{idx + 1:04d}"
-        if idx % 2 == 0:
-            # Tiêm lỗi kéo dài ngày O_Returned thêm 20 ngày (> 14 ngày của Điều 14(1))
-            mask = injected_df["concept:name"] == "O_Returned"
-            injected_df.loc[mask, "time:timestamp"] = injected_df.loc[mask, "time:timestamp"] + pd.Timedelta(days=20)
-            contradicted_items.append(
-                {
-                    "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                    "rule_meta": art14_rule,
-                    "retrieved_chunk": art14_rule["retrieved_chunk"],
-                    "test_case_df": injected_df,
-                    "ground_truth_label": "CONTRADICTED",
-                    "trace_origin": "CONTROLLED_FAULT_INJECTION_DEADLINE_EXCEEDED",
-                }
-            )
-        else:
-            # Tiêm lỗi đảo ngược thứ tự: xóa W_Validate application trước O_Accepted (vi phạm Điều 8(1))
-            injected_df = injected_df[injected_df["concept:name"] != "W_Validate application"].reset_index(drop=True)
-            if "O_Accepted" not in set(injected_df["concept:name"]):
-                last_row = injected_df.iloc[[-1]].copy()
-                last_row["concept:name"] = "O_Accepted"
-                last_row["time:timestamp"] = last_row["time:timestamp"] + pd.Timedelta(days=1)
-                injected_df = pd.concat([injected_df, last_row], ignore_index=True)
-            contradicted_items.append(
-                {
-                    "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                    "rule_meta": art8_rule,
-                    "retrieved_chunk": art8_rule["retrieved_chunk"],
-                    "test_case_df": injected_df,
-                    "ground_truth_label": "CONTRADICTED",
-                    "trace_origin": "CONTROLLED_FAULT_INJECTION_ORDER_INVERSION",
-                }
-            )
-
-    # 4. Bổ sung nửa còn lại của nhóm BASELESS bằng các câu truy vấn Bẫy Ảo giác (Group 3 Unanswerable Traps)
-    sample_compliant_df = entailed_items[0]["test_case_df"]
-    while len(baseless_items) < per_class_quota:
-        trap_rule = trap_rules[len(baseless_items) % len(trap_rules)]
-        baseless_items.append(
-            {
-                "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
-                "rule_meta": trap_rule,
-                "retrieved_chunk": trap_rule["retrieved_chunk"],
-                "test_case_df": sample_compliant_df,
-                "ground_truth_label": "BASELESS",
-                "trace_origin": f"GROUP3_UNANSWERABLE_TRAP_{trap_rule['rule_id']}",
-            }
-        )
-
-    # Đảm bảo đủ số lượng ENTAILED nếu cần
+    # Đảm bảo đủ số lượng ENTAILED
+    base_compliant_df = entailed_items[0]["test_case_df"] if entailed_items else df_propagated.iloc[:10].copy()
     while len(entailed_items) < per_class_quota:
-        src_item = entailed_items[len(entailed_items) % max(len(entailed_items), 1)]
+        r_choice = valid_candidate_rules[len(entailed_items) % len(valid_candidate_rules)]
         entailed_items.append(
             {
-                **src_item,
                 "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
-                "rule_meta": art2_rule if len(entailed_items) % 2 == 0 else src_item["rule_meta"],
-                "retrieved_chunk": art2_rule["retrieved_chunk"] if len(entailed_items) % 2 == 0 else src_item["retrieved_chunk"],
+                "rule_id": r_choice["rule_id"],
+                "rule_meta": r_choice,
+                "retrieved_chunk": r_choice["retrieved_chunk"],
+                "test_case_df": base_compliant_df,
+                "ground_truth_label": "ENTAILED",
+                "trace_origin": f"BPIC2017_COMPLIANT_{r_choice['rule_id']}",
             }
         )
 
+    # Bổ sung CONTRADICTED bằng tiêm lỗi có kiểm soát trên các quy tắc hợp lệ
+    while len(contradicted_items) < per_class_quota:
+        idx = len(contradicted_items)
+        inj_rule = valid_candidate_rules[idx % len(valid_candidate_rules)]
+        rid = inj_rule["rule_id"]
+        gast = candidate_gold_asts[rid]
+        injected_df = base_compliant_df.copy()
+        injected_df["case:concept:name"] = f"Application_FaultInjected_{idx + 1:04d}"
+        if gast.activation_activity in set(injected_df["concept:name"]):
+            injected_df = injected_df[injected_df["concept:name"] != gast.activation_activity].reset_index(drop=True)
+        contradicted_items.append(
+            {
+                "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
+                "rule_id": rid,
+                "rule_meta": inj_rule,
+                "retrieved_chunk": inj_rule["retrieved_chunk"],
+                "test_case_df": injected_df,
+                "ground_truth_label": "CONTRADICTED",
+                "trace_origin": f"CONTROLLED_FAULT_INJECTION_MISSING_{gast.activation_activity}",
+            }
+        )
+
+    # Xây dựng nhóm BASELESS trải đều trên 8 quy tắc bẫy R23–R30:
+    # - R23..R26: Bẫy ảo giác văn bản / ngoài phạm vi / bịa ngưỡng số (Roundtrip bắt lỗi)
+    # - R27..R28: Bẫy thiếu cột thuộc tính trong Log Schema (EarlyRepaymentCompensationFee, AnnualPercentageRateAPR)
+    # - R29: Hồ sơ bị từ chối sớm A_Create Application -> A_Denied (không có O_Create Offer -> INAPPLICABLE_TRACE_NO_ACTIVATION)
+    # - R30: Hồ sơ có O_Create Offer nhưng CreditScore = NaN (MISSING_LOG_EVIDENCE_PHI_VIOLATION)
+    no_offer_df = base_compliant_df[
+        base_compliant_df["concept:name"].isin(["A_Create Application", "W_Complete application"])
+    ].copy()
+    no_offer_df["case:concept:name"] = "Application_RejectedEarly_R29"
+
+    null_credit_df = base_compliant_df.copy()
+    null_credit_df["case:concept:name"] = "Application_NullCreditScore_R30"
+    null_credit_df["CreditScore"] = float("nan")
+
+    if trap_rules:
+        while len(baseless_items) < per_class_quota:
+            trap_rule = trap_rules[len(baseless_items) % len(trap_rules)]
+            rid = trap_rule["rule_id"]
+            if rid == "R29":
+                t_df = no_offer_df
+            elif rid == "R30":
+                t_df = null_credit_df
+            else:
+                t_df = base_compliant_df
+
+            baseless_items.append(
+                {
+                    "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
+                    "rule_id": rid,
+                    "rule_meta": trap_rule,
+                    "retrieved_chunk": trap_rule["retrieved_chunk"],
+                    "test_case_df": t_df,
+                    "ground_truth_label": "BASELESS",
+                    "trace_origin": f"TIER3_TRAP_{rid}_{trap_rule.get('trap_type', 'BASELESS')}",
+                }
+            )
+
     return entailed_items[:per_class_quota] + contradicted_items[:per_class_quota] + baseless_items[:per_class_quota]
+
+
+def export_benchmark_json(
+    output_rules_path: str = "data/processed/benchmark_rules_30.json",
+    output_items_path: str = "data/processed/benchmark_items.json",
+    chunks_path: str = "data/processed/directive_chunks.json",
+    parquet_path: str = "data/interim/bpic2017_events.parquet",
+    max_serialized_items: int = 300,
+) -> Dict[str, Any]:
+    """
+    Xuất cả 2 file chuẩn:
+    1. `benchmark_rules_30.json`: Chứa nguyên bản 30 quy tắc chuẩn (R01–R30).
+    2. `benchmark_items.json`: Đóng gói các hồ sơ thực tế từ BPIC 2017 (đủ 3 nhãn ENTAILED, CONTRADICTED, BASELESS)
+       kèm đoạn điều khoản luật và chuỗi sự kiện thực tế để kiểm chứng độc lập.
+    """
+    out_rules = Path(output_rules_path)
+    out_rules.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_rules, "w", encoding="utf-8") as f:
+        json.dump(BENCHMARK_RULES, f, indent=2, ensure_ascii=False)
+
+    # Đồng thời lưu bản sao tại thư mục gốc nếu người dùng gọi trực tiếp
+    root_copy = Path("benchmark_rules_30.json")
+    with open(root_copy, "w", encoding="utf-8") as f:
+        json.dump(BENCHMARK_RULES, f, indent=2, ensure_ascii=False)
+
+    chunks_file = Path(chunks_path)
+    parquet_file = Path(parquet_path)
+    serialized_count = 0
+
+    if chunks_file.exists() and parquet_file.exists():
+        with open(chunks_file, "r", encoding="utf-8") as f:
+            chunks = json.load(f)
+        chunks_by_id = {c["article_id"]: c for c in chunks}
+        normative_rules = build_normative_rule_benchmark(chunks_by_id)
+
+        df_raw = pd.read_parquet(parquet_file)
+        df_raw["time:timestamp"] = pd.to_datetime(df_raw["time:timestamp"], utc=True)
+        offer_cols = [
+            c
+            for c in ["OfferedAmount", "CreditScore", "Accepted", "MonthlyCost", "NumberOfTerms"]
+            if c in df_raw.columns
+        ]
+        df_prop = df_raw.copy()
+        if offer_cols:
+            df_prop[offer_cols] = df_prop.groupby("case:concept:name", sort=False)[offer_cols].ffill().bfill()
+            df_prop[offer_cols] = df_prop.groupby("case:concept:name", sort=False)[offer_cols].bfill()
+
+        items = build_stratified_trace_benchmark(
+            df_propagated=df_prop,
+            df_raw=df_raw,
+            normative_rules=normative_rules,
+            target_total_items=max_serialized_items,
+        )
+
+        serializable_items = []
+        for it in items:
+            cdf: pd.DataFrame = it["test_case_df"]
+            events_list = []
+            for _, row in cdf.iterrows():
+                events_list.append(
+                    {
+                        "case:concept:name": str(row.get("case:concept:name", "")),
+                        "concept:name": str(row.get("concept:name", "")),
+                        "time:timestamp": str(row.get("time:timestamp", "")),
+                        "case:RequestedAmount": (
+                            None if pd.isna(row.get("case:RequestedAmount")) else float(row.get("case:RequestedAmount"))
+                        ),
+                        "OfferedAmount": (
+                            None if pd.isna(row.get("OfferedAmount")) else float(row.get("OfferedAmount"))
+                        ),
+                        "CreditScore": (
+                            None if pd.isna(row.get("CreditScore")) else float(row.get("CreditScore"))
+                        ),
+                        "NumberOfTerms": (
+                            None if pd.isna(row.get("NumberOfTerms")) else float(row.get("NumberOfTerms"))
+                        ),
+                        "case:LoanGoal": (
+                            None if pd.isna(row.get("case:LoanGoal")) else str(row.get("case:LoanGoal"))
+                        ),
+                    }
+                )
+            serializable_items.append(
+                {
+                    "benchmark_id": it["benchmark_id"],
+                    "rule_id": it["rule_id"],
+                    "ground_truth_label": it["ground_truth_label"],
+                    "trace_origin": it["trace_origin"],
+                    "retrieved_chunk": it["retrieved_chunk"],
+                    "events": events_list,
+                }
+            )
+
+        out_items = Path(output_items_path)
+        out_items.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_items, "w", encoding="utf-8") as f:
+            json.dump(serializable_items, f, indent=2, ensure_ascii=False)
+        serialized_count = len(serializable_items)
+
+    return {
+        "rules_count": len(BENCHMARK_RULES),
+        "rules_path": str(out_rules),
+        "items_count": serialized_count,
+        "items_path": output_items_path,
+    }

@@ -1,0 +1,950 @@
+{
+  "R01": {
+    "rule_id": "R01",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Concept",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Concept\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R02": {
+    "rule_id": "R02",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Concept",
+      "target_activity": "A_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Concept\",\"target_activity\":\"A_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R03": {
+    "rule_id": "R03",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Accepted",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Accepted\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R04": {
+    "rule_id": "R04",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Chain Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Created",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Chain Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R05": {
+    "rule_id": "R05",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Created",
+      "target_activity": "O_Sent (mail and online)",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Created\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R06": {
+    "rule_id": "R06",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Complete",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R07": {
+    "rule_id": "R07",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 10(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Accepted",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R08": {
+    "rule_id": "R08",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Validated",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Validated\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R09": {
+    "rule_id": "R09",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 9(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 9(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Denied",
+      "target_activity": "O_Refused",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"O_Refused\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R10": {
+    "rule_id": "R10",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 13(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 13(2)",
+      "decomposition": null,
+      "template_name": "Not Co-Existence",
+      "activation_activity": "A_Denied",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 13(2)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R11": {
+    "rule_id": "R11",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R12": {
+    "rule_id": "R12",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(6)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(6)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Call after offers",
+      "target_activity": "A_Validated",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Call after offers\",\"target_activity\":\"A_Validated\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R13": {
+    "rule_id": "R13",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)(c)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 2(2)(c)', expected 'Article 2(2)' from retrieved legal clause."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R14": {
+    "rule_id": "R14",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": "<=",
+      "activation_val": 75000,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":75000,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: Expected attribute/time condition (activation_attr='OfferedAmount', activation_op='<=', activation_val=75000.0, time_max=None), but got (activation_attr='OfferedAmount', activation_op='>', activation_val=75000, time_max=None). LLM Judge feedback: The candidate AST correctly captures the operational compliance claim. It uses the O_Create Offer activity, the OfferedAmount attribute, and the > 75000 operator, which aligns with detecting offers that exceed the €75,000 ceiling defined in Article 2(2)(c). No baseless traps are triggered, and the template (Existence) matches the claim’s intent. Hence the formalization is equivalent."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R15": {
+    "rule_id": "R15",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Returned",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R16": {
+    "rule_id": "R16",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 14(3)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(3)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R17": {
+    "rule_id": "R17",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 2,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "CreditScore",
+      "activation_op": ">",
+      "activation_val": 0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Pending\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic REVERSED_ORDER]: Expected template 'Precedence' with activation_activity='O_Create Offer' and target_activity='A_Pending', but got Existence[A_Pending, None]. LLM Judge feedback: The AST correctly captures the target claim: it specifies an Existence constraint on activity A_Pending with the attribute CreditScore > 0, matching the operational requirement. No baseless numeric threshold, order reversal, or mismatch is present."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: Expected attribute/time condition (activation_attr='CreditScore', activation_op='>', activation_val=0, time_max=None), but got (activation_attr=None, activation_op=None, activation_val=None, time_max=None). LLM Judge feedback: The Target Operational Compliance Claim requires that at activity A_Pending the attribute CreditScore be > 0. The candidate AST instead encodes a Precedence constraint (O_Create Offer must occur before A_Pending) and contains no activation_attr, activation_op, or activation_val to capture the CreditScore > 0 condition. Therefore the formalization does not reflect the numeric threshold of the claim, resulting in a threshold mismatch rather than a baseless or reversed‑order error."
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"A_Pending\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R18": {
+    "rule_id": "R18",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 16(4)",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Article 16(4)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "O_Accepted",
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">",
+      "activation_val": 10000.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 16(4)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"O_Accepted\",\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">\",\"activation_val\":10000,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: Expected attribute/time condition (activation_attr='OfferedAmount', activation_op='>', activation_val=10000.0, time_max=None), but got (activation_attr='case:RequestedAmount', activation_op='>', activation_val=10000, time_max=None). LLM Judge feedback: The Target Operational Compliance Claim requires that for loan offers exceeding EUR 10,000, the validation step W_Validate application must occur before O_Accepted. The Candidate AST encodes a Precedence template with activation_activity=W_Validate application, target_activity=O_Accepted, activation attribute case:RequestedAmount > 10000, matching the claim. No normative hallucination traps are triggered, and the activity order and numeric bound align exactly with the claim."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 16(4)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"O_Accepted\",\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":10000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R19": {
+    "rule_id": "R19",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 13(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 13(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Complete",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Complete\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R20": {
+    "rule_id": "R20",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Annex I(II)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Annex I(II)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "NumberOfTerms",
+      "activation_op": ">=",
+      "activation_val": 12,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Annex I(II)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"NumberOfTerms\",\"activation_op\":\">=\",\"activation_val\":12,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R21": {
+    "rule_id": "R21",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Annex I(II)",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Annex I(II)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "A_Create Application",
+      "target_activity": null,
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">=",
+      "activation_val": 1500,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Annex I Part II(g)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">=\",\"activation_val\":1500,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Annex I Part II(g)', expected 'Annex I(II)' from retrieved legal clause."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Annex I(II)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">=\",\"activation_val\":1500,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R22": {
+    "rule_id": "R22",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 18(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 18(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 90,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 18(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":90,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R23": {
+    "rule_id": "R23",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 7",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Article 7",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Incomplete",
+      "target_activity": "A_Complete",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 8,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The claim asserts that Article 7(1) imposes an 8‑day deadline for processing incomplete files. However, Article 7 of Directive 2008/48/EC explicitly states that Articles 5 and 6 do not apply to suppliers acting as credit intermediaries in an ancillary capacity, and it does not contain any time‑based obligation for handling incomplete dossiers. Therefore the claim falls under the Article 7 normative hallucination trap, rendering it baseless. The candidate AST correctly formalises the claim, but the claim itself is invalid with respect to the Directive. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Complete' must eventually occur AFTER it within 8 calendar days.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 7(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 7(1)', expected 'Article 7' from retrieved legal clause."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The claim asserts that Article 7(1) imposes an 8‑day deadline for processing incomplete files. However, Article 7 of Directive 2008/48/EC explicitly states that Articles 5 and 6 do not apply to suppliers acting as credit intermediaries in an ancillary capacity, and it does not contain any time‑based obligation for handling incomplete dossiers. Therefore the claim falls under the Article 7 normative hallucination trap, rendering it baseless. The candidate AST correctly formalises the claim, but the claim itself is invalid with respect to the Directive. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Complete' must eventually occur AFTER it within 8 calendar days.)"
+      }
+    ]
+  },
+  "R24": {
+    "rule_id": "R24",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 7",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 7",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "W_Call incomplete files",
+      "target_activity": null,
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The claim asserts that Article 7 of the Directive mandates the occurrence of the activity \"W_Call incomplete files\". Article 7 actually only exempts certain suppliers from Articles 5 and 6 and does not impose any requirement on the creditor to perform a call for incomplete files. This falls squarely into the Article 7 normative hallucination trap, so the constraint is baseless. The AST merely formalises the claim but does not correct the underlying misinterpretation of the Directive. (Back-translation: Activity 'W_Call incomplete files' must occur at least once in the credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Existence\",\"activation_activity\":\"W_Call incomplete files\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The claim asserts that Article 7 of the Directive mandates the occurrence of the activity \"W_Call incomplete files\". Article 7 actually only exempts certain suppliers from Articles 5 and 6 and does not impose any requirement on the creditor to perform a call for incomplete files. This falls squarely into the Article 7 normative hallucination trap, so the constraint is baseless. The AST merely formalises the claim but does not correct the underlying misinterpretation of the Directive. (Back-translation: Activity 'W_Call incomplete files' must occur at least once in the credit case.)"
+      }
+    ]
+  },
+  "R25": {
+    "rule_id": "R25",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Not Precedence",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Complete",
+      "activation_attr": "case:LoanGoal",
+      "activation_op": "==",
+      "activation_val": "Mortgage",
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The Target Operational Compliance Claim asserts that the Directive applies to real‑estate mortgage contracts, yet Article 2(2)(a)–(b) explicitly excludes such contracts. This is a classic Article 2(2) mortgage trap, making the claim baseless. The provided AST constraint (a precedence rule between A_Create Application with case:LoanGoal==Mortgage and A_Complete) does not reflect the Directive’s exclusion and is therefore irrelevant to the claim. Hence the claim/constraint is baseless. (Back-translation: Whenever 'A_Complete' occurs, 'A_Create Application' when case:LoanGoal == Mortgage must NOT have occurred before it.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Not Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Complete\",\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"==\",\"activation_val\":\"Mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The Target Operational Compliance Claim asserts that the Directive applies to real‑estate mortgage contracts, yet Article 2(2)(a)–(b) explicitly excludes such contracts. This is a classic Article 2(2) mortgage trap, making the claim baseless. The provided AST constraint (a precedence rule between A_Create Application with case:LoanGoal==Mortgage and A_Complete) does not reflect the Directive’s exclusion and is therefore irrelevant to the claim. Hence the claim/constraint is baseless. (Back-translation: Whenever 'A_Complete' occurs, 'A_Create Application' when case:LoanGoal == Mortgage must NOT have occurred before it.)"
+      }
+    ]
+  },
+  "R26": {
+    "rule_id": "R26",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 3,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "W_Assess potential fraud",
+      "target_activity": null,
+      "activation_attr": "CreditScore",
+      "activation_op": ">=",
+      "activation_val": 750,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The Target Operational Compliance Claim and the Candidate AST assert that Article 8(1) mandates a specific statutory minimum CreditScore of 750. According to the evaluation rules, this constitutes the 'Article 8(1) numeric hallucination trap'. Article 8(1) of Directive 2008/48/EC requires creditors to assess creditworthiness based on sufficient information but does not prescribe a specific numeric threshold (such as 750) for credit scores. Therefore, the constraint is a normative hallucination and is classified as BASELESS. (Back-translation: Activity 'W_Assess potential fraud' when CreditScore >= 750 must occur at least once in the credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"CreditScore\",\n  \"activation_activity\": \"W_Assess potential fraud\",\n  \"activation_attr\": [\"CreditScore\"],\n  \"target_activity\": \"A_Create Application\",\n  \"target_case_attr\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"target_event_attr\": [\"CreditScore\"],\n  \"activation_op\": \">=\",\n  \"activation_val\": 750,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"allowed_activities\": [\"W_Assess potential fraud\", \"W_Call after offers\", \"W_Validate application\"],\n  \"allowed_case_attributes\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"allowed_event_attributes\": [\"CreditScore\"]\n}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'template_name': Input should be 'Existence', 'Absence', 'Init', 'Exactly1', 'Choice', 'Exclusive Choice', 'Responded Existence', 'Response', 'Alternate Response', 'Chain Response', 'Precedence', 'Alternate Precedence', 'Chain Precedence', 'Not Responded Existence', 'Not Response', 'Not Precedence' or 'Not Co-Existence'; field 'activation_attr': Input should be a valid string"
+      },
+      {
+        "round": 2,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"CreditScore\",\n  \"activation_activity\": \"W_Assess potential fraud\",\n  \"activation_attr\": [\"CreditScore\"],\n  \"target_activity\": \"A_Create Application\",\n  \"target_case_attr\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"target_event_attr\": [\"CreditScore\"],\n  \"activation_op\": \">=\",\n  \"activation_val\": 750,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"allowed_activities\": [\"W_Assess potential fraud\", \"W_Call after offers\", \"W_Validate application\"],\n  \"allowed_case_attributes\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"allowed_event_attributes\": [\"CreditScore\"]\n}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'template_name': Input should be 'Existence', 'Absence', 'Init', 'Exactly1', 'Choice', 'Exclusive Choice', 'Responded Existence', 'Response', 'Alternate Response', 'Chain Response', 'Precedence', 'Alternate Precedence', 'Chain Precedence', 'Not Responded Existence', 'Not Response', 'Not Precedence' or 'Not Co-Existence'; field 'activation_attr': Input should be a valid string"
+      },
+      {
+        "round": 3,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"CreditScore\",\n  \"activation_activity\": \"W_Assess potential fraud\",\n  \"activation_attr\": [\"CreditScore\"],\n  \"target_activity\": \"A_Create Application\",\n  \"target_case_attr\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"target_event_attr\": [\"CreditScore\"],\n  \"activation_op\": \">=\",\n  \"activation_val\": 750,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"allowed_activities\": [\"W_Assess potential fraud\", \"W_Call after offers\", \"W_Validate application\"],\n  \"allowed_case_attributes\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"allowed_event_attributes\": [\"CreditScore\"]\n}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'template_name': Input should be 'Existence', 'Absence', 'Init', 'Exactly1', 'Choice', 'Exclusive Choice', 'Responded Existence', 'Response', 'Alternate Response', 'Chain Response', 'Precedence', 'Alternate Precedence', 'Chain Precedence', 'Not Responded Existence', 'Not Response', 'Not Precedence' or 'Not Co-Existence'; field 'activation_attr': Input should be a valid string"
+      },
+      {
+        "round": 4,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"W_Assess potential fraud\",\n  \"target_activity\": null,\n  \"activation_attr\": \"CreditScore\",\n  \"activation_op\": \">=\",\n  \"activation_val\": 750,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The Target Operational Compliance Claim and the Candidate AST assert that Article 8(1) mandates a specific statutory minimum CreditScore of 750. According to the evaluation rules, this constitutes the 'Article 8(1) numeric hallucination trap'. Article 8(1) of Directive 2008/48/EC requires creditors to assess creditworthiness based on sufficient information but does not prescribe a specific numeric threshold (such as 750) for credit scores. Therefore, the constraint is a normative hallucination and is classified as BASELESS. (Back-translation: Activity 'W_Assess potential fraud' when CreditScore >= 750 must occur at least once in the credit case.)"
+      }
+    ]
+  },
+  "R27": {
+    "rule_id": "R27",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 16(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 16(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "EarlyRepaymentCompensationFee",
+      "activation_op": "<=",
+      "activation_val": 1.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "MISSING_LOG_EVIDENCE_PHI_VIOLATION: - [Layer 2 Static Error]: Navigational Violation in δ(Process, 'EarlyRepaymentCompensationFee'): Attribute 'EarlyRepaymentCompensationFee' is undefined in Typing Environment Γ. Closest valid attributes: ['lifecycle:transition']. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource'].",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"EarlyRepaymentCompensationFee\",\"activation_op\":\"<=\",\"activation_val\":1.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Process, 'EarlyRepaymentCompensationFee'): Attribute 'EarlyRepaymentCompensationFee' is undefined in Typing Environment Γ. Closest valid attributes: ['lifecycle:transition']. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource']."
+      }
+    ]
+  },
+  "R28": {
+    "rule_id": "R28",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 19(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 19(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "AnnualPercentageRateAPR",
+      "activation_op": "<=",
+      "activation_val": 20.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "MISSING_LOG_EVIDENCE_PHI_VIOLATION: - [Layer 2 Static Error]: Navigational Violation in δ(Process, 'AnnualPercentageRateAPR'): Attribute 'AnnualPercentageRateAPR' is undefined in Typing Environment Γ. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource'].",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"AnnualPercentageRateAPR\",\"activation_op\":\"<=\",\"activation_val\":20.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Process, 'AnnualPercentageRateAPR'): Attribute 'AnnualPercentageRateAPR' is undefined in Typing Environment Γ. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource']."
+      }
+    ]
+  },
+  "R29": {
+    "rule_id": "R29",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 3,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 2(2)(c)\",\n  \"template_name\": \"O_Create Offer\",\n  \"activation_activity\": \"A_Create Application\",\n  \"case_attributes\": [\"case:LoanGoal\", \"case:concept:name\", \"case:ApplicationType\", \"case:RequestedAmount\"],\n  \"event_attributes\": [\"Action\", \"EventID\", \"EventOrigin\", \"Accepted\", \"lifecycle:transition\", \"time:timestamp\", \"OfferedAmount\", \"MonthlyCost\", \"FirstWithdrawalAmount\", \"CreditScore\", \"Selected\", \"OfferID\", \"NumberOfTerms\", \"concept:name\", \"org:resource\"]\n}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'template_name': Input should be 'Existence', 'Absence', 'Init', 'Exactly1', 'Choice', 'Exclusive Choice', 'Responded Existence', 'Response', 'Alternate Response', 'Chain Response', 'Precedence', 'Alternate Precedence', 'Chain Precedence', 'Not Responded Existence', 'Not Response', 'Not Precedence' or 'Not Co-Existence'"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)(c)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 2(2)(c)', expected 'Article 2(2)' from retrieved legal clause."
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 2(2) (c)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 2(2) (c)', expected 'Article 2(2)' from retrieved legal clause."
+      },
+      {
+        "round": 4,
+        "output": "{\n  \"article_id\": \"Article 2(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">=\",\n  \"activation_val\": 200.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R30": {
+    "rule_id": "R30",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "CreditScore",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  }
+}
