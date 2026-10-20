@@ -12,42 +12,45 @@ Hệ thống hoạt động theo quy trình 4 giai đoạn khép kín từ văn 
 
 ```mermaid
 flowchart TD
-    subgraph Phase1["Giai đoạn 1: Tiền xử lý & Trích xuất Siêu mô hình (Metamodeling)"]
-        D1["Văn bản Luật<br/>Directive 2008/48/EC (PDF)"] -->|Phân rã điều khoản nghiệp vụ| D2["directive_chunks.json<br/>(Articles 1–24)"]
-        L1["Nhật ký Sự kiện BPIC 2017<br/>(XES / Parquet)"] -->|Trích xuất Lược đồ Quy trình| L2["process_schema.json<br/>(Hoạt động, Thuộc tính, Kiểu dữ liệu)"]
+    subgraph Phase1["Giai đoạn 1: Tiền xử lý & Trích xuất Siêu mô hình"]
+        D1["Văn bản Luật: Directive 2008/48/EC"] -->|Phân rã điều khoản nghiệp vụ| D2["directive_chunks.json: Articles 1–24"]
+        L1["Nhật ký Sự kiện BPIC 2017"] -->|Trích xuất Lược đồ Quy trình| L2["process_schema.json: Hoạt động, Thuộc tính, Kiểu"]
     end
 
     subgraph Phase2["Giai đoạn 2: Tổng hợp Ràng buộc MDE & Kiểm tra Tĩnh 2 Tầng"]
-        D2 -->|BM25 RAG Retrieval| RAG["Prompt Ngữ cảnh Luật + Schema"]
+        D2 -->|BM25 RAG Retrieval| RAG["Prompt Ngữ cảnh Luật và Schema"]
         L2 --> RAG
-        RAG -->|Sinh mã ràng buộc| LLM["LLM (openai/gpt-oss-120b)"]
-        LLM -->|JSON thô| L1_Check{"Tầng 1: Kiểm tra Cú pháp AST<br/>(Pydantic Grammar)"}
-        L1_Check -->|Lỗi cú pháp| Retry1["Phản hồi Lỗi Compiler"] --> LLM
-        L1_Check -->|Hợp lệ| L2_Check{"Tầng 2: Kiểm tra Lược đồ & Kiểu tĩnh<br/>Context Typing Env Γ, δ(C, p)"}
-        L2_Check -->|Sai tên sự kiện / lệch kiểu| Retry2["Phản hồi Lỗi Metamodel OVAS"] --> LLM
+        RAG -->|Sinh mã ràng buộc| LLM["LLM: openai/gpt-oss-120b"]
+        LLM -->|JSON thô| L1_Check{"Tầng 1: Kiểm tra Cú pháp AST<br/>Pydantic Grammar"}
+        L1_Check -->|Lỗi cú pháp| Retry1["Phản hồi Lỗi Compiler"]
+        Retry1 --> LLM
+        L1_Check -->|Hợp lệ| L2_Check{"Tầng 2: Kiểm tra Lược đồ & Kiểu tĩnh<br/>Context Typing Environment"}
+        L2_Check -->|Sai tên sự kiện / lệch kiểu| Retry2["Phản hồi Lỗi Metamodel OVAS"]
+        Retry2 --> LLM
     end
 
     subgraph Phase3["Giai đoạn 3: Kiểm chứng Ngữ nghĩa Tầng 3 & Thực thi Tượng trưng"]
         L2_Check -->|Hợp lệ tĩnh| L3_RT{"Tầng 3A: Kiểm tra Đối ngẫu<br/>Deterministic Round-trip Check"}
-        L3_RT -->|Lệch ngưỡng số / Thiếu bằng chứng| Retry3["Phản hồi Đối soát Thực thể"] --> LLM
+        L3_RT -->|Lệch ngưỡng số / Thiếu bằng chứng| Retry3["Phản hồi Đối soát Thực thể"]
+        Retry3 --> LLM
         L3_RT -->|Semantically Faithful| L3_Vac{"Tầng 3B: Kiểm tra Độ rỗng<br/>Vacuity Check trên Log"}
-        L3_Vac -->|Ràng buộc Rỗng (0 kích hoạt)| Vac_Alert["Gắn nhãn Vacuous / Cảnh báo"]
-        L3_Vac -->|Không rỗng| D4Py["Declare4Py Symbolic Engine<br/>Biên dịch sang LTL/Declare (.decl)"]
+        L3_Vac -->|Ràng buộc Rỗng - 0 kích hoạt| Vac_Alert["Gắn nhãn Vacuous / Cảnh báo"]
+        L3_Vac -->|Không rỗng| D4Py["Declare4Py Symbolic Engine<br/>Biên dịch sang LTL/Declare"]
     end
 
     subgraph Phase4["Giai đoạn 4: Phán quyết 3 Trạng thái & Báo cáo Giải trình Minh bạch"]
-        D4Py --> Phi_Check{"Tập Điều kiện An toàn Φ<br/>(Trace Safety Guardrail)"}
-        Phi_Check -->|Thiếu thuộc tính / Bẫy luật| Base["BASELESS<br/>(Ảo giác / Thiếu bằng chứng)"]
+        D4Py --> Phi_Check{"Tập Điều kiện An toàn Phi<br/>Trace Safety Guardrail"}
+        Phi_Check -->|Thiếu thuộc tính / Bẫy luật| Base["BASELESS<br/>Ảo giác / Thiếu bằng chứng"]
         Phi_Check -->|Dữ liệu đầy đủ| Trace_Eval{"Kiểm tra Tuân thủ Declare4Py"}
-        Trace_Eval -->|Thỏa mãn công thức| Ent["ENTAILED<br/>(Tuân thủ)"]
-        Trace_Eval -->|Vi phạm công thức| Cont["CONTRADICTED<br/>(Vi phạm + Tính MCS)"]
+        Trace_Eval -->|Thỏa mãn công thức| Ent["ENTAILED<br/>Tuân thủ"]
+        Trace_Eval -->|Vi phạm công thức| Cont["CONTRADICTED<br/>Vi phạm + Tính MCS"]
         
-        Base & Ent & Cont --> JTree["Cây Biện minh Tất định (xpSHACL)<br/>Gắn Luật - Công thức - Bằng chứng Log"]
-        JTree --> Auditor["LLM Diễn giải Báo cáo Giải trình (XAI)"]
+        Base --> JTree["Cây Biện minh Tất định xpSHACL<br/>Gắn Luật - Công thức - Bằng chứng Log"]
+        Ent --> JTree
+        Cont --> JTree
+        JTree --> Auditor["LLM Diễn giải Báo cáo Giải trình XAI"]
         Auditor --> Guard["Post-hoc Grounding Guard<br/>Khóa nguồn số liệu, chống bịa đặt"]
     end
-
-    Retry1 & Retry2 & Retry3 -.->|Vòng lặp Tự sửa CEGIS (Tối đa 5 lượt)| LLM
 ```
 
 ---
