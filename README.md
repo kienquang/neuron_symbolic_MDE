@@ -75,20 +75,23 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 
 ### Bảng 1 (Trả lời RQ1): Năng lực Kiểm chứng & Hiệu chỉnh Ngữ nghĩa theo Độ phức tạp
 
-Đánh giá tác động của Vòng lặp Tự sửa 3 Tầng lên khả năng sinh quy tắc đúng ngữ nghĩa (`Eq.`):
+Đánh giá năng lực dịch từ ngôn ngữ tự nhiên sang DECLARE AST có kiểm chứng ngữ nghĩa (`Eq.`):
 
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa (Eq. %) ↑ | Quá Lỏng (Weakened %) ↓ | Quá Chặt (Strengthened %) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng (Vacuous %) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **1A. Khi tắt Vòng lặp Tự sửa (One-Shot Synthesis - Vòng 1 của LLM)** | | | | | |
-| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **83.33%** | 8.33% | 0.0% | 8.33% | 0.0% |
-| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **33.33%** | 0.0% | 0.0% | **66.67%** | 0.0% |
-| • **Toàn hệ thống One-Shot (Overall)** | **73.33%** | 6.67% | 0.0% | **20.0%** | 0.0% |
+| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **83.33%** | 0.0% | 0.0% | 16.67% | 0.0% |
+| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **100.0%** | 0.0% | 0.0% | **0.0%** | 0.0% |
+| • **Toàn hệ thống One-Shot (Overall)** | **86.67%** | 0.0% | 0.0% | **13.33%** | 0.0% |
 | **1B. Full Proposed Pipeline (Sau Kiến trúc 3 Tầng & Vòng lặp Tự sửa)** | | | | | |
-| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **83.33%** | 8.33% | 0.0% | 8.33% | 0.0% |
-| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **66.67%** *(gấp đôi)* | 0.0% | 0.0% | **0.0%** *(xóa sạch)* | 33.33% |
-| • **Toàn hệ thống Đề xuất (Overall)** | **80.0%** | 6.67% | 0.0% | **6.67%** | 6.67% |
+| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **83.33%** | 0.0% | 0.0% | 16.67% | 0.0% |
+| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **100.0%** | 0.0% | 0.0% | **0.0%** | 0.0% |
+| • **Toàn hệ thống Đề xuất (Overall)** | **86.67%** | 0.0% | 0.0% | **13.33%** | 0.0% |
 
-> **Nhận xét RQ1**: Trên các ràng buộc phức tạp có dữ liệu và thời gian (Tier 2), chế độ One-Shot của LLM gặp lỗi lệch hướng nghiêm trọng (**66.67%**). Khi bật Vòng lặp Tự sửa, tỷ lệ đúng của Tier 2 tăng gấp đôi lên **66.67%**, và toàn bộ lỗi lệch hướng nguy hiểm bị triệt tiêu hoàn toàn về **0.0%**.
+> **Nhận xét RQ1**:
+> 1. Trên các ràng buộc phức tạp có dữ liệu và thời hạn thời gian (Tier 2: R13 sàn 200 EUR, R14 trần 75.000 EUR, R15 thời hạn rút vốn 14 ngày), mô hình đạt tỷ lệ đúng ngữ nghĩa tuyệt đối **100.0%** (3/3 quy tắc).
+> 2. Toàn hệ thống đạt tỷ lệ đúng ngữ nghĩa **86.67%** (13/15 quy tắc). 2 quy tắc còn lại (R08, R12) được phân loại vào nhóm `REVERSED` (13.33%) do LLM ánh xạ sang hoạt động kiểm soát nghiệp vụ lân cận (`A_Complete` / `A_Validating` thay vì `A_Validated` của nhãn gold).
+> 3. Lỗi quá lỏng (Weakened), quá chặt (Strengthened) và rỗng (Vacuous) đều được triệt tiêu hoàn toàn về **0.0%**.
 
 ---
 
@@ -98,15 +101,16 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 
 | Cấu hình Hệ thống (Configuration) | Tỷ lệ Ràng buộc Thực thi được (%) ↑ | Tỷ lệ Đúng Ngữ nghĩa (Eq. Rate %) ↑ | Độ chính xác Kiểm toán Log (Conformance F1) ↑ |
 | :--- | :---: | :---: | :---: |
-| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | *N/A* | *N/A* | **0.2910** |
-| **Baseline 2: One-Shot LLM-to-DECLARE (Không kiểm tra 3 tầng)** | 90.0% | 56.67% | **0.5250** |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 90.0% | 80.0% | **0.7991** |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 90.0% | 80.0% | **0.7991** |
-| **Full Neuro-Symbolic Pipeline (Kiến trúc Đề xuất)** | **100.0%** | **90.0%** | **0.8541** |
+| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | *N/A* | *N/A* | **0.1903** |
+| **Baseline 2: One-Shot LLM-to-DECLARE (Không kiểm tra 3 tầng)** | 93.33% | 56.67% | **0.5133** |
+| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 93.33% | 78.33% | **0.8240** |
+| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 88.33% | 78.33% | **0.8297** |
+| **Full Neuro-Symbolic Pipeline (Kiến trúc Đề xuất)** | **100.0%** | **85.0%** | **0.8666** |
 
 > **Nhận xét RQ2**:
-> 1. Mô hình đề xuất (**0.8541** F1) tạo ra bước nhảy vọt **+56.31% F1** so với mô hình Vanilla RAG truyền thống (**0.2910** F1), minh chứng cho sự thất bại của LLM thuần túy khi phải suy luận trên chuỗi sự kiện dài.
-> 2. Cắt bỏ Tầng 1 & 2 hoặc cắt bỏ Vòng lặp Tự sửa đều khiến F1 tụt xuống **0.7991** do hiện tượng *Phụ thuộc liên đới (Conjunctive Coupling)*: Tầng 1 & 2 phát hiện lỗi, còn Vòng lặp Tự sửa thực thi sửa; thiếu 1 trong 2 mắt xích thì các quy tắc lỗi không thể khắc phục được và rơi vào trạng thái `CRASH`.
+> 1. Mô hình đề xuất (**0.8666** F1) tạo ra bước nhảy vọt **gấp 4.5 lần (+0.6763 F1)** so với Vanilla RAG truyền thống (**0.1903** F1), minh chứng cho sự thất bại của LLM thuần túy khi phải suy luận trực tiếp trên các chuỗi sự kiện dài của quy trình.
+> 2. Baseline 2 (One-shot DECLARE nhị phân) chỉ đạt F1 **0.5133** do không có cơ chế phát hiện trạng thái thiếu dữ liệu/ảo giác `BASELESS`.
+> 3. Tắt Tầng 1 & 2 khiến F1 giảm xuống **0.8240** (tỷ lệ thực thi tụt còn 93.33%), tắt Vòng lặp Tự sửa khiến F1 giảm xuống **0.8297** (tỷ lệ thực thi tụt còn 88.33%). Kiến trúc hoàn chỉnh đạt tỷ lệ thực thi **100.0%** và F1 cao nhất **0.8666**.
 
 ---
 
@@ -114,15 +118,15 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 
 | Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB ↓ | Thời gian Kiểm chứng ↓ | Trích dẫn Minh bạch (Citation Fidelity) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED** (Tuân thủ) | **1.0000** (100%) | 0.8000 | **0.8889** | 0.0 lượt | 12.2 ms | 100.0% |
-| **CONTRADICTED** (Vi phạm) | **1.0000** (100%) | 0.7500 | **0.8571** | 0.0 lượt | 12.5 ms | 100.0% |
-| **BASELESS** (Ảo giác / Thiếu bằng chứng Φ) | 0.6897 | **1.0000** (100%) | **0.8163** | 0.8 lượt | 0.2 ms | 100.0% |
-| **Trung bình Toàn hệ thống (Overall)** | **0.8966** | **0.8500** | **0.8541** | **0.27 lượt** | **8.3 ms** | **100.0%** |
+| **ENTAILED** (Tuân thủ) | 0.8571 | **0.9000** | **0.8780** | 0.10 lượt | 12.1 ms | 100.0% |
+| **CONTRADICTED** (Vi phạm) | **0.8947** | 0.8500 | **0.8718** | 0.05 lượt | 9.4 ms | 100.0% |
+| **BASELESS** (Ảo giác / Thiếu bằng chứng Φ) | 0.8500 | 0.8500 | **0.8500** | 0.30 lượt | 0.8 ms | 100.0% |
+| **Trung bình Toàn hệ thống (Overall)** | **0.8673** | **0.8667** | **0.8666** | **0.15 lượt** | **7.4 ms** | **100.0%** |
 
 > **Nhận xét RQ3**:
-> 1. **Zero False Alarm (Precision = 1.0)** trên cả hai nhãn phán quyết `ENTAILED` và `CONTRADICTED`: Mọi kết luận khẳng định của hệ thống đều hoàn toàn chính xác về mặt toán học.
-> 2. **Chặn đứng 100% Ảo giác (Recall = 1.0)** trên nhãn `BASELESS`: Toàn bộ các bẫy bịa đặt điều khoản hoặc hồ sơ thiếu thuộc tính $\Phi$ đều được nhận diện và xử lý an toàn.
-> 3. **Tốc độ thời gian thực (8.3 ms / hồ sơ)**: Nhanh gấp hàng trăm lần việc gọi trực tiếp API của LLM, đảm bảo tính khả thi khi kiểm toán trên quy mô hàng triệu giao dịch.
+> 1. **Cân bằng tối ưu trên cả 3 trạng thái**: F1 phân bố đồng đều giữa `ENTAILED` (0.8780), `CONTRADICTED` (0.8718), và `BASELESS` (0.8500), đạt Macro-F1 **0.8666**.
+> 2. **Tốc độ kiểm chứng siêu nhanh (7.4 ms / hồ sơ)**: Động cơ Declare4Py hoàn tất kiểm tra 60 hồ sơ trong chưa đầy 0.5 giây, nhanh gấp hàng trăm lần việc gọi trực tiếp API của LLM và sẵn sàng cho các luồng dữ liệu ngân hàng thời gian thực.
+> 3. **Giải trình minh bạch 100%**: 100% kết luận đều được gắn với Cây biện minh tất định xpSHACL và trích dẫn chuẩn xác văn bản luật tương ứng.
 
 ---
 
