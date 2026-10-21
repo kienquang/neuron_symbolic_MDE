@@ -120,15 +120,18 @@ class DeterministicAuditNarratorClient:
         )
 
 
+import re
+
 def verify_posthoc_grounding(
     justification_tree: Dict[str, Any],
     explanation_text: str,
 ) -> Dict[str, Any]:
     """
     Chốt chặn Hậu kiểm (Post-hoc Grounding Guard):
-    Kiểm tra 100% mã hồ sơ (case_id), số hiệu điều khoản (article_id), nhãn kết luận (audit_status),
-    và các con số độ lệch (actual_duration_days / excess_days / minimal_correction_mcs) có xuất hiện trung thực
-    trong câu giải trình của LLM hay không.
+    1. Kiểm tra 100% mã hồ sơ (case_id), số hiệu điều khoản (article_id), nhãn kết luận (audit_status).
+    2. Ngăn chặn hiện tượng mù ngữ cảnh phủ định (Negation Blindness, ví dụ: 'KHÔNG PHẢI là CONTRADICTED' hoặc 'not CONTRADICTED').
+    3. Kiểm tra hai chiều (Bidirectional Guard): phát hiện các số hiệu điều khoản bịa đặt lạ (như Article 99).
+    4. Kiểm tra toàn bộ các mốc độ lệch định lượng (actual_duration_days, allowed_max_days, excess_days).
     """
     case_id = str(justification_tree["trace_evidence_node"]["case_id"])
     article_id = str(justification_tree["normative_node"]["article_id"])
@@ -136,18 +139,66 @@ def verify_posthoc_grounding(
     details = justification_tree["trace_evidence_node"]["proof_or_counterexample"]
 
     missing_anchors: List[str] = []
+
+    # 1. Kiểm tra sự hiện diện của mã hồ sơ và số hiệu điều khoản
     if case_id not in explanation_text:
         missing_anchors.append(f"case_id '{case_id}'")
     if article_id not in explanation_text:
         missing_anchors.append(f"article_id '{article_id}'")
+
+    # 2. Kiểm tra nhãn kết luận và phát hiện phủ định (Negation Blindness Guard)
     if audit_status not in explanation_text:
         missing_anchors.append(f"audit_status '{audit_status}'")
+    else:
+        # Kiểm tra xem nhãn có bị đặt sau từ phủ định hay không
+        negation_pattern = re.compile(
+            rf"\b(?:không\s+(?:phải|phải\s+là|được|coi\s+là)?|chưa\s+(?:phải)?|not|never|non-|neither)\s+{re.escape(audit_status)}\b",
+            re.IGNORECASE,
+        )
+        if negation_pattern.search(explanation_text):
+            missing_anchors.append(f"negated_audit_status '{audit_status}' (phủ định trái phép kết luận)")
 
+        # Kiểm tra nếu xuất hiện nhãn mâu thuẫn trực tiếp
+        conflicting_labels = [s for s in ("ENTAILED", "CONTRADICTED", "BASELESS") if s != audit_status]
+        for conflict in conflicting_labels:
+            if re.search(rf"\b(?:kết\s+luận|conclusion|verdict|status)[:\s]+{conflict}\b", explanation_text, re.IGNORECASE):
+                missing_anchors.append(f"conflicting_verdict '{conflict}' (trái ngược với {audit_status})")
+
+    # 3. Kiểm tra hai chiều chống bịa đặt điều khoản lạ (Bidirectional Citation Guard)
+    cited_articles = re.findall(
+        r"\b(?:Article|Điều)\s*(\d+(?:\([^)]+\))?)",
+        explanation_text,
+        re.IGNORECASE,
+    )
+    expected_art_match = re.search(r"(\d+(?:\([^)]+\))?)", article_id)
+    if expected_art_match:
+        expected_norm = expected_art_match.group(1).lower().replace(" ", "")
+        for cited in cited_articles:
+            norm_cited = cited.lower().replace(" ", "")
+            if norm_cited != expected_norm:
+                missing_anchors.append(f"unauthorized_article_hallucination 'Article {cited}'")
+
+    # 4. Kiểm tra các con số định lượng độ lệch
     if isinstance(details, dict):
         if "actual_duration_days" in details and details["actual_duration_days"] is not None:
             dur_str = str(details["actual_duration_days"])
             if dur_str not in explanation_text:
                 missing_anchors.append(f"actual_duration_days '{dur_str}'")
+
+        if "allowed_max_days" in details and details["allowed_max_days"] is not None:
+            max_str = str(details["allowed_max_days"])
+            if max_str not in explanation_text:
+                missing_anchors.append(f"allowed_max_days '{max_str}'")
+
+        if "excess_days" in details and details["excess_days"] is not None:
+            exc_val = details["excess_days"]
+            exc_str = str(exc_val)
+            try:
+                exc_round = f"{float(exc_val):.2f}"
+            except (ValueError, TypeError):
+                exc_round = exc_str
+            if exc_str not in explanation_text and exc_round not in explanation_text:
+                missing_anchors.append(f"excess_days '{exc_str}'")
 
     return {
         "is_citation_verified": len(missing_anchors) == 0,
@@ -161,7 +212,7 @@ def generate_accountable_explanation(
 ) -> Dict[str, Any]:
     """
     Bước 4.3: Dùng LLM diễn đạt lại Cây biện minh tất định (xpSHACL / CEUR Vol-4259)
-    kèm chốt chặn kiểm tra hậu kỳ đảm bảo không sai lệch số liệu.
+    kèm chốt chặn kiểm tra hậu kỳ đảm bảo không sai lệch số liệu và vòng lặp tự thử lại (1-round retry).
     """
     if llm_client is None:
         llm_client = DeterministicAuditNarratorClient()
@@ -182,6 +233,24 @@ QUY TẮC BẮT BUỘC:
 
     # Chốt chặn Hậu kiểm (Post-hoc Grounding Guard)
     grounding_check = verify_posthoc_grounding(justification_tree, explanation_text)
+
+    # Cơ chế tự thử lại (1-round retry loop) nếu chốt chặn hậu kiểm phát hiện lỗi
+    if not grounding_check["is_citation_verified"] and hasattr(llm_client, "chat"):
+        retry_prompt = (
+            f"{prompt}\n\n"
+            f"[CẢNH BÁO HẬU KIỂM - YÊU CẦU TỰ HIỆU CHỈNH]:\n"
+            f"Văn bản giải trình vừa sinh đã bị Chốt chặn Hậu kiểm (Post-hoc Grounding Guard) từ chối vì:\n"
+            f"- Các mỏ neo bị thiếu hoặc sai lệch: {grounding_check['missing_anchors']}.\n"
+            f"Yêu cầu viết lại tuyệt đối chính xác: Trích dẫn đúng 100% case_id, article_id, "
+            f"giữ nguyên trạng thái kết luận '{justification_tree['audit_status']}' (không phủ định), "
+            f"không bịa đặt thêm số hiệu Điều khoản nào khác ngoài {justification_tree['normative_node']['article_id']}."
+        )
+        retry_text = llm_client.chat(retry_prompt, temperature=0.0)
+        retry_check = verify_posthoc_grounding(justification_tree, retry_text)
+        if retry_check["is_citation_verified"]:
+            explanation_text = retry_text
+            grounding_check = retry_check
+
     case_id = justification_tree["trace_evidence_node"]["case_id"]
 
     return {

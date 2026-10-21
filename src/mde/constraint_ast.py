@@ -8,8 +8,15 @@ Kết hợp:
 
 import json
 import re
+from enum import Enum
 from typing import Any, Dict, Literal, Optional, Tuple, Union
 from pydantic import BaseModel, Field, ValidationError, model_validator
+
+class TemporalDirection(str, Enum):
+    PREREQUISITE = "Prerequisite (Precedence: Target B requires prior Activation A)"
+    CONSEQUENCE = "Consequence (Response: Activation A triggers subsequent Target B)"
+    UNARY = "Unary (Existence / Absence / Init / Exactly1 of Activity A)"
+    NEGATIVE = "Negative / Mutual Exclusion (Not Response / Not Precedence / Not Co-Existence)"
 
 # Tập mẫu Unary và Binary chuẩn trong Declare4Py
 UNARY_TEMPLATES = {

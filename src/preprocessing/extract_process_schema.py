@@ -107,6 +107,10 @@ def extract_bpic2017_schema(
 
     schema: Dict[str, Any] = {
         "dataset": "BPI Challenge 2017 (Consumer Loan Process)",
+        "activity_aliases": {
+            "A_Validated": "A_Validating",
+            "A_Validating": "A_Validated",
+        },
         "valid_activities": all_activities,
         "activities_by_origin": activities_by_origin,
         "case_attributes": case_attributes,

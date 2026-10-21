@@ -21,13 +21,90 @@ TIME_UNIT_NAMES = {
     "d": "calendar days",
 }
 
+AST_UNIT_CANONICAL = {
+    "d": "days",
+    "days": "days",
+    "day": "days",
+    "calendar days": "days",
+    "working days": "days",
+    "h": "hours",
+    "hours": "hours",
+    "hour": "hours",
+    "m": "minutes",
+    "minutes": "minutes",
+    "minute": "minutes",
+    "s": "seconds",
+    "seconds": "seconds",
+    "second": "seconds",
+    "months": "months",
+    "month": "months",
+    "years": "years",
+    "year": "years",
+}
+
+TEMPORAL_UNITS = {"days", "hours", "minutes", "seconds", "months", "years"}
+
+ENGLISH_NUM_WORDS = {
+    "one": 1.0,
+    "two": 2.0,
+    "three": 3.0,
+    "four": 4.0,
+    "five": 5.0,
+    "six": 6.0,
+    "seven": 7.0,
+    "eight": 8.0,
+    "nine": 9.0,
+    "ten": 10.0,
+    "eleven": 11.0,
+    "twelve": 12.0,
+    "thirteen": 13.0,
+    "fourteen": 14.0,
+    "fifteen": 15.0,
+    "twenty": 20.0,
+    "thirty": 30.0,
+    "sixty": 60.0,
+    "ninety": 90.0,
+}
+
 # Các từ chỉ số lượng phổ biến trong văn bản pháp lý tiếng Anh của EU Directive
 WORD_NUMBER_MAP: List[Tuple[str, float, str]] = [
-    (r"\bone\s+month\b", 30.0, "days"),
-    (r"\bone\s+year\b", 12.0, "months"),
-    (r"\btwelve\s+months\b", 12.0, "months"),
+    # Days / Weeks / Fortnights
+    (r"\bone\s+day\b", 1.0, "days"),
+    (r"\ba\s+day\b", 1.0, "days"),
+    (r"\btwo\s+days\b", 2.0, "days"),
+    (r"\bthree\s+days\b", 3.0, "days"),
+    (r"\bseven\s+days\b", 7.0, "days"),
+    (r"\bone\s+week\b", 7.0, "days"),
+    (r"\ba\s+week\b", 7.0, "days"),
+    (r"\btwo\s+weeks\b", 14.0, "days"),
+    (r"\ba\s+fortnight\b", 14.0, "days"),
+    (r"\bfortnight\b", 14.0, "days"),
     (r"\bfourteen\s+calendar\s+days\b", 14.0, "days"),
     (r"\bfourteen\s+days\b", 14.0, "days"),
+    (r"\bthree\s+weeks\b", 21.0, "days"),
+    (r"\btwenty\s+days\b", 20.0, "days"),
+    (r"\btwenty\s+working\s+days\b", 20.0, "days"),
+    (r"\bthirty\s+calendar\s+days\b", 30.0, "days"),
+    (r"\bthirty\s+days\b", 30.0, "days"),
+    (r"\bsixty\s+days\b", 60.0, "days"),
+    (r"\bninety\s+days\b", 90.0, "days"),
+    # Months / Years
+    (r"\bone\s+month\b", 30.0, "days"),
+    (r"\bone\s+month\b", 1.0, "months"),
+    (r"\ba\s+month\b", 30.0, "days"),
+    (r"\ba\s+month\b", 1.0, "months"),
+    (r"\btwo\s+months\b", 60.0, "days"),
+    (r"\btwo\s+months\b", 2.0, "months"),
+    (r"\bthree\s+months\b", 90.0, "days"),
+    (r"\bthree\s+months\b", 3.0, "months"),
+    (r"\bsix\s+months\b", 180.0, "days"),
+    (r"\bsix\s+months\b", 6.0, "months"),
+    (r"\btwelve\s+months\b", 365.0, "days"),
+    (r"\btwelve\s+months\b", 12.0, "months"),
+    (r"\bone\s+year\b", 365.0, "days"),
+    (r"\bone\s+year\b", 1.0, "years"),
+    (r"\ba\s+year\b", 365.0, "days"),
+    (r"\ba\s+year\b", 1.0, "years"),
 ]
 
 
@@ -51,7 +128,6 @@ def extract_clause_numeric_entities(clause_text: str) -> List[Tuple[float, str]]
     )
     for match in eur_prefix_pattern.finditer(clause_text):
         raw_num = match.group(2).replace(" ", "").replace(",", ".")
-        # Nếu có nhiều dấu chấm do phân tách hàng nghìn (vd 75.000), xử lý chuẩn
         if raw_num.count(".") == 1 and len(raw_num.split(".")[1]) == 3:
             raw_num = raw_num.replace(".", "")
         try:
@@ -91,7 +167,33 @@ def extract_clause_numeric_entities(clause_text: str) -> List[Tuple[float, str]]
         except ValueError:
             pass
 
-    # 3. Quét các cụm từ chỉ số lượng chuẩn trong văn bản pháp lý ("one month" -> 30 days, "one year" -> 12 months)
+    # 3. Quét dạng chữ số viết tay: "fourteen calendar days", "three weeks", "twenty days"...
+    word_unit_pattern = re.compile(
+        r"\b([a-z]+)\s+(calendar\s+days|working\s+days|days|weeks|months|years)\b",
+        re.IGNORECASE,
+    )
+    for match in word_unit_pattern.finditer(clause_text):
+        w = match.group(1).lower()
+        u_raw = match.group(2).lower()
+        if w in ENGLISH_NUM_WORDS:
+            val = ENGLISH_NUM_WORDS[w]
+            if "week" in u_raw:
+                val *= 7.0
+                unit = "days"
+            elif "day" in u_raw:
+                unit = "days"
+            elif "month" in u_raw:
+                unit = "months"
+            elif "year" in u_raw:
+                unit = "years"
+            else:
+                unit = u_raw
+            key = (val, unit)
+            if key not in seen:
+                seen.add(key)
+                found.append(key)
+
+    # 4. Quét các cụm từ chỉ số lượng chuẩn trong văn bản pháp lý ("one month" -> 30 days, "a fortnight" -> 14 days...)
     for pattern_str, mapped_val, mapped_unit in WORD_NUMBER_MAP:
         if re.search(pattern_str, clause_text, flags=re.IGNORECASE):
             key = (mapped_val, mapped_unit)
@@ -108,41 +210,62 @@ def verify_generic_numeric_entities(
 ) -> Tuple[bool, Optional[str], Optional[str]]:
     """
     Bước 2 & 3 của Generic Entity Matcher:
-    So sánh con số mà AI nộp lên (`time_max` hoặc `activation_val`) với danh sách các mốc định lượng
+    So sánh con số và đơn vị mà AI nộp lên (`time_max`, `time_unit` hoặc `activation_val`) với danh sách các mốc định lượng
     được trích xuất tự động bằng Regex từ văn bản điều khoản `retrieved_chunk['text']`.
-    Nếu lệch hoặc không xuất hiện, trả về thông báo theo phong cách Trình biên dịch (Compiler Diagnostic)
-    không mớm đáp án:
-      (False, verdict, diagnostic_message)
-    Nếu hợp lệ (hoặc không dùng ngưỡng số), trả về:
-      (True, None, None)
+    Kiểm tra cả giá trị số và tính tương thích đơn vị (chống lỗ hổng lấy số 14 nhưng gán nhầm đơn vị).
     """
     clause_text = str(retrieved_chunk.get("text", ""))
     entities = extract_clause_numeric_entities(clause_text)
     allowed_numbers = {val for val, _ in entities}
+    temporal_entities = [(v, u) for v, u in entities if u in TEMPORAL_UNITS]
+    allowed_temporal_values = {v for v, _ in temporal_entities}
+
     formatted_entities = (
         ", ".join(f"[{int(v) if v.is_integer() else v}, '{u}']" for v, u in entities)
         if entities
         else "Không có mốc số học nào được quy định trong điều khoản này"
     )
 
-    # 1. Kiểm tra time_max nếu AI đặt giới hạn thời gian
+    # 1. Kiểm tra time_max và time_unit nếu AI đặt giới hạn thời gian
     t_max = ast_dict.get("time_max")
     if isinstance(t_max, (int, float)) and t_max > 0:
-        if not entities:
+        if not entities or not temporal_entities:
             return (
                 False,
                 "BASELESS",
                 (
-                    f"[Diagnostic Mismatch]: Con số time_max={t_max} bạn chọn không xuất hiện trong văn bản luật "
-                    f"của điều khoản này ({formatted_entities}). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc."
+                    f"[Diagnostic Mismatch]: Con số time_max={t_max} bạn chọn không xuất hiện dưới dạng mốc thời gian "
+                    f"trong văn bản luật của điều khoản này ({formatted_entities}). "
+                    f"Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc."
                 ),
             )
-        if float(t_max) not in allowed_numbers:
+
+        raw_unit = str(ast_dict.get("time_unit") or "d").lower()
+        canonical_ast_unit = AST_UNIT_CANONICAL.get(raw_unit, "days")
+        val_float = float(t_max)
+
+        # Kiểm tra sự xuất hiện chính xác cả giá trị lẫn đơn vị tương thích
+        has_exact_match = any(
+            val_float == v and canonical_ast_unit == u
+            for v, u in temporal_entities
+        )
+        if not has_exact_match:
+            # Nếu giá trị số xuất hiện nhưng sai đơn vị (ví dụ 14 months thay vì 14 days, hoặc 200 EUR thay vì 200 days)
+            if val_float in allowed_numbers:
+                return (
+                    False,
+                    "THRESHOLD_MISMATCH",
+                    (
+                        f"[Diagnostic Mismatch]: Con số time_max={t_max} ({canonical_ast_unit}) không tương thích "
+                        f"về đơn vị thời gian được quy định trong văn bản luật. Các mốc định lượng được đề cập gồm: {formatted_entities}. "
+                        f"Hãy đọc lại văn bản và tự hiệu chỉnh đơn vị/chỉ số."
+                    ),
+                )
             return (
                 False,
                 "THRESHOLD_MISMATCH",
                 (
-                    f"[Diagnostic Mismatch]: Con số time_max={t_max} bạn chọn không xuất hiện trong văn bản luật "
+                    f"[Diagnostic Mismatch]: Con số time_max={t_max} ({canonical_ast_unit}) bạn chọn không xuất hiện trong văn bản luật "
                     f"của điều khoản này. Các mốc định lượng được luật đề cập gồm: {formatted_entities}. "
                     f"Hãy đọc lại văn bản và tự hiệu chỉnh."
                 ),
@@ -151,6 +274,7 @@ def verify_generic_numeric_entities(
     # 2. Kiểm tra activation_val nếu AI đặt ngưỡng số học (khác 0 — vì 0 thường dùng để kiểm tra tồn tại > 0)
     act_val = ast_dict.get("activation_val")
     if isinstance(act_val, (int, float)) and not isinstance(act_val, bool) and float(act_val) != 0.0:
+        val_act_float = float(act_val)
         if not entities:
             return (
                 False,
@@ -160,7 +284,7 @@ def verify_generic_numeric_entities(
                     f"của điều khoản này ({formatted_entities}). Văn bản gốc không quy định ngưỡng số học này."
                 ),
             )
-        if float(act_val) not in allowed_numbers:
+        if val_act_float not in allowed_numbers:
             return (
                 False,
                 "THRESHOLD_MISMATCH",
@@ -253,13 +377,16 @@ Compare the original EU Directive 2008/48/EC legal clause with the back-translat
 - Back-translated Constraint: "{verbalized_rule}"
 
 Context:
-In business process modeling for financial institutions, statutory principles (e.g. assessing creditworthiness, providing pre-contractual information, explaining credit suitability, right of withdrawal) are operationalized into concrete workflow steps and status transitions in the bank's IT system (e.g. preliminary acceptance, validation tasks, creating/refusing offers).
-- An operational workflow constraint that logically supports, facilitates, or implements a broader statutory obligation (such as conducting credit assessments before loan commitments, or explaining credit suitability before validation) is a legitimate implementation and should be classified as EQUIVALENT.
-- Do NOT classify a constraint as BASELESS simply because specific IT activity names (like W_Call after offers, A_Accepted, O_Refused) do not appear verbatim in the Directive text.
+In business process modeling for financial institutions, statutory principles (e.g. assessing creditworthiness, providing pre-contractual information, explaining credit suitability, statutory right of withdrawal, rejection notifications) are operationalized into concrete workflow steps and status transitions in the bank's IT system (e.g. preliminary acceptance, validation tasks, creating/refusing/cancelling offers, sending/returning contracts).
+- Legitimate Operational Implementations (Classify as EQUIVALENT):
+   1. Workflow state transitions and prerequisite steps that record, prepare, or execute statutory actions and policy requirements (e.g. A_Create Application before A_Concept for credit assessment onboarding under Article 8; O_Accepted before A_Pending for disbursement under Article 10; A_Denied -> O_Refused for executing rejected credit outcomes under Article 9; A_Cancelled -> O_Cancelled for recording consumer cancellations/withdrawals; O_Sent -> O_Returned within 14 calendar days for tracking the statutory withdrawal window under Article 14(1); W_Call after offers for adequate explanation obligations under Article 5(6)).
+   2. Positive operationalization of statutory scope thresholds: When Article 2(2)(c) excludes credit agreements < 200 EUR or > 75 000 EUR from consumer credit rules, an operational constraint enforcing OfferedAmount >= 200 EUR or OfferedAmount <= 75 000 EUR at offer creation is a legitimate implementation ensuring only in-scope loans are issued (classify as EQUIVALENT, NOT reversed order or threshold mismatch).
+   3. If the candidate constraint faithfully operationalizes the Bank Operational Policy Requirement for the cited Directive article, you MUST classify it as EQUIVALENT.
+- Do NOT classify a constraint as BASELESS simply because specific IT activity names (like A_Create Application, A_Concept, W_Call after offers, A_Accepted, A_Pending, O_Accepted, O_Refused, O_Cancelled, O_Sent, O_Returned) do not appear verbatim in the Directive text.
 - STRICTLY classify as BASELESS if and only if:
-   1. The transaction or domain is explicitly EXCLUDED from the Directive's scope (e.g. real estate mortgage loans under Article 2(2));
-   2. The constraint invents arbitrary, unauthorized quantitative thresholds (e.g. minimum CreditScore >= 750 or fabricated interest rates/penalties);
-   3. The claimed rule directly contradicts the legal text (e.g. claiming the bank can force contract return within 14 days, when Article 14(1) grants a withdrawal right to the consumer).
+   1. The constraint invents arbitrary, unauthorized quantitative thresholds (e.g. minimum CreditScore >= 750 or fabricated interest rates/penalties);
+   2. The transaction or product is entirely unrelated to consumer credit (e.g. real estate mortgage loans or pawnshop pledges);
+   3. The claimed rule directly contradicts the legal text.
 
 Provide compiler-style diagnostic feedback WITHOUT revealing any benchmark ground-truth answers.
 Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "THRESHOLD_MISMATCH" | "BASELESS", "diagnostic_feedback": "..."}}

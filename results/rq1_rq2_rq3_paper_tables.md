@@ -5,16 +5,16 @@
 ### 1A. Khi tắt Vòng lặp Tự sửa (One-Shot Synthesis - Phân bố kết quả vòng đầu của LLM trên R01–R22)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt - Strengthened (%) ↓ | Quá Lỏng - Weakened (%) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng - Vacuous (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Tier 1: Control-Flow Only** | 83.33% | 0.0% | 8.33% | 8.33% | 0.0% |
-| **Tier 2: Temporal & Data-Aware** | 33.33% | 0.0% | 0.0% | 66.67% | 0.0% |
-| **Overall Pipeline** | 73.33% | 0.0% | 6.67% | 20.0% | 0.0% |
+| **Tier 1: Control-Flow Only** | 83.33% | 0.0% | 0.0% | 16.67% | 0.0% |
+| **Tier 2: Temporal & Data-Aware** | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **Overall Pipeline** | 86.67% | 0.0% | 0.0% | 13.33% | 0.0% |
 
 ### 1B. Full Neuro-Symbolic Pipeline (Sau khi qua Kiến trúc 3 Tầng & Vòng lặp Tự sửa)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Lỏng - Weakened (%) ↓ | Quá Chặt - Strengthened (%) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng - Vacuous (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Tier 1: Control-Flow Only** | 83.33% | 0.0% | 8.33% | 8.33% | 0.0% |
-| **Tier 2: Temporal & Data-Aware** | 66.67% | 0.0% | 0.0% | 0.0% | 33.33% |
-| **Overall Pipeline** | 80.0% | 0.0% | 6.67% | 6.67% | 6.67% |
+| **Tier 1: Control-Flow Only** | 83.33% | 0.0% | 0.0% | 16.67% | 0.0% |
+| **Tier 2: Temporal & Data-Aware** | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **Overall Pipeline** | 86.67% | 0.0% | 0.0% | 13.33% | 0.0% |
 
 ---
 
@@ -22,11 +22,11 @@
 
 | Cấu hình Hệ thống (Configuration) | Tỷ lệ Ràng buộc Hợp lệ Thực thi được (%) ↑ | Tỷ lệ Đúng Ngữ nghĩa - Eq. Rate (%) ↑ | Độ chính xác Kiểm tra Tuân thủ trên Log (F1-Score) ↑ |
 | :--- | :---: | :---: | :---: |
-| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | N/A | N/A | 0.291 |
-| **Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)** | 90.0% | 56.67% | 0.525 |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 90.0% | 80.0% | 0.7991 |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 90.0% | 80.0% | 0.7991 |
-| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 100.0% | 90.0% | 0.8541 |
+| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | N/A | N/A | 0.1903 |
+| **Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)** | 93.33% | 56.67% | 0.5133 |
+| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 93.33% | 78.33% | 0.824 |
+| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 88.33% | 78.33% | 0.8297 |
+| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 100.0% | 85.0% | 0.8666 |
 
 ---
 
@@ -34,7 +34,7 @@
 
 | Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB (Avg. Retries) ↓ | Thời gian Kiểm chứng Declare4Py (s) ↓ | Độ chuẩn xác Trích dẫn Giải trình (Citation Fidelity %) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED (Tuân thủ)** | 1.0 | 0.8 | 0.8889 | 0.0 | 0.0122s | 100.0% |
-| **CONTRADICTED (Vi phạm)** | 1.0 | 0.75 | 0.8571 | 0.0 | 0.0125s | 100.0% |
-| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.6897 | 1.0 | 0.8163 | 0.8 | 0.0002s | 100.0% |
-| **Trung bình Toàn hệ thống (Overall)** | 0.8966 | 0.85 | 0.8541 | 0.27 | 0.0083s | 100.0% |
+| **ENTAILED (Tuân thủ)** | 0.8571 | 0.9 | 0.878 | 0.1 | 0.0121s | 100.0% |
+| **CONTRADICTED (Vi phạm)** | 0.8947 | 0.85 | 0.8718 | 0.05 | 0.0094s | 100.0% |
+| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.85 | 0.85 | 0.85 | 0.3 | 0.0008s | 100.0% |
+| **Trung bình Toàn hệ thống (Overall)** | 0.8673 | 0.8667 | 0.8666 | 0.15 | 0.0074s | 100.0% |

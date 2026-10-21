@@ -954,7 +954,21 @@ def export_benchmark_json(
 
     chunks_file = Path(chunks_path)
     parquet_file = Path(parquet_path)
+    out_items = Path(output_items_path)
     serialized_count = 0
+
+    if out_items.exists() and out_items.stat().st_size > 1000:
+        try:
+            with open(out_items, "r", encoding="utf-8") as f:
+                serializable_items = json.load(f)
+            return {
+                "rules_count": len(BENCHMARK_RULES),
+                "rules_path": str(out_rules),
+                "items_count": len(serializable_items),
+                "items_path": output_items_path,
+            }
+        except Exception:
+            pass
 
     if chunks_file.exists() and parquet_file.exists():
         with open(chunks_file, "r", encoding="utf-8") as f:

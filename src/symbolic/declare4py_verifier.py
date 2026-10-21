@@ -228,10 +228,26 @@ class Declare4Py:
             return None
 
     @staticmethod
-    def _within_time(ev_a: Dict[str, Any], ev_b: Dict[str, Any], window: Optional[Tuple[float, float]]) -> bool:
+    def _within_time(
+        ev_a: Dict[str, Any],
+        ev_b: Dict[str, Any],
+        window: Optional[Tuple[float, float]],
+        directional: bool = True,
+    ) -> bool:
+        """
+        Kiểm tra ràng buộc thời gian giữa 2 sự kiện:
+        - Nếu directional=True (mặc định cho Response / Precedence): B bắt buộc phải xảy ra SAU A (ev_b >= ev_a).
+        - Nếu directional=False (cho Responded Existence, Co-Existence): chỉ xét khoảng cách tuyệt đối.
+        """
         if window is None:
             return True
-        delta_sec = abs(float(ev_b["_ts_sec"]) - float(ev_a["_ts_sec"]))
+        diff_sec = float(ev_b["_ts_sec"]) - float(ev_a["_ts_sec"])
+        if directional:
+            if diff_sec < 0:
+                return False
+            delta_sec = diff_sec
+        else:
+            delta_sec = abs(diff_sec)
         return window[0] <= delta_sec <= window[1]
 
     def _check_single_trace(
@@ -247,6 +263,7 @@ class Declare4Py:
         tpl = constraint["template"]
         acts = constraint["activities"]
         act_cond = constraint["act_cond"]
+        corr_cond = constraint.get("corr_cond", lambda ev: True)
         time_window = constraint["time_window_sec"]
 
         act_a = acts[0]
@@ -272,11 +289,13 @@ class Declare4Py:
                 else:
                     num_violations = 1
             elif tpl == "Absence":
-                num_activations = max(1, count)
+                num_activations = 1
                 if count == 0:
                     num_fulfillments = 1
+                    num_violations = 0
                 else:
-                    num_violations = count
+                    num_fulfillments = 0
+                    num_violations = 1
             elif tpl == "Init":
                 num_activations = 1
                 if events and events[0]["concept:name"] == act_a and act_cond(events[0]):
@@ -285,16 +304,16 @@ class Declare4Py:
                     num_violations = 1
 
         elif tpl in ("Response", "Alternate Response", "Chain Response", "Responded Existence"):
-            # Trong họ Response: sự kiện A là Activation, yêu cầu sau đó (hoặc trong trace) phải có B trong khoảng thời gian
+            # Trong họ Response: sự kiện A là Activation (thỏa act_cond), yêu cầu sau đó (hoặc trong trace) phải có B (thỏa corr_cond) trong khoảng thời gian
             for i, ev in enumerate(events):
                 if ev["concept:name"] == act_a and act_cond(ev):
                     num_activations += 1
                     if tpl == "Responded Existence":
-                        candidates = [e2 for e2 in events if e2["concept:name"] == act_b]
+                        candidates = [e2 for e2 in events if e2["concept:name"] == act_b and corr_cond(e2)]
                     elif tpl == "Chain Response":
                         candidates = (
                             [events[i + 1]]
-                            if (i + 1 < len(events) and events[i + 1]["concept:name"] == act_b)
+                            if (i + 1 < len(events) and events[i + 1]["concept:name"] == act_b and corr_cond(events[i + 1]))
                             else []
                         )
                     elif tpl == "Alternate Response":
@@ -302,10 +321,10 @@ class Declare4Py:
                         for e2 in events[i + 1 :]:
                             if e2["concept:name"] == act_a:
                                 break
-                            if e2["concept:name"] == act_b:
+                            if e2["concept:name"] == act_b and corr_cond(e2):
                                 candidates.append(e2)
                     else:  # Response
-                        candidates = [e2 for e2 in events[i + 1 :] if e2["concept:name"] == act_b]
+                        candidates = [e2 for e2 in events[i + 1 :] if e2["concept:name"] == act_b and corr_cond(e2)]
 
                     fulfilled = any(self._within_time(ev, c, time_window) for c in candidates)
                     if fulfilled:
@@ -314,10 +333,10 @@ class Declare4Py:
                         num_violations += 1
 
         elif tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
-            # Trong họ Precedence (Prerequisites): mỗi khi sự kiện mục tiêu B xảy ra,
+            # Trong họ Precedence (Prerequisites): mỗi khi sự kiện mục tiêu B xảy ra (thỏa corr_cond),
             # bắt buộc trước đó phải có sự kiện tiền đề A thỏa mãn điều kiện act_cond và khoảng thời gian.
             for i, ev in enumerate(events):
-                if ev["concept:name"] == act_b and act_cond(ev):
+                if ev["concept:name"] == act_b and corr_cond(ev):
                     num_activations += 1
                     if tpl == "Chain Precedence":
                         prior_a = (
@@ -441,10 +460,15 @@ def extract_concrete_trace_snapshots(
         return snapshots
 
     subset_df = log_df[log_df["case:concept:name"].isin(target_case_ids)]
+    # Tối ưu hóa hiệu năng: Group sẵn theo case_id để tra cứu O(1) thay vì lọc lại DataFrame nhiều lần
+    grouped_cases = {
+        cid: grp.sort_values("time:timestamp")
+        for cid, grp in subset_df.groupby("case:concept:name", sort=False)
+    }
 
     for v in sample_violations:
         cid = v["case_id"]
-        case_events = subset_df[subset_df["case:concept:name"] == cid].sort_values("time:timestamp")
+        case_events = grouped_cases.get(cid, pd.DataFrame())
         if case_events.empty:
             continue
 
@@ -580,9 +604,17 @@ def run_layer3_declare4py_verifier(
             ),
         }
 
-    # 5. Nếu hợp lệ (total_activations > 0): Trích xuất Concrete Counterexample Snapshot (Mục 3.4.6 bài OCL2026)
+    # 5. Nếu hợp lệ (total_activations > 0): Trích xuất Concrete Counterexample Snapshot phân tầng
+    # Tránh sampling bias: nếu có nhiều hơn 5 ca vi phạm, chọn trải đều theo mức độ vi phạm
+    if len(violated_cases) <= 5:
+        sample_targets = violated_cases
+    else:
+        sorted_viol = sorted(violated_cases, key=lambda x: x["num_violations"])
+        indices = [0, len(sorted_viol) // 4, len(sorted_viol) // 2, (3 * len(sorted_viol)) // 4, -1]
+        sample_targets = [sorted_viol[i] for i in dict.fromkeys(indices)]
+
     counterexamples = extract_concrete_trace_snapshots(
-        log_df, violated_cases[:5], ast_obj
+        log_df, sample_targets, ast_obj
     )
 
     activated_count = len(satisfied_cases) + len(violated_cases)

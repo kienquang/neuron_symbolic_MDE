@@ -1,0 +1,470 @@
+{
+  "R01": {
+    "rule_id": "R01",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Concept",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The constraint enforces that A_Create Application precedes A_Concept, which concerns internal data‑entry ordering. The EU Directive 2008/48/EC Article 8(1) mandates that the creditor assess the consumer's creditworthiness before concluding the credit agreement. The operational rule does not reference credit‑worthiness assessment, contract conclusion, or any of the required informational checks, and therefore does not implement or support the statutory obligation. It is not a reversed‑order or threshold issue, but it lacks a legal basis, so it is classified as BASELESS. (Back-translation: Whenever 'A_Concept' occurs, 'A_Create Application' must have occurred BEFORE it.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Concept\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The constraint enforces that A_Create Application precedes A_Concept, which concerns internal data‑entry ordering. The EU Directive 2008/48/EC Article 8(1) mandates that the creditor assess the consumer's creditworthiness before concluding the credit agreement. The operational rule does not reference credit‑worthiness assessment, contract conclusion, or any of the required informational checks, and therefore does not implement or support the statutory obligation. It is not a reversed‑order or threshold issue, but it lacks a legal basis, so it is classified as BASELESS. (Back-translation: Whenever 'A_Concept' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+      }
+    ]
+  },
+  "R02": {
+    "rule_id": "R02",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Concept",
+      "target_activity": "A_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"A_Concept\",\n  \"target_activity\": \"A_Accepted\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R03": {
+    "rule_id": "R03",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Accepted",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"A_Accepted\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R04": {
+    "rule_id": "R04",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Created",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Created\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R05": {
+    "rule_id": "R05",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Created",
+      "target_activity": "O_Sent (mail and online)",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Created\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R06": {
+    "rule_id": "R06",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Complete",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"A_Complete\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R07": {
+    "rule_id": "R07",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 10(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Accepted",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The Directive article governs the medium of the credit agreement and the obligation to provide copies to all parties. It does not impose any requirement that a customer's acceptance (O_Accepted) must precede the loan‑disbursement status (A_Pending). Consequently, the back‑translated constraint about ordering of acceptance and pending disbursement is unrelated to the legal provision and cannot be considered an implementation of it. (Back-translation: Whenever 'A_Pending' occurs, 'O_Accepted' must have occurred BEFORE it.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The Directive article governs the medium of the credit agreement and the obligation to provide copies to all parties. It does not impose any requirement that a customer's acceptance (O_Accepted) must precede the loan‑disbursement status (A_Pending). Consequently, the back‑translated constraint about ordering of acceptance and pending disbursement is unrelated to the legal provision and cannot be considered an implementation of it. (Back-translation: Whenever 'A_Pending' occurs, 'O_Accepted' must have occurred BEFORE it.)"
+      }
+    ]
+  },
+  "R08": {
+    "rule_id": "R08",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Validated",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Validate application\",\n  \"target_activity\": \"A_Validated\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R09": {
+    "rule_id": "R09",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 9(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 9(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Denied",
+      "target_activity": "O_Refused",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 9(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"O_Refused\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R10": {
+    "rule_id": "R10",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 13(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 13(2)",
+      "decomposition": null,
+      "template_name": "Not Co-Existence",
+      "activation_activity": "A_Denied",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The original legal clause (Article 13(2)) specifically governs the creditor's right to terminate the consumer's right to draw down on an open-end credit agreement for objectively justified reasons, along with the obligation to inform the consumer of this termination and the reasons. The candidate constraint asserts a 'Not Co-Existence' relationship between 'A_Denied' (application rejection) and 'A_Pending' (disbursement/pending status). While it is logically true that a denied application should not proceed to disbursement, this specific workflow constraint does not implement, facilitate, or support the statutory obligation described in Article 13(2) regarding the termination of drawdown rights on open-end agreements. The constraint addresses the initial credit decision phase (rejection vs. disbursement), whereas the legal clause addresses the post-contractual management of open-end credit facilities. Therefore, the constraint is not a legitimate operationalization of the specific legal text provided. (Back-translation: Activities 'A_Denied' and 'A_Pending' cannot both occur in the same credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 13(2)\",\n  \"template_name\": \"Not Co-Existence\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The original legal clause (Article 13(2)) specifically governs the creditor's right to terminate the consumer's right to draw down on an open-end credit agreement for objectively justified reasons, along with the obligation to inform the consumer of this termination and the reasons. The candidate constraint asserts a 'Not Co-Existence' relationship between 'A_Denied' (application rejection) and 'A_Pending' (disbursement/pending status). While it is logically true that a denied application should not proceed to disbursement, this specific workflow constraint does not implement, facilitate, or support the statutory obligation described in Article 13(2) regarding the termination of drawdown rights on open-end agreements. The constraint addresses the initial credit decision phase (rejection vs. disbursement), whereas the legal clause addresses the post-contractual management of open-end credit facilities. Therefore, the constraint is not a legitimate operationalization of the specific legal text provided. (Back-translation: Activities 'A_Denied' and 'A_Pending' cannot both occur in the same credit case.)"
+      }
+    ]
+  },
+  "R11": {
+    "rule_id": "R11",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R12": {
+    "rule_id": "R12",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(6)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(6)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Call after offers",
+      "target_activity": "W_Validate application",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\n  \"article_id\": \"Article 5(6)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Call after offers\",\n  \"target_activity\": \"W_Validate application\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null\n}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R13": {
+    "rule_id": "R13",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 1,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)(c)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 2(2)(c)', expected 'Article 2(2)' from retrieved legal clause."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R14": {
+    "rule_id": "R14",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 2(2)",
+    "rounds_needed": 2,
+    "final_ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">",
+      "activation_val": 75000.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate AST encodes an *Existence* constraint that forces the activity O_Create Offer to occur when OfferedAmount > 75 000 EUR. Article 2(2)(c) of the Directive merely excludes credit agreements above that amount from the Directive’s scope; it does **not** impose any requirement that such offers be created, nor does it prescribe a detection‑only rule. Consequently the AST invents an unauthorized operational requirement that contradicts the legal text’s intent (the Directive is silent, not prescriptive, for > 75 000 EUR cases). This makes the constraint baseless with respect to the legal provision. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 75000.0 must occur at least once in the credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)(c)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Traceability Mismatch: AST 'article_id' is 'Article 2(2)(c)', expected 'Article 2(2)' from retrieved legal clause."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The legal clause (Article 2(2)(c)) excludes credit agreements with amounts *greater* than EUR 75,000 (or less than EUR 200). The candidate constraint instead enforces that the activity O_Create Offer must occur when OfferedAmount <= 75,000, i.e., it applies to the opposite range. This reverses the intended threshold and therefore does not reflect the statutory exclusion. The mismatch in the quantitative condition leads to a THRESHOLD_MISMATCH verdict. (Back-translation: Activity 'O_Create Offer' when OfferedAmount <= 75000.0 must occur at least once in the credit case.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The candidate AST encodes an *Existence* constraint that forces the activity O_Create Offer to occur when OfferedAmount > 75 000 EUR. Article 2(2)(c) of the Directive merely excludes credit agreements above that amount from the Directive’s scope; it does **not** impose any requirement that such offers be created, nor does it prescribe a detection‑only rule. Consequently the AST invents an unauthorized operational requirement that contradicts the legal text’s intent (the Directive is silent, not prescriptive, for > 75 000 EUR cases). This makes the constraint baseless with respect to the legal provision. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 75000.0 must occur at least once in the credit case.)"
+      }
+    ]
+  },
+  "R15": {
+    "rule_id": "R15",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Returned",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  }
+}

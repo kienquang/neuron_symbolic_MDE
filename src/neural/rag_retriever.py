@@ -30,6 +30,17 @@ DOMAIN_CONCEPT_ALIGNMENT: Dict[str, Dict[str, List[str]]] = {
         ],
         "attributes": ["CreditScore", "case:RequestedAmount", "OfferedAmount"],
     },
+    "adequate_explanations": {
+        "keywords": ["adequate explanations", "explain", "assistance", "suitability", "call after"],
+        "activities": [
+            "W_Call after offers",
+            "O_Sent (mail and online)",
+            "A_Validating",
+            "W_Validate application",
+            "A_Accepted",
+        ],
+        "attributes": ["CreditScore", "OfferedAmount", "MonthlyCost"],
+    },
     "pre_contractual_offer": {
         "keywords": ["pre-contractual", "offer", "bound", "draft credit agreement", "supplied", "information"],
         "activities": [
@@ -78,6 +89,21 @@ DOMAIN_CONCEPT_ALIGNMENT: Dict[str, Dict[str, List[str]]] = {
         ],
         "attributes": ["case:RequestedAmount", "OfferedAmount", "case:LoanGoal", "case:ApplicationType"],
     },
+    "early_repayment": {
+        "keywords": ["early repayment", "discharge", "compensation", "reduction in the total cost"],
+        "activities": ["O_Returned", "A_Pending", "A_Complete"],
+        "attributes": ["case:RequestedAmount", "OfferedAmount"],
+    },
+    "database_access": {
+        "keywords": ["database", "cross-border", "consult", "non-discriminatory access"],
+        "activities": ["W_Assess potential fraud", "W_Validate application", "A_Validating"],
+        "attributes": ["CreditScore"],
+    },
+    "overdraft_facility": {
+        "keywords": ["overdraft", "overrunning", "current account", "three months"],
+        "activities": ["A_Create Application", "A_Complete"],
+        "attributes": ["case:RequestedAmount", "OfferedAmount"],
+    },
 }
 
 
@@ -114,7 +140,14 @@ class DirectiveRAGRetriever:
         for idx, chunk in enumerate(self.chunks):
             text = chunk.get("text", "")
             has_deontic = bool(DEONTIC_PROCESS_PATTERNS.search(text))
-            has_numeric = bool(chunk.get("has_numeric_bound", False))
+            # Tự động phát hiện ràng buộc số học từ văn bản nếu chunk chưa được gán nhãn trước
+            has_numeric = bool(chunk.get("has_numeric_bound", False)) or bool(
+                re.search(
+                    r"\b(\d+(?:[.,]\d+)?)\s*(calendar\s+days|working\s+days|days|months|years|EUR|euro|euros|%)\b",
+                    text,
+                    re.IGNORECASE,
+                )
+            )
 
             if require_deontic_or_numeric and not (has_deontic or has_numeric):
                 continue
@@ -137,25 +170,54 @@ class DirectiveRAGRetriever:
         """
         Lọc các phần tử Schema gợi ý (Candidate Activities & Attributes) liên quan trực tiếp
         đến nội dung điều khoản, đồng thời giữ nguyên danh mục đầy đủ của Γ để kiểm tra tĩnh.
+        Bảo đảm candidate_attrs được kiểm tra tồn tại chặt chẽ trong schema như candidate_acts.
         """
         text_lower = f"{chunk.get('article_title', '')} {chunk.get('text', '')}".lower()
         candidate_acts: List[str] = []
         candidate_attrs: List[str] = []
 
+        valid_schema_acts = set(process_schema.get("valid_activities", []))
+        valid_schema_attrs = set(process_schema.get("case_attributes", {}).keys()) | set(
+            process_schema.get("event_attributes", {}).keys()
+        )
+        valid_schema_attrs |= {
+            k.replace("case:", "", 1)
+            for k in process_schema.get("case_attributes", {}).keys()
+        }
+
         for concept_meta in DOMAIN_CONCEPT_ALIGNMENT.values():
             if any(kw.lower() in text_lower for kw in concept_meta["keywords"]):
                 for act in concept_meta["activities"]:
-                    if act in process_schema.get("valid_activities", []) and act not in candidate_acts:
+                    if act in valid_schema_acts and act not in candidate_acts:
                         candidate_acts.append(act)
                 for attr in concept_meta["attributes"]:
-                    if attr not in candidate_attrs:
+                    # Kiểm tra tồn tại trong schema thực tế trước khi thêm vào candidate_attrs
+                    if (
+                        attr in valid_schema_attrs
+                        or attr in process_schema.get("case_attributes", {})
+                        or attr in process_schema.get("event_attributes", {})
+                    ) and attr not in candidate_attrs:
                         candidate_attrs.append(attr)
 
         if not candidate_acts:
-            candidate_acts = list(process_schema.get("valid_activities", []))
+            tokens = set(_tokenize(text_lower))
+            matched_acts = [
+                act for act in valid_schema_acts
+                if any(t in tokens for t in _tokenize(act) if len(t) > 3)
+            ]
+            candidate_acts = matched_acts if matched_acts else list(process_schema.get("valid_activities", []))
+
         if not candidate_attrs:
-            candidate_attrs = list(process_schema.get("case_attributes", {}).keys()) + list(
-                process_schema.get("event_attributes", {}).keys()
+            tokens = set(_tokenize(text_lower))
+            matched_attrs = [
+                attr for attr in valid_schema_attrs
+                if any(t in tokens for t in _tokenize(attr) if len(t) > 3)
+            ]
+            candidate_attrs = (
+                matched_attrs
+                if matched_attrs
+                else list(process_schema.get("case_attributes", {}).keys())
+                + list(process_schema.get("event_attributes", {}).keys())
             )
 
         return {

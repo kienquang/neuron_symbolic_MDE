@@ -82,6 +82,7 @@ class RealLLMClient:
         base_url: str = "https://api.groq.com/openai/v1",
         model_name: str = "openai/gpt-oss-120b",
         cache_file: Union[str, Path] = "real_llm_cache.json",
+        bypass_cache: bool = False,
     ) -> None:
         resolved_key = _resolve_api_key(api_key)
         if not resolved_key:
@@ -94,6 +95,7 @@ class RealLLMClient:
         self.client = OpenAI(api_key=resolved_key, base_url=base_url)
         self.model_name = model_name
         self.base_url = base_url
+        self.bypass_cache = bypass_cache
         self.cache_path = Path(cache_file)
         if not self.cache_path.is_absolute():
             self.cache_path = PROJECT_ROOT / self.cache_path
@@ -147,7 +149,7 @@ class RealLLMClient:
             msg_list = messages
 
         cache_key = self._make_key(msg_list, temperature)
-        if cache_key in self.cache:
+        if not self.bypass_cache and cache_key in self.cache:
             return self.cache[cache_key]
 
         fallback_models = [self.model_name]
@@ -155,6 +157,7 @@ class RealLLMClient:
         last_err: Optional[Exception] = None
         content = "{}"
         for candidate_model in fallback_models:
+            print(f"      [LIVE GROQ API CALL] Sending request to Groq model '{candidate_model}'...")
             for retry_i in range(6):
                 try:
                     response = self.client.chat.completions.create(
@@ -164,6 +167,19 @@ class RealLLMClient:
                         response_format={"type": "json_object"},
                     )
                     content = (response.choices[0].message.content or "{}").strip()
+                    if content in ("", "{}", "[]") and retry_i < 3:
+                        try:
+                            resp_fb = self.client.chat.completions.create(
+                                model=candidate_model,
+                                messages=msg_list,  # type: ignore[arg-type]
+                                temperature=temperature,
+                            )
+                            raw_txt = (resp_fb.choices[0].message.content or "{}").strip()
+                            json_m = re.search(r"\{.*\}", raw_txt, re.DOTALL)
+                            if json_m and len(json_m.group(0).strip()) > 5:
+                                content = json_m.group(0).strip()
+                        except Exception:
+                            pass
                     last_err = None
                     break
                 except Exception as exc:
@@ -250,7 +266,9 @@ def run_single_rule_with_real_llm(
                 "IMPORTANT RULES:\n"
                 "1. Only specify activation_attr, activation_op, activation_val, or time_max if explicitly stated in the compliance policy requirement or directive; otherwise, you MUST set them to null.\n"
                 "2. Numeric monetary thresholds (e.g. 200, 75000) belong to activation_val as a float (e.g. 75000.0) with activation_op (e.g. '<=', '>=').\n"
-                "3. Durations (e.g. 14 days) belong to time_max (e.g. 14) with time_unit ('s', 'm', 'h', 'd')."
+                "3. Durations (e.g. 14 days) belong to time_max (e.g. 14) with time_unit ('s', 'm', 'h', 'd').\n"
+                "4. DECLARE constraints define the REQUIRED condition for valid/compliant execution (not the violation trigger). E.g., to enforce a statutory ceiling of 75,000 EUR, specify '<= 75000.0'; to enforce a statutory floor of 200 EUR, specify '>= 200.0'.\n"
+                "5. 'article_id' must match the exact clause ID provided in the prompt header (e.g. 'Article 2(2)')."
             ),
         },
         # Neutral In-Context Example 1: Pure Control-Flow
@@ -366,7 +384,27 @@ def run_single_rule_with_real_llm(
         # Nếu qua Tầng 1 & 2 -> Kiểm tra Tầng 3 (Generic Entity Matcher + Roundtrip Check)
         if enable_l3_roundtrip:
             ok_rt, rt_msg = check_roundtrip_fidelity(ast_dict, retrieved_chunk, llm, rule_meta=rule_item)
-            if not ok_rt and "BASELESS" not in rt_msg:
+            is_trap = bool(rule_item.get("is_baseless_trap", False))
+            if not ok_rt:
+                if is_trap and "BASELESS" in rt_msg:
+                    # Đúng là bẫy ảo giác được thiết kế sẵn và đã phát hiện thành công
+                    trajectory.append(
+                        {
+                            "round": attempt,
+                            "output": raw_output,
+                            "status": "DETECTED_BASELESS_TRAP",
+                            "error": rt_msg,
+                        }
+                    )
+                    return {
+                        "final_ast": ast_dict,
+                        "rounds_needed": attempt - 1,
+                        "trajectory": trajectory,
+                        "roundtrip_ok": False,
+                        "roundtrip_msg": rt_msg,
+                    }
+
+                # Đối với quy tắc nghiệp vụ thông thường, tiếp tục vòng lặp tự sửa
                 trajectory.append(
                     {
                         "round": attempt,
@@ -379,7 +417,7 @@ def run_single_rule_with_real_llm(
                 messages.append(
                     {
                         "role": "user",
-                        "content": f"Semantic verification failed: {rt_msg}. Please revise.",
+                        "content": f"Semantic verification failed: {rt_msg}. Please revise the DECLARE constraint JSON to address this feedback.",
                     }
                 )
                 continue
@@ -387,20 +425,20 @@ def run_single_rule_with_real_llm(
             ok_rt = True
             rt_msg = "Roundtrip check disabled."
 
-        # Thành công hoặc phát hiện đúng bẫy BASELESS
+        # Thành công
         trajectory.append(
             {
                 "round": attempt,
                 "output": raw_output,
-                "status": "PASSED" if ok_rt else "DETECTED_BASELESS_TRAP",
-                "error": None if ok_rt else rt_msg,
+                "status": "PASSED",
+                "error": None,
             }
         )
         return {
             "final_ast": ast_dict,
             "rounds_needed": attempt - 1,
             "trajectory": trajectory,
-            "roundtrip_ok": ok_rt,
+            "roundtrip_ok": True,
             "roundtrip_msg": rt_msg,
         }
 

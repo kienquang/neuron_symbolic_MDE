@@ -100,6 +100,87 @@ class TestUnitMock(unittest.TestCase):
         self.assertTrue(ok4)
         self.assertEqual(res4["template_name"], "Response")
 
+    def test_hardened_edge_cases_and_semantic_guards(self) -> None:
+        """Kiểm tra các chốt chặn mới được tăng cường: đơn vị thời gian, ngữ cảnh phủ định, tính bất biến AST."""
+        from src.symbolic.verbalizer_roundtrip import (
+            extract_clause_numeric_entities,
+            verify_generic_numeric_entities,
+        )
+        from src.evaluation.grounded_auditor import verify_posthoc_grounding
+        from src.mde.constraint_ast import DeclareConstraintAST
+        from src.mde.typing_environment import ProcessTypingEnvironment
+        from src.neural.rag_retriever import DirectiveRAGRetriever
+
+        # 1. Kiểm tra trích xuất từ chỉ số lượng mở rộng ("a fortnight", "three weeks")
+        entities_fortnight = extract_clause_numeric_entities("The consumer has a fortnight to withdraw.")
+        self.assertIn((14.0, "days"), entities_fortnight)
+
+        entities_weeks = extract_clause_numeric_entities("The creditor shall reply within three weeks.")
+        self.assertIn((21.0, "days"), entities_weeks)
+
+        # 2. Kiểm tra phát hiện sai lệch đơn vị (14 months vs 14 days)
+        chunk_days = {"article_id": "Art_X", "text": "The consumer has 14 calendar days to withdraw."}
+        ast_wrong_unit = {
+            "template_name": "Response",
+            "activation_activity": "O_Sent (mail and online)",
+            "target_activity": "O_Returned",
+            "time_max": 14,
+            "time_unit": "months",
+        }
+        ok_u, verdict_u, diag_u = verify_generic_numeric_entities(ast_wrong_unit, chunk_days)
+        self.assertFalse(ok_u)
+        self.assertEqual(verdict_u, "THRESHOLD_MISMATCH")
+        self.assertIn("đơn vị", diag_u)
+
+        # 3. Kiểm tra chốt chặn hậu kiểm phát hiện hiện tượng phủ định kết luận (Negation Blindness)
+        j_tree = {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {"directive": "Directive 2008/48/EC", "article_id": "Article 14(1)"},
+            "symbolic_rule_node": {"declare_formula": "Response[A, B]"},
+            "trace_evidence_node": {
+                "case_id": "Application_999",
+                "proof_or_counterexample": {"actual_duration_days": 18.0, "allowed_max_days": 14},
+            },
+        }
+        negated_text = "Hồ sơ Application_999 KHÔNG PHẢI là CONTRADICTED theo Article 14(1) với 18.0 ngày và tối đa 14 ngày."
+        guard_neg = verify_posthoc_grounding(j_tree, negated_text)
+        self.assertFalse(guard_neg["is_citation_verified"])
+        self.assertTrue(any("negated" in m for m in guard_neg["missing_anchors"]))
+
+        # 4. Kiểm tra phát hiện điều khoản bịa đặt lạ (Bidirectional Citation Guard)
+        hallucinated_article_text = (
+            "Hồ sơ Application_999 có kết luận CONTRADICTED theo Article 14(1) và Article 99 với 18.0 ngày và tối đa 14 ngày."
+        )
+        guard_halluc = verify_posthoc_grounding(j_tree, hallucinated_article_text)
+        self.assertFalse(guard_halluc["is_citation_verified"])
+        self.assertTrue(any("unauthorized_article_hallucination" in m for m in guard_halluc["missing_anchors"]))
+
+        # 5. Kiểm tra tính bất biến (Immutable AST) trong validate_ast
+        gamma = ProcessTypingEnvironment(self.process_schema)
+        ast_obj = DeclareConstraintAST(
+            article_id="Article 14(1)",
+            template_name="Response",
+            activation_activity="O_Sent (mail and online)",
+            target_activity="O_Returned",
+            activation_attr="A.OfferedAmount",
+            activation_op=">=",
+            activation_val=200.0,
+        )
+        ok_v, _ = gamma.validate_ast(ast_obj)
+        self.assertTrue(ok_v)
+        # AST đầu vào không bị đột biến thay đổi activation_attr
+        self.assertEqual(ast_obj.activation_attr, "A.OfferedAmount")
+
+        # 6. Kiểm tra candidate_attrs trong RAG Retriever không chứa thuộc tính lạ ngoài schema
+        filtered = DirectiveRAGRetriever.filter_relevant_schema(chunk_days, self.process_schema)
+        valid_schema_attrs = set(self.process_schema.get("case_attributes", {}).keys()) | set(
+            self.process_schema.get("event_attributes", {}).keys()
+        )
+        valid_schema_attrs |= {k.replace("case:", "", 1) for k in self.process_schema.get("case_attributes", {}).keys()}
+        for attr in filtered["recommended_attributes"]:
+            self.assertIn(attr, valid_schema_attrs)
+
 
 if __name__ == "__main__":
     unittest.main()

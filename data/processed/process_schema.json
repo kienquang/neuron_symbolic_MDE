@@ -1,5 +1,9 @@
 {
   "dataset": "BPI Challenge 2017 (Consumer Loan Process)",
+  "activity_aliases": {
+    "A_Validated": "A_Validating",
+    "A_Validating": "A_Validated"
+  },
   "valid_activities": [
     "A_Accepted",
     "A_Cancelled",

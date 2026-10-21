@@ -18,7 +18,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
 from src.evaluation.benchmark_builder import (
     build_normative_rule_benchmark,
@@ -83,6 +83,11 @@ def main() -> None:
         default=60,
         help="Tổng số mẫu hồ sơ kiểm thử phân tầng (mặc định: 60 = 20 ENTAILED + 20 CONTRADICTED + 20 BASELESS)",
     )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Bỏ qua Disk Cache, ép buộc 100% request gọi trực tiếp lên Groq API",
+    )
     args = parser.parse_args()
 
     parquet_path = PROJECT_ROOT / "data" / "interim" / "bpic2017_events.parquet"
@@ -94,7 +99,7 @@ def main() -> None:
 
     print("=" * 96)
     print(
-        f"CHẠY THỰC NGHIỆM MODEL THẬT ({args.model} | split={args.split}) TRÊN BỘ QUY TẮC CHUẨN & BPIC 2017"
+        f"CHẠY THỰC NGHIỆM MODEL THẬT ({args.model} | split={args.split} | no_cache={args.no_cache}) TRÊN BỘ QUY TẮC CHUẨN & BPIC 2017"
     )
     print("=" * 96)
 
@@ -103,6 +108,7 @@ def main() -> None:
         base_url=args.base_url,
         model_name=args.model,
         cache_file=args.cache_file,
+        bypass_cache=args.no_cache,
     )
 
     with open(chunks_path, "r", encoding="utf-8") as f:

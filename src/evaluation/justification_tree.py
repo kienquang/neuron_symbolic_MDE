@@ -13,17 +13,29 @@ from typing import Any, Dict, Optional, Tuple
 import pandas as pd
 
 
-ACTIVITY_ALIASES = {
+DEFAULT_ACTIVITY_ALIASES: Dict[str, Any] = {
     "A_Validated": {"A_Validated", "A_Validating"},
     "A_Validating": {"A_Validated", "A_Validating"},
 }
+ACTIVITY_ALIASES = DEFAULT_ACTIVITY_ALIASES
 
 
-def filter_activity_events(case_df: pd.DataFrame, act_name: Optional[str]) -> pd.DataFrame:
-    """Lọc các dòng sự kiện khớp với tên hoạt động (hỗ trợ đồng bộ tên A_Validated <-> A_Validating trong BPIC 2017)."""
+def filter_activity_events(
+    case_df: pd.DataFrame,
+    act_name: Optional[str],
+    aliases: Optional[Dict[str, Any]] = None,
+) -> pd.DataFrame:
+    """Lọc các dòng sự kiện khớp với tên hoạt động (hỗ trợ đồng bộ bí danh hoạt động qua schema hoặc cấu hình)."""
     if not act_name:
         return pd.DataFrame()
-    equivalent_names = ACTIVITY_ALIASES.get(act_name, {act_name})
+    alias_map = aliases if aliases is not None else DEFAULT_ACTIVITY_ALIASES
+    raw_equiv = alias_map.get(act_name, {act_name})
+    if isinstance(raw_equiv, (list, tuple, set)):
+        equivalent_names = set(raw_equiv) | {act_name}
+    elif isinstance(raw_equiv, str):
+        equivalent_names = {raw_equiv, act_name}
+    else:
+        equivalent_names = {act_name}
     return case_df[case_df["concept:name"].isin(equivalent_names)]
 
 
@@ -137,9 +149,63 @@ def check_single_trace_semantics(
         }
 
     # =========================================================================
-    # Trường hợp 1: Kiểm tra mẫu Not Co-Existence[A, B] (R10: Not Co-Existence[A_Denied, A_Pending])
+    # Trường hợp 0B: Mẫu Absence, Choice, Exclusive Choice
     # =========================================================================
-    if tpl in {"Not Co-Existence", "Not Responded Existence", "Not Response", "Not Precedence"}:
+    if tpl == "Absence":
+        if not events_a.empty:
+            return False, {
+                "violation_subtype": "FORBIDDEN_ACTIVITY_PRESENT",
+                "activation_event": {
+                    "activity": act_a,
+                    "timestamp": str(events_a["time:timestamp"].iloc[0]),
+                },
+                "deviation_magnitude": f"Hoạt động bị cấm '{act_a}' xuất hiện {len(events_a)} lần trong hồ sơ.",
+                "minimal_correction_mcs": f"Loại bỏ toàn bộ các sự kiện '{act_a}' khỏi hồ sơ xử lý.",
+            }
+        return True, {
+            "msg": f"Hoạt động bị cấm '{act_a}' hoàn toàn không xuất hiện (tuân thủ Absence)."
+        }
+
+    if tpl == "Choice":
+        if events_a.empty and events_b.empty:
+            return False, {
+                "violation_subtype": "MISSING_CHOICE_ACTIVITY",
+                "deviation_magnitude": f"Cả hai hoạt động lựa chọn '{act_a}' và '{act_b}' đều không xuất hiện trong hồ sơ.",
+                "minimal_correction_mcs": f"Bắt buộc thực hiện ít nhất một trong hai hoạt động '{act_a}' hoặc '{act_b}'.",
+            }
+        return True, {
+            "msg": f"Đã thực hiện ít nhất một trong hai hoạt động lựa chọn '{act_a}' hoặc '{act_b}' (tuân thủ Choice)."
+        }
+
+    if tpl == "Exclusive Choice":
+        has_a = not events_a.empty
+        has_b = not events_b.empty
+        if has_a and has_b:
+            t_a = events_a["time:timestamp"].iloc[0]
+            t_b = events_b["time:timestamp"].iloc[0]
+            return False, {
+                "violation_subtype": "EXCLUSIVE_CHOICE_CONFLICT",
+                "activation_event": {"activity": act_a, "timestamp": str(t_a)},
+                "target_event": {"activity": act_b, "timestamp": str(t_b)},
+                "deviation_magnitude": (
+                    f"Cả hai hoạt động loại trừ lẫn nhau '{act_a}' ({t_a}) và '{act_b}' ({t_b}) cùng xuất hiện."
+                ),
+                "minimal_correction_mcs": f"Chỉ thực hiện chính xác một trong hai hoạt động '{act_a}' hoặc '{act_b}', loại bỏ hoạt động còn lại.",
+            }
+        if not has_a and not has_b:
+            return False, {
+                "violation_subtype": "EXCLUSIVE_CHOICE_OMISSION",
+                "deviation_magnitude": f"Không có hoạt động nào trong cặp loại trừ '{act_a}' và '{act_b}' xuất hiện.",
+                "minimal_correction_mcs": f"Bắt buộc thực hiện chính xác một trong hai hoạt động '{act_a}' hoặc '{act_b}'.",
+            }
+        return True, {
+            "msg": f"Chính xác một trong hai hoạt động '{act_a}' hoặc '{act_b}' đã xuất hiện (tuân thủ Exclusive Choice)."
+        }
+
+    # =========================================================================
+    # Trường hợp 1: Kiểm tra mẫu Phủ định (Negative templates) tách biệt ngữ nghĩa thời gian
+    # =========================================================================
+    if tpl in {"Not Co-Existence", "Not Responded Existence"}:
         if not events_a.empty and not events_b.empty:
             t_a = events_a["time:timestamp"].iloc[0]
             t_b = events_b["time:timestamp"].iloc[0]
@@ -156,6 +222,42 @@ def check_single_trace_semantics(
             }
         return True, {
             "msg": f"Hai sự kiện loại trừ '{act_a}' và '{act_b}' không cùng xảy ra trong hồ sơ (tuân thủ {tpl})."
+        }
+
+    if tpl == "Not Response":
+        # B không được xuất hiện SAU A (nếu B xuất hiện TRƯỚC A thì vẫn hợp lệ)
+        for _, row_a in events_a.iterrows():
+            t_a = row_a["time:timestamp"]
+            after_b = events_b[events_b["time:timestamp"] >= t_a]
+            if not after_b.empty:
+                t_b = after_b["time:timestamp"].iloc[0]
+                return False, {
+                    "violation_subtype": "NOT_RESPONSE_VIOLATION",
+                    "activation_event": {"activity": act_a, "timestamp": str(t_a)},
+                    "target_event": {"activity": act_b, "timestamp": str(t_b)},
+                    "deviation_magnitude": f"Sự kiện cấm '{act_b}' ({t_b}) xuất hiện sau khi '{act_a}' ({t_a}) đã diễn ra.",
+                    "minimal_correction_mcs": f"Loại bỏ sự kiện phản hồi bị cấm '{act_b}' sau thời điểm {t_a}.",
+                }
+        return True, {
+            "msg": f"Không có sự kiện '{act_b}' nào xảy ra sau '{act_a}' (tuân thủ Not Response)."
+        }
+
+    if tpl == "Not Precedence":
+        # A không được xuất hiện TRƯỚC B
+        for _, row_b in events_b.iterrows():
+            t_b = row_b["time:timestamp"]
+            before_a = events_a[events_a["time:timestamp"] <= t_b]
+            if not before_a.empty:
+                t_a = before_a["time:timestamp"].iloc[-1]
+                return False, {
+                    "violation_subtype": "NOT_PRECEDENCE_VIOLATION",
+                    "activation_event": {"activity": act_b, "timestamp": str(t_b)},
+                    "target_event": {"activity": act_a, "timestamp": str(t_a)},
+                    "deviation_magnitude": f"Sự kiện cấm '{act_a}' ({t_a}) xuất hiện trước '{act_b}' ({t_b}).",
+                    "minimal_correction_mcs": f"Loại bỏ sự kiện '{act_a}' xảy ra trước thời điểm {t_b}.",
+                }
+        return True, {
+            "msg": f"Không có sự kiện '{act_a}' nào xảy ra trước '{act_b}' (tuân thủ Not Precedence)."
         }
 
     # =========================================================================
@@ -277,7 +379,7 @@ def check_single_trace_semantics(
         }
 
     # =========================================================================
-    # Trường hợp 3: Kiểm tra mẫu Response[A, B] kèm giới hạn thời gian time_max (R09, R11, R15, R16, R19, R22)
+    # Trường hợp 3: Kiểm tra mẫu họ Response (Response, Chain Response, Alternate Response) (R09, R11, R15, R16, R19, R22)
     # =========================================================================
     if tpl in {"Response", "Alternate Response", "Chain Response"}:
         if events_a.empty:
@@ -285,6 +387,49 @@ def check_single_trace_semantics(
                 "msg": f"Hoạt động kích hoạt '{act_a}' không xảy ra, quy tắc {tpl} được bảo toàn."
             }
 
+        # 3A. Kiểm tra riêng cho Chain Response[A, B]: B bắt buộc phải là sự kiện liền kề ngay sau A
+        if tpl == "Chain Response":
+            for idx in events_a.index:
+                t_a = case_df.loc[idx, "time:timestamp"]
+                if idx + 1 >= len(case_df):
+                    return False, {
+                        "violation_subtype": "CHAIN_RESPONSE_VIOLATION",
+                        "activation_event": {"activity": act_a, "timestamp": str(t_a)},
+                        "missing_event": act_b,
+                        "deviation_magnitude": f"Sự kiện '{act_a}' nằm ở cuối hồ sơ và thiếu sự kiện phản hồi liền kề '{act_b}'.",
+                        "minimal_correction_mcs": f"Bổ sung hoạt động phản hồi '{act_b}' liền kề ngay sau '{act_a}'.",
+                    }
+                next_row = case_df.iloc[idx + 1]
+                next_act = str(next_row["concept:name"])
+                equiv_b = ACTIVITY_ALIASES.get(act_b, {act_b})
+                if next_act != act_b and next_act not in equiv_b:
+                    return False, {
+                        "violation_subtype": "CHAIN_RESPONSE_VIOLATION",
+                        "activation_event": {"activity": act_a, "timestamp": str(t_a)},
+                        "target_event": {"activity": next_act, "timestamp": str(next_row["time:timestamp"])},
+                        "deviation_magnitude": f"Sự kiện ngay sau '{act_a}' là '{next_act}' thay vì '{act_b}' (vi phạm Chain Response).",
+                        "minimal_correction_mcs": f"Đảm bảo '{act_b}' diễn ra liền kề ngay sau '{act_a}' mà không bị chèn bởi '{next_act}'.",
+                    }
+
+        # 3B. Kiểm tra riêng cho Alternate Response[A, B]: Sau mỗi A phải có B trước khi A khác lặp lại
+        if tpl == "Alternate Response":
+            for i in range(len(events_a)):
+                t_a_curr = events_a["time:timestamp"].iloc[i]
+                t_a_next = events_a["time:timestamp"].iloc[i + 1] if i + 1 < len(events_a) else None
+                if t_a_next is not None:
+                    inter_b = events_b[(events_b["time:timestamp"] >= t_a_curr) & (events_b["time:timestamp"] < t_a_next)]
+                else:
+                    inter_b = events_b[events_b["time:timestamp"] >= t_a_curr]
+                if inter_b.empty:
+                    return False, {
+                        "violation_subtype": "ALTERNATE_RESPONSE_VIOLATION",
+                        "activation_event": {"activity": act_a, "timestamp": str(t_a_curr)},
+                        "missing_event": act_b,
+                        "deviation_magnitude": f"Sự kiện '{act_a}' lặp lại nhưng thiếu sự kiện phản hồi '{act_b}' xen giữa (vi phạm Alternate Response).",
+                        "minimal_correction_mcs": f"Hoàn tất hoạt động '{act_b}' trước khi kích hoạt lại '{act_a}'.",
+                    }
+
+        # 3C. Kiểm tra chung cho Response: Có B sau A trong khoảng thời gian quy định
         for _, row_a in events_a.iterrows():
             t_a = row_a["time:timestamp"]
             subsequent_b = events_b[events_b["time:timestamp"] >= t_a]
@@ -297,13 +442,14 @@ def check_single_trace_semantics(
                     "deviation_magnitude": f"Sự kiện kích hoạt '{act_a}' đã xảy ra lúc {t_a} nhưng thiếu sự kiện phản hồi '{act_b}'.",
                     "minimal_correction_mcs": f"Bổ sung hoạt động phản hồi '{act_b}' sau thời điểm {t_a}"
                     + (
-                        f" trong vòng tối đa {ast_obj.time_max} ngày."
+                        f" trong vòng tối đa {ast_obj.time_max} {ast_obj.time_unit or 'ngày'}."
                         if ast_obj.time_max is not None
                         else "."
                     ),
                 }
 
             t_b = subsequent_b["time:timestamp"].iloc[0]
+            # Đảm bảo đơn điệu về thời gian: t_b >= t_a (không dùng abs)
             elapsed_days = (t_b - t_a).total_seconds() / 86400.0
 
             if ast_obj.time_max is not None and elapsed_days > ast_obj.time_max:
@@ -317,7 +463,7 @@ def check_single_trace_semantics(
                     "deviation_magnitude": f"Vượt quá thời hạn quy định {excess_days} ngày.",
                     "minimal_correction_mcs": (
                         f"Rút ngắn thời gian thực hiện '{act_b}' tối thiểu {excess_days} ngày "
-                        f"(về mức <= {ast_obj.time_max} ngày)."
+                        f"(về mức <= {ast_obj.time_max} {ast_obj.time_unit or 'ngày'})."
                     ),
                 }
 
