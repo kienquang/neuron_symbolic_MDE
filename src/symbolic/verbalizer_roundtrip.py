@@ -366,7 +366,7 @@ def check_roundtrip_fidelity(
     policy_context = ""
     if rule_meta and rule_meta.get("description"):
         raw_desc = str(rule_meta.get("description") or "").strip()
-        policy_req = re.sub(r"^Bẫy[^:]*:\s*", "", raw_desc).strip()
+        policy_req = re.sub(r"^(?:Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
         if policy_req:
             policy_context = f"- Bank Operational Policy Requirement: \"{policy_req}\"\n"
 
@@ -380,8 +380,8 @@ Context:
 In business process modeling for financial institutions, statutory principles (e.g. assessing creditworthiness, providing pre-contractual information, explaining credit suitability, statutory right of withdrawal, rejection notifications) are operationalized into concrete workflow steps and status transitions in the bank's IT system (e.g. preliminary acceptance, validation tasks, creating/refusing/cancelling offers, sending/returning contracts).
 - Legitimate Operational Implementations (Classify as EQUIVALENT):
    1. Workflow state transitions and prerequisite steps that record, prepare, or execute statutory actions and policy requirements (e.g. A_Create Application before A_Concept for credit assessment onboarding under Article 8; O_Accepted before A_Pending for disbursement under Article 10; A_Denied -> O_Refused for executing rejected credit outcomes under Article 9; A_Cancelled -> O_Cancelled for recording consumer cancellations/withdrawals; O_Sent -> O_Returned within 14 calendar days for tracking the statutory withdrawal window under Article 14(1); W_Call after offers for adequate explanation obligations under Article 5(6)).
-   2. Positive operationalization of statutory scope thresholds: When Article 2(2)(c) excludes credit agreements < 200 EUR or > 75 000 EUR from consumer credit rules, an operational constraint enforcing OfferedAmount >= 200 EUR or OfferedAmount <= 75 000 EUR at offer creation is a legitimate implementation ensuring only in-scope loans are issued (classify as EQUIVALENT, NOT reversed order or threshold mismatch).
-   3. If the candidate constraint faithfully operationalizes the Bank Operational Policy Requirement for the cited Directive article, you MUST classify it as EQUIVALENT.
+   2. Positive operationalization of statutory scope thresholds: When Article 2(2)(c) excludes credit agreements < 200 EUR or > 75 000 EUR from consumer credit rules, an atomic DECLARE constraint enforcing EITHER the statutory floor (OfferedAmount >= 200.0) OR the statutory ceiling (OfferedAmount <= 75000.0) is EACH an independent, fully legitimate operationalization. You MUST classify each single-bound constraint as EQUIVALENT (do NOT require both bounds in a single constraint, as DECLARE ASTs represent atomic rules).
+   3. If the candidate constraint faithfully operationalizes the Bank Operational Policy Requirement (which may be written in Vietnamese or English, such as customer accepting offer before disbursement under Article 10) for the cited Directive article, you MUST classify it as EQUIVALENT.
 - Do NOT classify a constraint as BASELESS simply because specific IT activity names (like A_Create Application, A_Concept, W_Call after offers, A_Accepted, A_Pending, O_Accepted, O_Refused, O_Cancelled, O_Sent, O_Returned) do not appear verbatim in the Directive text.
 - STRICTLY classify as BASELESS if and only if:
    1. The constraint invents arbitrary, unauthorized quantitative thresholds (e.g. minimum CreditScore >= 750 or fabricated interest rates/penalties);

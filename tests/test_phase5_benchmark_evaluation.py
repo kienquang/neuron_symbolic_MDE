@@ -224,7 +224,7 @@ class TestPhase5BenchmarkEvaluation(unittest.TestCase):
 
         llm_client = BenchmarkExperimentLLMClient(log_df=self.df_propagated)
 
-        res_b1 = run_vanilla_rag_baseline(mini_benchmark)
+        res_b1 = run_vanilla_rag_baseline(mini_benchmark, llm_client=llm_client)
         res_no_l12 = run_ablation_experiment(
             mini_benchmark,
             self.df_propagated,

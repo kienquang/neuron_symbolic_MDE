@@ -35,10 +35,10 @@ ALLOWED_DECLARE_TEMPLATES = UNARY_TEMPLATES | BINARY_TEMPLATES
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
-def _resolve_api_key(explicit_key: Optional[str] = None) -> Optional[str]:
-    """Tự động nạp biến môi trường từ .env ở thư mục gốc dự án hoặc ~/.env (không in giá trị khóa)."""
+def _resolve_api_keys(explicit_key: Optional[str] = None) -> List[str]:
+    """Tự động nạp danh sách API keys từ .env (hỗ trợ xoay tua GROQ_API_KEYS khi chạm giới hạn)."""
     if explicit_key:
-        return explicit_key
+        return [explicit_key]
     project_env = PROJECT_ROOT / ".env"
     home_env = Path.home() / ".env"
     if project_env.exists():
@@ -46,28 +46,37 @@ def _resolve_api_key(explicit_key: Optional[str] = None) -> Optional[str]:
     if home_env.exists():
         load_dotenv(dotenv_path=home_env, override=False)
 
+    keys: List[str] = []
+    multi_env = os.environ.get("GROQ_API_KEYS")
+    if multi_env:
+        for k in multi_env.split(","):
+            k = k.strip().strip('"').strip("'")
+            if k and k not in keys:
+                keys.append(k)
+
     for var_name in ("GROQ_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "API_KEY"):
         val = os.environ.get(var_name)
         if val and val.strip():
-            return val.strip().strip('"').strip("'")
+            k = val.strip().strip('"').strip("'")
+            if k and k not in keys:
+                keys.append(k)
 
     for env_file in (project_env, home_env):
         if env_file.exists():
             try:
                 for line in env_file.read_text(encoding="utf-8").splitlines():
-                    s = line.strip().strip('"').strip("'")
-                    if not s or s.startswith("#"):
-                        continue
-                    if "=" in s:
-                        _, v = s.split("=", 1)
-                        v = v.strip().strip('"').strip("'")
-                        if v:
-                            return v
-                    elif s.startswith("gsk_") or s.startswith("sk-"):
-                        return s
+                    matches = re.findall(r"(gsk_[A-Za-z0-9]+|sk-[A-Za-z0-9]+)", line)
+                    for k in matches:
+                        if k not in keys:
+                            keys.append(k)
             except Exception:
                 pass
-    return None
+    return keys
+
+
+def _resolve_api_key(explicit_key: Optional[str] = None) -> Optional[str]:
+    keys = _resolve_api_keys(explicit_key)
+    return keys[0] if keys else None
 
 
 class RealLLMClient:
@@ -84,15 +93,15 @@ class RealLLMClient:
         cache_file: Union[str, Path] = "real_llm_cache.json",
         bypass_cache: bool = False,
     ) -> None:
-        resolved_key = _resolve_api_key(api_key)
-        if not resolved_key:
+        self.api_keys = _resolve_api_keys(api_key)
+        if not self.api_keys:
             raise ValueError(
                 "Missing API key! Please set GROQ_API_KEY (or OPENAI_API_KEY / GEMINI_API_KEY) in .env."
             )
+        self.current_key_idx = 0
 
         from openai import OpenAI
 
-        self.client = OpenAI(api_key=resolved_key, base_url=base_url)
         self.model_name = model_name
         self.base_url = base_url
         self.bypass_cache = bypass_cache
@@ -101,6 +110,15 @@ class RealLLMClient:
             self.cache_path = PROJECT_ROOT / self.cache_path
         self.cache: Dict[str, str] = self._load_cache()
         self.narrator = DeterministicAuditNarratorClient()
+        self.client = OpenAI(api_key=self.api_keys[self.current_key_idx], base_url=base_url, timeout=30.0)
+
+    def _rotate_api_key(self) -> None:
+        if len(self.api_keys) > 1:
+            self.current_key_idx = (self.current_key_idx + 1) % len(self.api_keys)
+            from openai import OpenAI
+            new_masked = self.api_keys[self.current_key_idx][:10] + "..."
+            print(f"      [GROQ KEY ROTATED]: Switched to backup key ({new_masked}) due to rate limit.")
+            self.client = OpenAI(api_key=self.api_keys[self.current_key_idx], base_url=self.base_url, timeout=30.0)
 
     def _load_cache(self) -> Dict[str, str]:
         if self.cache_path.exists():
@@ -152,77 +170,86 @@ class RealLLMClient:
         if not self.bypass_cache and cache_key in self.cache:
             return self.cache[cache_key]
 
-        fallback_models = [self.model_name]
-
         last_err: Optional[Exception] = None
         content = "{}"
-        for candidate_model in fallback_models:
-            print(f"      [LIVE GROQ API CALL] Sending request to Groq model '{candidate_model}'...")
-            for retry_i in range(6):
-                try:
-                    response = self.client.chat.completions.create(
-                        model=candidate_model,
-                        messages=msg_list,  # type: ignore[arg-type]
-                        temperature=temperature,
-                        response_format={"type": "json_object"},
-                    )
-                    content = (response.choices[0].message.content or "{}").strip()
-                    if content in ("", "{}", "[]") and retry_i < 3:
-                        try:
-                            resp_fb = self.client.chat.completions.create(
-                                model=candidate_model,
-                                messages=msg_list,  # type: ignore[arg-type]
-                                temperature=temperature,
-                            )
-                            raw_txt = (resp_fb.choices[0].message.content or "{}").strip()
-                            json_m = re.search(r"\{.*\}", raw_txt, re.DOTALL)
-                            if json_m and len(json_m.group(0).strip()) > 5:
-                                content = json_m.group(0).strip()
-                        except Exception:
-                            pass
-                    last_err = None
-                    break
-                except Exception as exc:
-                    last_err = exc
-                    err_str = str(exc).lower()
-                    if "json_validate_failed" in err_str or "failed to generate json" in err_str:
-                        # Thử lại không dùng response_format json_object và bóc tách bằng regex
-                        try:
-                            resp_fb = self.client.chat.completions.create(
-                                model=candidate_model,
-                                messages=msg_list,  # type: ignore[arg-type]
-                                temperature=temperature,
-                            )
-                            raw_txt = (resp_fb.choices[0].message.content or "{}").strip()
-                            json_m = re.search(r"\{.*\}", raw_txt, re.DOTALL)
-                            if json_m:
-                                content = json_m.group(0)
-                            else:
-                                content = "{}"
-                            last_err = None
-                            break
-                        except Exception as fb_exc:
-                            last_err = fb_exc
-                            break
-                    if "rate limit" in err_str or "429" in err_str or "tpm" in err_str:
-                        wait_match = re.search(r"try again in ([\d\.]+)s", err_str)
-                        if wait_match:
-                            sleep_s = float(wait_match.group(1)) + 1.5
-                        else:
-                            sleep_s = 6.0 * (retry_i + 1)
-                        time.sleep(sleep_s)
-                    else:
-                        time.sleep(1.0)
-            if last_err is None:
-                # Tránh gọi dồn dập vượt TPM (Tokens Per Minute)
-                time.sleep(1.2)
+        print(f"      [LIVE GROQ API CALL] Sending request to Groq model '{self.model_name}'...")
+        for retry_i in range(6):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=msg_list,  # type: ignore[arg-type]
+                    temperature=temperature,
+                    response_format={"type": "json_object"},
+                    timeout=30.0,
+                )
+                content = (response.choices[0].message.content or "{}").strip()
+                if content in ("", "{}", "[]") and retry_i < 3:
+                    try:
+                        resp_fb = self.client.chat.completions.create(
+                            model=self.model_name,
+                            messages=msg_list,  # type: ignore[arg-type]
+                            temperature=temperature,
+                        )
+                        raw_txt = (resp_fb.choices[0].message.content or "{}").strip()
+                        json_m = re.search(r"\{.*\}", raw_txt, re.DOTALL)
+                        if json_m and len(json_m.group(0).strip()) > 5:
+                            content = json_m.group(0).strip()
+                    except Exception:
+                        pass
+                last_err = None
                 break
-        if last_err is not None:
-            # Nếu tất cả fallback models đều lỗi json format, trả về JSON rỗng để Tầng 1 bắt lỗi cú pháp thay vì làm sập pipeline
-            content = "{}"
+            except Exception as exc:
+                last_err = exc
+                err_str = str(exc).lower()
+                print(f"      [GROQ RETRY {retry_i+1}/6]: Error: {exc}")
+                if "json_validate_failed" in err_str or "failed to generate json" in err_str:
+                    # Thử lại không dùng response_format json_object và bóc tách bằng regex
+                    try:
+                        resp_fb = self.client.chat.completions.create(
+                            model=self.model_name,
+                            messages=msg_list,  # type: ignore[arg-type]
+                            temperature=temperature,
+                        )
+                        raw_txt = (resp_fb.choices[0].message.content or "{}").strip()
+                        json_m = re.search(r"\{.*\}", raw_txt, re.DOTALL)
+                        if json_m:
+                            content = json_m.group(0)
+                        else:
+                            content = "{}"
+                        last_err = None
+                        break
+                    except Exception as fb_exc:
+                        last_err = fb_exc
+                        break
+                if "rate limit" in err_str or "429" in err_str or "tpm" in err_str or "tpd" in err_str:
+                    wait_match = re.search(r"try again in (?:(\d+)m)?([\d\.]+)s", err_str)
+                    if wait_match:
+                        mins = float(wait_match.group(1)) if wait_match.group(1) else 0.0
+                        secs = float(wait_match.group(2)) if wait_match.group(2) else 0.0
+                        total_wait = mins * 60.0 + secs
+                    else:
+                        total_wait = 6.0 * (retry_i + 1)
 
-        self.cache[cache_key] = content
-        self._save_cache()
+                    if len(self.api_keys) > 1:
+                        self._rotate_api_key()
+                        sleep_s = 1.0 if total_wait > 30.0 else min(total_wait + 1.0, 5.0)
+                    else:
+                        sleep_s = min(total_wait + 1.5, 30.0)
+                    time.sleep(sleep_s)
+                else:
+                    time.sleep(1.0)
+
+        if last_err is None:
+            # Tránh gọi dồn dập vượt TPM (Tokens Per Minute)
+            time.sleep(1.2)
+
+        if last_err is not None:
+            # Nếu có lỗi mạng hoặc API format, trả về JSON rỗng và KHÔNG lưu vào cache để lần sau thử lại
+            content = "{}"
+        elif content.strip() not in ("", "{}", "[]"):
+            self.cache[cache_key] = content
+            self._save_cache()
+
         return content
 
     def chat(self, prompt_or_messages: Any, temperature: float = 0.0) -> str:
@@ -249,7 +276,7 @@ def run_single_rule_with_real_llm(
     Không chứa bất kỳ câu mớm bẫy viết cứng nào.
     """
     raw_desc = str(rule_item.get("description") or "").strip()
-    policy_req = re.sub(r"^Bẫy[^:]*:\s*", "", raw_desc).strip()
+    policy_req = re.sub(r"^(?:Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
     req_line = f"Compliance Policy Requirement: {policy_req}\n" if policy_req else ""
 
     allowed_templates = sorted(list(ALLOWED_DECLARE_TEMPLATES))
@@ -358,6 +385,7 @@ def run_single_rule_with_real_llm(
                         "error": str(res_or_err),
                     }
                 )
+                print(f"      [Round {attempt} Feedback (L1/L2)]: {res_or_err}")
                 messages.append({"role": "assistant", "content": raw_output})
                 messages.append(
                     {
@@ -405,6 +433,7 @@ def run_single_rule_with_real_llm(
                     }
 
                 # Đối với quy tắc nghiệp vụ thông thường, tiếp tục vòng lặp tự sửa
+                print(f"      [Round {attempt} Feedback (L3)]: {rt_msg}")
                 trajectory.append(
                     {
                         "round": attempt,

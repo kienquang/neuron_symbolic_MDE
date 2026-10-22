@@ -15,10 +15,10 @@
   "table1_rq1_full_pipeline": {
     "Tier 1: Control-Flow Only": {
       "Rules_Count": 12,
-      "Eq. (%)": 83.33,
+      "Eq. (%)": 91.67,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 16.67,
+      "Reversed (%)": 8.33,
       "Vacuous (%)": 0.0
     },
     "Tier 2: Temporal & Data-Aware": {
@@ -31,20 +31,20 @@
     },
     "Overall Pipeline": {
       "Rules_Count": 15,
-      "Eq. (%)": 86.67,
+      "Eq. (%)": 93.33,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 13.33,
+      "Reversed (%)": 6.67,
       "Vacuous (%)": 0.0
     }
   },
   "table1_rq1_without_self_correction": {
     "Tier 1: Control-Flow Only": {
       "Rules_Count": 12,
-      "Eq. (%)": 83.33,
+      "Eq. (%)": 100.0,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 16.67,
+      "Reversed (%)": 0.0,
       "Vacuous (%)": 0.0
     },
     "Tier 2: Temporal & Data-Aware": {
@@ -57,10 +57,10 @@
     },
     "Overall Pipeline": {
       "Rules_Count": 15,
-      "Eq. (%)": 86.67,
+      "Eq. (%)": 100.0,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 13.33,
+      "Reversed (%)": 0.0,
       "Vacuous (%)": 0.0
     }
   },
@@ -69,64 +69,64 @@
       "Configuration": "Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)",
       "Executable_Rate (%)": "N/A",
       "Eq_Rate (%)": "N/A",
-      "Conformance_F1": 0.1903
+      "Conformance_F1": 0.2243
     },
     {
       "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
-      "Executable_Rate (%)": 93.33,
+      "Executable_Rate (%)": 75.0,
       "Eq_Rate (%)": 56.67,
-      "Conformance_F1": 0.5133
+      "Conformance_F1": 0.4901
     },
     {
       "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
-      "Executable_Rate (%)": 93.33,
-      "Eq_Rate (%)": 78.33,
-      "Conformance_F1": 0.824
+      "Executable_Rate (%)": 68.33,
+      "Eq_Rate (%)": 63.33,
+      "Conformance_F1": 0.7013
     },
     {
       "Configuration": "- Self-Correction Loop (Tắt Vòng lặp Tự sửa)",
-      "Executable_Rate (%)": 88.33,
-      "Eq_Rate (%)": 78.33,
-      "Conformance_F1": 0.8297
+      "Executable_Rate (%)": 78.33,
+      "Eq_Rate (%)": 73.33,
+      "Conformance_F1": 0.7624
     },
     {
       "Configuration": "Full Neuro-Symbolic Pipeline (Đề xuất)",
-      "Executable_Rate (%)": 100.0,
-      "Eq_Rate (%)": 85.0,
-      "Conformance_F1": 0.8666
+      "Executable_Rate (%)": 93.33,
+      "Eq_Rate (%)": 88.33,
+      "Conformance_F1": 0.8752
     }
   ],
   "table3_rq3_diagnostic_and_efficiency": {
     "ENTAILED (Tuân thủ)": {
-      "Precision": 0.8571,
-      "Recall": 0.9,
-      "F1-Score": 0.878,
-      "Avg_Retries": 0.1,
-      "Avg_Verification_Time (s)": 0.0121,
+      "Precision": 0.8696,
+      "Recall": 1.0,
+      "F1-Score": 0.9302,
+      "Avg_Retries": 0.0,
+      "Avg_Verification_Time (s)": 0.0184,
       "Citation_Fidelity (%)": 100.0
     },
     "CONTRADICTED (Vi phạm)": {
+      "Precision": 1.0,
+      "Recall": 0.7,
+      "F1-Score": 0.8235,
+      "Avg_Retries": 1.0,
+      "Avg_Verification_Time (s)": 0.0103,
+      "Citation_Fidelity (%)": 80.0
+    },
+    "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
       "Precision": 0.8947,
       "Recall": 0.85,
       "F1-Score": 0.8718,
-      "Avg_Retries": 0.05,
-      "Avg_Verification_Time (s)": 0.0094,
-      "Citation_Fidelity (%)": 100.0
-    },
-    "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
-      "Precision": 0.85,
-      "Recall": 0.85,
-      "F1-Score": 0.85,
-      "Avg_Retries": 0.3,
-      "Avg_Verification_Time (s)": 0.0008,
+      "Avg_Retries": 0.85,
+      "Avg_Verification_Time (s)": 0.0039,
       "Citation_Fidelity (%)": 100.0
     },
     "Trung bình Toàn hệ thống (Overall)": {
-      "Precision": 0.8673,
-      "Recall": 0.8667,
-      "F1-Score": 0.8666,
-      "Avg_Retries": 0.15,
-      "Avg_Verification_Time (s)": 0.0074,
+      "Precision": 0.9214,
+      "Recall": 0.85,
+      "F1-Score": 0.8752,
+      "Avg_Retries": 0.62,
+      "Avg_Verification_Time (s)": 0.0116,
       "Citation_Fidelity (%)": 100.0
     }
   }

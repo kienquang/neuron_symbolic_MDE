@@ -92,7 +92,7 @@ def is_executable_against_log_schema(
     """
     Kiểm tra xem AST sinh ra (khi tắt Tầng 1 & Tầng 2) có bị crash khi đưa vào Declare4Py chạy trên log hay không.
     """
-    valid_acts = set(process_schema.get("valid_activities", [])) | {"A_Validated"}
+    valid_acts = set(process_schema.get("valid_activities", []))
     if ast_obj.activation_activity not in valid_acts:
         return False
     if ast_obj.target_activity and ast_obj.target_activity not in valid_acts:
@@ -217,11 +217,16 @@ def classify_semantic_equivalence(
         if cand_ast.time_max is None and gold_ast.get("time_max") is not None:
             return "WEAKENED"
 
-        # Cả hai cùng có giới hạn thời gian
+        # Cả hai cùng có giới hạn thời gian (quy đổi về cùng đơn vị ngày để so sánh chuẩn xác cả time_max và time_unit)
         if cand_ast.time_max is not None and gold_ast.get("time_max") is not None:
-            if cand_ast.time_max < gold_ast["time_max"]:
+            UNIT_TO_DAYS = {"s": 1.0 / 86400.0, "m": 1.0 / 1440.0, "h": 1.0 / 24.0, "d": 1.0}
+            cand_u = str(cand_ast.time_unit or "d").lower()
+            gold_u = str(gold_ast.get("time_unit") or "d").lower()
+            cand_days = float(cand_ast.time_max) * UNIT_TO_DAYS.get(cand_u, 1.0)
+            gold_days = float(gold_ast["time_max"]) * UNIT_TO_DAYS.get(gold_u, 1.0)
+            if cand_days < gold_days:
                 return "STRENGTHENED"
-            elif cand_ast.time_max > gold_ast["time_max"]:
+            elif cand_days > gold_days:
                 return "WEAKENED"
 
         # Thuộc tính khác nhau nhưng cùng tồn tại
@@ -358,7 +363,7 @@ class BenchmarkExperimentLLMClient:
         rule_meta: Optional[Dict[str, Any]] = None,
     ) -> str:
         if rule_meta is not None:
-            payload = rule_meta["raw_attempt_1"] if not feedback else rule_meta["repaired_attempt_2"]
+            payload = rule_meta.get("raw_attempt_1", {}) if not feedback else rule_meta.get("repaired_attempt_2", {})
             return json.dumps(payload, ensure_ascii=False)
 
         art_id = chunk.get("article_id", "Article 14(1)")

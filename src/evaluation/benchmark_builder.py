@@ -795,6 +795,10 @@ def build_stratified_trace_benchmark(
     contradicted_items: List[Dict[str, Any]] = []
     baseless_items: List[Dict[str, Any]] = []
 
+    # Loại trừ R10, R13, R14, R15 khỏi bộ sinh trace ngẫu nhiên cơ bản:
+    # - R10 (Not Co-Existence): logic phủ định đồng thời, hầu như luôn thỏa mãn chân lý rỗng trong log BPIC 2017.
+    # - R13, R14 (Existence với OfferedAmount >= 200 hoặc <= 75000): có điều kiện thuộc tính số học cần lọc riêng.
+    # - R15 (Response 14 days): có ràng buộc thời lượng cần đối soát mốc timestamp cụ thể.
     valid_candidate_rules = [
         r for r in active_rules
         if not r.get("is_trap") and not r.get("is_baseless_trap") and r["rule_id"] not in ("R10", "R13", "R14", "R15")
