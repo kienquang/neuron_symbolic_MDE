@@ -84,14 +84,14 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 | • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **100.0%** | 0.0% | 0.0% | **0.0%** | 0.0% |
 | • **Toàn hệ thống One-Shot (Overall)** | **100.0%** | 0.0% | 0.0% | **0.0%** | 0.0% |
 | **1B. Full Proposed Pipeline (Sau Kiến trúc 3 Tầng & Vòng lặp Tự sửa)** | | | | | |
-| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **91.67%** | 0.0% | 0.0% | 8.33% | 0.0% |
-| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **100.0%** | 0.0% | 0.0% | **0.0%** | 0.0% |
-| • **Toàn hệ thống Đề xuất (Overall)** | **93.33%** | 0.0% | 0.0% | **6.67%** | 0.0% |
+| • Tier 1: Luồng điều khiển cơ bản (12 rules) | **100.0%** | 0.0% | 0.0% | 0.0% | 0.0% |
+| • Tier 2: Thời gian & Dữ liệu phức tạp (3 rules) | **33.33%** | 0.0% | 0.0% | **33.33%** | 33.33% |
+| • **Toàn hệ thống Đề xuất (Overall)** | **86.67%** | 0.0% | 0.0% | **6.67%** | 6.67% |
 
 > **Nhận xét RQ1**:
-> 1. Trên các ràng buộc phức tạp có dữ liệu và thời hạn thời gian (Tier 2: R13 sàn 200 EUR, R14 trần 75.000 EUR, R15 thời hạn rút vốn 14 ngày), mô hình đạt tỷ lệ đúng ngữ nghĩa tuyệt đối **100.0%** (3/3 quy tắc).
-> 2. Toàn hệ thống đạt tỷ lệ đúng ngữ nghĩa **93.33%** (14/15 quy tắc). Chỉ có 1 quy tắc duy nhất (6.67%) lệch hướng do LLM ánh xạ sang tác vụ nghiệp vụ thay thế.
-> 3. Các lỗi ngữ nghĩa nghiêm trọng như quá lỏng (Weakened), quá chặt (Strengthened) và rỗng (Vacuous) đều được triệt tiêu hoàn toàn về **0.0%**.
+> 1. Trên các ràng buộc luồng điều khiển (Tier 1: 12 quy tắc), mô hình đạt độ chính xác tuyệt đối **100.0%**. Quy tắc R11 (*Article 14(1)*) đã được giải quyết hoàn hảo ngay vòng đầu nhờ cơ chế làm rõ ánh xạ vận hành (Operationalization Mapping).
+> 2. Ở Tier 2 (3 quy tắc phức tạp), R13 đạt chuẩn; R14 được LLM tự sửa sang `Absence > 75000` (chuẩn xác về mặt logic nghiệp vụ nhưng là biểu diễn đối ngẫu so với Gold AST `Existence <= 75000`); R15 phản ánh sự cọ xát giữa quy tắc chống bịa số học khắt khe (Generic Entity Matcher) và tri thức vận hành nội bộ.
+> 3. Các lỗi ngữ nghĩa nghiêm trọng như quá lỏng (Weakened) và quá chặt (Strengthened) đều được triệt tiêu hoàn toàn về **0.0%**.
 
 ---
 
@@ -103,14 +103,14 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 | :--- | :---: | :---: | :---: |
 | **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | *N/A* | *N/A* | **0.2243** |
 | **Baseline 2: One-Shot LLM-to-DECLARE (Không kiểm tra 3 tầng)** | 75.0% | 56.67% | **0.4901** |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 68.33% | 63.33% | **0.7013** |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 78.33% | 73.33% | **0.7624** |
-| **Full Neuro-Symbolic Pipeline (Kiến trúc Đề xuất)** | **93.33%** | **88.33%** | **0.8752** |
+| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 75.0% | 70.0% | **0.7313** |
+| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 85.0% | 80.0% | **0.7884** |
+| **Full Neuro-Symbolic Pipeline (Kiến trúc Đề xuất)** | **100.0%** | **95.0%** | **0.8997** |
 
 > **Nhận xét RQ2**:
-> 1. Mô hình đề xuất (**0.8752** F1) tạo ra bước nhảy vọt **gấp 3.9 lần (+0.6509 F1)** so với Vanilla RAG truyền thống (**0.2243** F1), minh chứng cho sự vượt trội của tiếp cận kết hợp biểu tượng so với LLM đơn lẻ khi xử lý các vết sự kiện dài.
-> 2. Baseline 2 (One-shot DECLARE nhị phân) chỉ đạt F1 **0.4901** do tỷ lệ thực thi thấp (75.0%) và không có cơ chế phát hiện trạng thái thiếu dữ liệu/ảo giác `BASELESS`.
-> 3. Tắt Tầng 1 & 2 khiến tỷ lệ thực thi giảm mạnh xuống **68.33%** và F1 tụt xuống **0.7013** (chứng minh tiền kiểm tra cú pháp/kiểu loại ngăn chặn đến 25% nguy cơ crash lúc runtime). Tắt Vòng lặp Tự sửa khiến F1 chỉ đạt **0.7624**. Kiến trúc hoàn chỉnh đạt F1 cao nhất **0.8752**.
+> 1. Mô hình đề xuất (**0.8997** F1, ~0.90) tạo ra bước nhảy vọt **gấp 4.0 lần (+0.6754 F1)** so với Vanilla RAG truyền thống (**0.2243** F1), minh chứng cho sự vượt trội của tiếp cận kết hợp biểu tượng so với LLM đơn lẻ khi xử lý các vết sự kiện dài.
+> 2. Khả năng thực thi đạt tuyệt đối **100.0%**: Nhờ có Tầng 1 (Pydantic Schema) và Tầng 2 (Metamodel Typing), toàn bộ các ràng buộc sinh ra đều hợp lệ và tương thích với Declare4Py, triệt tiêu 100% nguy cơ crash lúc runtime.
+> 3. Tắt Tầng 1 & 2 khiến F1 giảm mạnh xuống **0.7313** (tỷ lệ thực thi tụt còn 75.0%). Tắt Vòng lặp Tự sửa khiến F1 chỉ đạt **0.7884** (tỷ lệ thực thi tụt còn 85.0%). Kiến trúc hoàn chỉnh đạt kết quả cao nhất **0.8997**.
 
 ---
 
@@ -118,15 +118,16 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 
 | Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB ↓ | Thời gian Kiểm chứng ↓ | Trích dẫn Minh bạch (Citation Fidelity) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED** (Tuân thủ) | 0.8696 | **1.0000** | **0.9302** | 0.00 lượt | 18.4 ms | 100.0% |
-| **CONTRADICTED** (Vi phạm) | **1.0000** | 0.7000 | **0.8235** | 1.00 lượt | 10.3 ms | 80.0% |
-| **BASELESS** (Ảo giác / Thiếu bằng chứng Φ) | 0.8947 | 0.8500 | **0.8718** | 0.85 lượt | 3.9 ms | 100.0% |
-| **Trung bình Toàn hệ thống (Overall)** | **0.9214** | **0.8500** | **0.8752** | **0.62 lượt** | **11.6 ms** | **100.0%** |
+| **ENTAILED** (Tuân thủ) | 0.8696 | **1.0000** | **0.9302** | 0.00 lượt | 28.6 ms | 100.0% |
+| **CONTRADICTED** (Vi phạm) | **1.0000** | **0.8500** | **0.9189** | 0.00 lượt | 24.8 ms | 100.0% |
+| **BASELESS** (Ảo giác / Thiếu bằng chứng Φ) | 0.8500 | 0.8500 | **0.8500** | 0.85 lượt | 2.8 ms | 100.0% |
+| **Trung bình Toàn hệ thống (Overall)** | **0.9065** | **0.9000** | **0.8997** | **0.28 lượt** | **18.7 ms** | **100.0%** |
 
 > **Nhận xét RQ3**:
-> 1. **Độ chính xác vượt trội (Precision 0.9214)**: Lớp `CONTRADICTED` đạt Precision tuyệt đối **1.0000** (100% hồ sơ cảnh báo vi phạm đều là vi phạm thật, không có cảnh báo giả). Lớp `ENTAILED` đạt Recall tuyệt đối **1.0000** (không bỏ sót bất kỳ hồ sơ tuân thủ nào).
-> 2. **Tốc độ kiểm chứng siêu nhanh (11.6 ms / hồ sơ)**: Động cơ Declare4Py hoàn tất kiểm tra 60 hồ sơ trong ~0.7 giây, nhanh gấp hàng trăm lần việc gọi trực tiếp API của LLM.
-> 3. **Giải trình minh bạch 100%**: 100% kết luận tổng thể đều được neo chặt với Cây biện minh tất định xpSHACL và điều khoản pháp lý tương ứng.
+> 1. **Độ chính xác và độ bao quát xuất sắc (Macro F1 = 0.8997)**: Lớp `CONTRADICTED` đạt Precision tuyệt đối **1.0000** (100% hồ sơ cảnh báo vi phạm đều là vi phạm thật, không có cảnh báo giả) và Recall đạt **0.8500** (F1 đạt **0.9189**). Lớp `ENTAILED` đạt Recall tuyệt đối **1.0000** (không bỏ sót bất kỳ hồ sơ tuân thủ nào, F1 đạt **0.9302**).
+> 2. **Hội tụ nhanh hơn gấp đôi**: Số vòng tự sửa trung bình giảm xuống chỉ còn **0.28 lượt/quy tắc** (giảm > 50% so với trước), chứng minh các phản hồi từ CEGIS định hướng cho LLM sửa lỗi rất nhanh.
+> 3. **Tốc độ kiểm chứng siêu nhanh (18.7 ms / hồ sơ)**: Động cơ Declare4Py hoàn tất kiểm tra 60 hồ sơ trong ~1.1 giây, nhanh gấp hàng trăm lần việc gọi trực tiếp API của LLM.
+> 4. **Giải trình minh bạch 100%**: 100% kết luận tổng thể đều được neo chặt với Cây biện minh tất định xpSHACL và điều khoản pháp lý tương ứng.
 
 ---
 
