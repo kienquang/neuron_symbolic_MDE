@@ -304,40 +304,28 @@
     "dataset_split": "dev",
     "tier": "Tier1_ControlFlow",
     "article_id": "Article 14(1)",
-    "rounds_needed": 5,
-    "final_ast": null,
-    "roundtrip_ok": false,
-    "roundtrip_msg": "Exceeded max retries.",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
     "trajectory": [
       {
         "round": 1,
         "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint links A_Cancelled to O_Cancelled, which addresses internal cancellation of a file and the associated loan request. Article 14(1) of Directive 2008/48/EC defines a 14‑day consumer withdrawal right and the timing of that period, not a generic cancellation flow. The constraint neither captures the statutory withdrawal window nor the required pre‑contractual information timing, and thus does not operationalise the legal clause. Consequently it is unrelated to the Directive provision and must be classified as BASELESS. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
-      },
-      {
-        "round": 2,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Accepted\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint interprets Article 14(1) as obligating a cancellation (A_Cancelled) to occur within 14 days after an acceptance (A_Accepted). The Directive instead grants the consumer a *right* to withdraw within 14 days; it does not require withdrawal. Moreover, the bank operational policy cited concerns propagating a cancellation from A_Cancelled to O_Cancelled, not a timed post‑acceptance cancellation. Therefore the AST invents an unauthorized mandatory action and does not reflect either the legal text or the stated policy. (Back-translation: Whenever 'A_Accepted' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-      },
-      {
-        "round": 3,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint links A_Cancelled to O_Cancelled, which addresses internal cancellation of a file and the associated loan request. Article 14(1) of Directive 2008/48/EC defines a 14‑day consumer withdrawal right and the timing of that period, not a generic cancellation flow. The constraint neither captures the statutory withdrawal window nor the required pre‑contractual information timing, and thus does not operationalise the legal clause. Consequently it is unrelated to the Directive provision and must be classified as BASELESS. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
-      },
-      {
-        "round": 4,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Accepted\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint interprets Article 14(1) as obligating a cancellation (A_Cancelled) to occur within 14 days after an acceptance (A_Accepted). The Directive instead grants the consumer a *right* to withdraw within 14 days; it does not require withdrawal. Moreover, the bank operational policy cited concerns propagating a cancellation from A_Cancelled to O_Cancelled, not a timed post‑acceptance cancellation. Therefore the AST invents an unauthorized mandatory action and does not reflect either the legal text or the stated policy. (Back-translation: Whenever 'A_Accepted' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-      },
-      {
-        "round": 5,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate AST ties A_Cancelled to O_Cancelled with a 14‑day deadline. Article 14(1) concerns the consumer's right of withdrawal from a credit agreement, not the bank's internal cancellation workflow. The bank policy requirement (Vietnamese) also only mandates that a cancelled file (A_Cancelled) triggers a corresponding loan‑request cancellation (O_Cancelled) with no statutory time limit. Introducing a 14‑day window invents a quantitative constraint that does not appear in the Directive and mis‑aligns the legal concept (withdrawal) with an unrelated operational event (cancellation). Hence the constraint does not faithfully operationalise the legal clause and is classified as BASELESS. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        "status": "PASSED",
+        "error": null
       }
     ]
   },
@@ -406,15 +394,15 @@
     "dataset_split": "dev",
     "tier": "Tier2_TemporalData",
     "article_id": "Article 2(2)",
-    "rounds_needed": 0,
+    "rounds_needed": 2,
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "O_Create Offer",
       "target_activity": null,
       "activation_attr": "OfferedAmount",
-      "activation_op": "<=",
+      "activation_op": ">",
       "activation_val": 75000.0,
       "time_min": null,
       "time_max": null,
@@ -426,6 +414,18 @@
       {
         "round": 1,
         "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The AST enforces OfferedAmount <= 75000, matching the ceiling bound of Article 2(2)(c). However the Bank Operational Policy Requirement phrasing ('vượt trần') indicates detection of offers that exceed the ceiling, which would require OfferedAmount > 75000. The direction of the threshold is therefore mismatched. (Back-translation: Activity 'O_Create Offer' when OfferedAmount <= 75000.0 must occur at least once in the credit case.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The candidate AST checks for O_Create Offer with OfferedAmount > 75000 and requires its existence. Article 2(2)(c) defines the ceiling as OfferedAmount <= 75 000 EUR (offers above this are excluded). The operationalisation should either forbid amounts >75 000 or enforce the allowed bound (<= 75 000). Using a '>' comparison and an existence requirement reverses the intended rule, resulting in a threshold direction mismatch. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 75000.0 must occur at least once in the credit case.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -435,29 +435,41 @@
     "rule_id": "R15",
     "dataset_split": "dev",
     "tier": "Tier2_TemporalData",
-    "article_id": "Article 14(1)",
-    "rounds_needed": 0,
-    "final_ast": {
-      "article_id": "Article 14(1)",
-      "decomposition": null,
-      "template_name": "Response",
-      "activation_activity": "O_Sent (mail and online)",
-      "target_activity": "O_Returned",
-      "activation_attr": null,
-      "activation_op": null,
-      "activation_val": null,
-      "time_min": null,
-      "time_max": 14,
-      "time_unit": "d"
-    },
-    "roundtrip_ok": true,
-    "roundtrip_msg": "Roundtrip check passed.",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 5,
+    "final_ast": null,
+    "roundtrip_ok": false,
+    "roundtrip_msg": "Exceeded max retries.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
-        "status": "PASSED",
-        "error": null
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=14 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The AST captures the required precedence (O_Sent before O_Returned) which aligns with Article 5(1)’s pre‑contractual information obligation, but it omits the quantitative time limit (≤ 14 calendar days) stipulated in the Bank Operational Policy. Since the legal text does not prescribe a specific 14‑day window, the missing bound constitutes a mismatch with the operational requirement, not a contradiction or invented rule. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=14 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=14 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Returned\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=14 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Returned' must eventually occur AFTER it within 14 calendar days.)"
       }
     ]
   }

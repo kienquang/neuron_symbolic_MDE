@@ -162,7 +162,7 @@
     "val": null,
     "time_max": null,
     "is_trap": false,
-    "description": "Khi hồ sơ bị hủy (A_Cancelled), đề nghị vay liên kết phải được hủy theo (O_Cancelled)."
+    "description": "Quy chuẩn vận hành quyền rút lui theo Điều 14(1): Khi hồ sơ bị khách hủy hoặc rút lui (A_Cancelled), đề nghị vay liên kết phải được hủy theo (O_Cancelled)."
   },
   {
     "rule_id": "R12",
@@ -213,7 +213,7 @@
     "rule_id": "R15",
     "tier": "Tier2_TemporalData",
     "complexity_tier": "Tier 2: Temporal & Data-Aware",
-    "article_id": "Article 14(1)",
+    "article_id": "Article 5(1)",
     "template": "Response",
     "act_a": "O_Sent (mail and online)",
     "act_b": "O_Returned",
@@ -222,14 +222,14 @@
     "val": null,
     "time_max": 14,
     "is_trap": false,
-    "description": "Khoảng thời gian từ lúc gửi hợp đồng O_Sent (mail and online) đến lúc khách gửi trả O_Returned <= 14 ngày."
+    "description": "Quy chuẩn thông tin tiền hợp đồng theo Điều 5(1): Khoảng thời gian từ lúc gửi đề nghị O_Sent (mail and online) đến lúc khách gửi trả O_Returned <= 14 ngày lịch."
   },
   {
     "rule_id": "R16",
     "tier": "Tier2_TemporalData",
     "complexity_tier": "Tier 2: Temporal & Data-Aware",
     "article_id": "Article 14(3)",
-    "template": "Response",
+    "template": "Precedence",
     "act_a": "O_Sent (mail and online)",
     "act_b": "A_Cancelled",
     "attr": null,
@@ -237,7 +237,7 @@
     "val": null,
     "time_max": 30,
     "is_trap": false,
-    "description": "Các hồ sơ rút lui/hủy bỏ (A_Cancelled) sau khi gửi đề nghị diễn ra trong vòng 30 ngày lịch."
+    "description": "Thời hạn rút lui theo Điều 14(3): Khách hàng chỉ được hủy bỏ hồ sơ (A_Cancelled) trong vòng 30 ngày lịch sau khi nhận văn bản đề nghị O_Sent."
   },
   {
     "rule_id": "R17",
@@ -258,7 +258,7 @@
     "rule_id": "R18",
     "tier": "Tier2_TemporalData",
     "complexity_tier": "Tier 2: Temporal & Data-Aware",
-    "article_id": "Article 16(4)",
+    "article_id": "Article 8(1)",
     "template": "Precedence",
     "act_a": "W_Validate application",
     "act_b": "O_Accepted",
@@ -267,14 +267,14 @@
     "val": 10000.0,
     "time_max": null,
     "is_trap": false,
-    "description": "Với các đề nghị vay trên 10.000 EUR, bắt buộc qua bước thẩm định W_Validate application trước O_Accepted."
+    "description": "Thẩm định khả năng trả nợ nâng cao theo Điều 8(1): Với các đề nghị vay trên 10.000 EUR, bắt buộc qua bước thẩm định W_Validate application trước O_Accepted."
   },
   {
     "rule_id": "R19",
     "tier": "Tier2_TemporalData",
     "complexity_tier": "Tier 2: Temporal & Data-Aware",
     "article_id": "Article 13(1)",
-    "template": "Response",
+    "template": "Precedence",
     "act_a": "A_Complete",
     "act_b": "O_Cancelled",
     "attr": null,
@@ -282,7 +282,7 @@
     "val": null,
     "time_max": 30,
     "is_trap": false,
-    "description": "Kiểm tra khoảng cách thời gian từ A_Complete đến khi hủy đề nghị O_Cancelled <= 30 ngày."
+    "description": "Thời hạn chấm dứt theo Điều 13(1): Việc hủy đề nghị vay O_Cancelled chỉ được diễn ra trong vòng 30 ngày sau khi hoàn tất hồ sơ A_Complete."
   },
   {
     "rule_id": "R20",
@@ -318,7 +318,7 @@
     "rule_id": "R22",
     "tier": "Tier2_TemporalData",
     "complexity_tier": "Tier 2: Temporal & Data-Aware",
-    "article_id": "Article 18(2)",
+    "article_id": "Article 2(3)",
     "template": "Response",
     "act_a": "A_Create Application",
     "act_b": "A_Pending",
@@ -327,7 +327,7 @@
     "val": null,
     "time_max": 90,
     "is_trap": false,
-    "description": "Toàn bộ chu trình từ lúc nộp đơn (A_Create Application) đến lúc tất toán/duyệt (A_Pending) <= 90 ngày."
+    "description": "Quy chuẩn thời hạn tín dụng thấu chi hoàn trả trong 3 tháng (90 ngày) theo Điều 2(3): Toàn bộ chu trình từ lúc nộp đơn (A_Create Application) đến lúc tất toán/duyệt (A_Pending) <= 90 ngày."
   },
   {
     "rule_id": "R23",

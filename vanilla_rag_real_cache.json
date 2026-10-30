@@ -64,5 +64,8 @@
   "554bd0732d4e3f2e3fbd2e4b91efffe0ba6a84b202f161e6de494f840dd5e58d": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
   "63f1eb944d92c2f916f3a93fd7b064c21d39291267f8204aa68f3e6ba2fdc1e4": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
   "8d71b20f41ceb944d28141bdf9812f5c1ece061b2430fe30998b1211c3f88228": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
-  "6275f443caa85bea7f47e5ac83bd7aba356ac5449763d7cff3d475c8fed6888c": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}"
+  "6275f443caa85bea7f47e5ac83bd7aba356ac5449763d7cff3d475c8fed6888c": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
+  "40e86f3774fa6d0372f2ebd8dc83ad9495fde514fb8e5ed4ae3868a58ef3c044": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
+  "9db9535a4c13e48d5d347c438d7bd23e0371dcd7d56eec175e4f61d2e8e298aa": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}",
+  "45b56681c476433331fd90a2c2e19a3bb363737a894613eabbf8744b0d24118a": "{\"verdict\": \"EQUIVALENT\", \"diagnostic_feedback\": \"Verified.\"}"
 }

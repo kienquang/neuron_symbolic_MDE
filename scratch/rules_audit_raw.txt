@@ -1,0 +1,120 @@
+[R01] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Precedence | A_Create Application -> A_Concept | Attr: None None None | TMax: None | Trap: False
+  Desc: Phải khởi tạo hồ sơ vay (A_Create Application) trước khi bước vào đánh giá sơ bộ (A_Concept).
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R02] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Precedence | A_Concept -> A_Accepted | Attr: None None None | TMax: None | Trap: False
+  Desc: Hoạt động đánh giá sơ bộ A_Concept bắt buộc xảy ra trước A_Accepted.
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R03] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Precedence | A_Accepted -> O_Create Offer | Attr: None None None | TMax: None | Trap: False
+  Desc: Đánh giá khả năng trả nợ được phê duyệt sơ bộ (A_Accepted) trước khi ngân hàng tạo lập đề nghị vay chính thức (O_Create Offer) theo Điều 8(1).
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R04] Art: Article 5(1) (Pre-contractual information) | Template: Chain Precedence | O_Create Offer -> O_Created | Attr: None None None | TMax: None | Trap: False
+  Desc: Ngay trước khi O_Created được ghi nhận vào hệ thống phải có O_Create Offer.
+  Law text snippet: 1. In good time before the consumer is bound by any credit agreement or offer, the creditor and, where applicable, the credit intermediary shall, on the basis of the credit terms and conditions offered by the creditor and, if applicable, the preferences expressed and information...
+----------------------------------------------------------------------
+[R05] Art: Article 5(1) (Pre-contractual information) | Template: Precedence | O_Created -> O_Sent (mail and online) | Attr: None None None | TMax: None | Trap: False
+  Desc: Văn bản đề nghị vay (O_Created) phải được tạo lập trước khi gửi thông tin tiền hợp đồng O_Sent (mail and online).
+  Law text snippet: 1. In good time before the consumer is bound by any credit agreement or offer, the creditor and, where applicable, the credit intermediary shall, on the basis of the credit terms and conditions offered by the creditor and, if applicable, the preferences expressed and information...
+----------------------------------------------------------------------
+[R06] Art: Article 5(1) (Pre-contractual information) | Template: Precedence | O_Sent (mail and online) -> A_Complete | Attr: None None None | TMax: None | Trap: False
+  Desc: Bắt buộc gửi thông tin tiền hợp đồng O_Sent (mail and online) trước khi hồ sơ chuyển sang A_Complete.
+  Law text snippet: 1. In good time before the consumer is bound by any credit agreement or offer, the creditor and, where applicable, the credit intermediary shall, on the basis of the credit terms and conditions offered by the creditor and, if applicable, the preferences expressed and information...
+----------------------------------------------------------------------
+[R07] Art: Article 10(1) (Information to be included in credit agreements) | Template: Precedence | O_Accepted -> A_Pending | Attr: None None None | TMax: None | Trap: False
+  Desc: Khách hàng phải chấp nhận đề nghị (O_Accepted) trước khi khoản vay được giải ngân (A_Pending).
+  Law text snippet: 1. Credit agreements shall be drawn up on paper or on another durable medium. All the contracting parties shall receive a copy of the credit agreement. This Article shall be without prejudice to any national rules regarding the validity of the conclusion of credit agreements...
+----------------------------------------------------------------------
+[R08] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Precedence | W_Validate application -> A_Validated | Attr: None None None | TMax: None | Trap: False
+  Desc: Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validated.
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R09] Art: Article 9(2) (Database access) | Template: Response | A_Denied -> O_Refused | Attr: None None None | TMax: None | Trap: False
+  Desc: Khi hồ sơ bị từ chối do tra cứu dữ liệu (A_Denied), đề nghị vay tương ứng phải chuyển sang trạng thái từ chối (O_Refused) theo Điều 9(2).
+  Law text snippet: 2. If the credit application is rejected on the basis of consultation of a database, the creditor shall inform the consumer immediately and without charge of the result of such consultation and of the particulars of the database consulted....
+----------------------------------------------------------------------
+[R10] Art: Article 13(2) (Open-end credit agreements) | Template: Not Co-Existence | A_Denied -> A_Pending | Attr: None None None | TMax: None | Trap: False
+  Desc: Một hồ sơ đã bị từ chối (A_Denied) thì tuyệt đối không thể được giải ngân (A_Pending).
+  Law text snippet: 2. If agreed in the credit agreement, the creditor may, for objectively justified reasons, terminate the consumer's right to draw down on an open-end credit agreement. The creditor shall inform the consumer of the termination and the reasons for it on paper or on another...
+----------------------------------------------------------------------
+[R11] Art: Article 14(1) (Right of withdrawal) | Template: Response | A_Cancelled -> O_Cancelled | Attr: None None None | TMax: None | Trap: False
+  Desc: Khi hồ sơ bị hủy (A_Cancelled), đề nghị vay liên kết phải được hủy theo (O_Cancelled).
+  Law text snippet: 1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the...
+----------------------------------------------------------------------
+[R12] Art: Article 5(6) (Pre-contractual information) | Template: Precedence | W_Call after offers -> A_Validated | Attr: None None None | TMax: None | Trap: False
+  Desc: Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ được xác thực phê duyệt (A_Validated) theo Điều 5(6).
+  Law text snippet: 6. Member States shall ensure that creditors and, where applicable, credit intermediaries provide adequate explanations to the consumer, in order to place the consumer in a position enabling him to assess whether the proposed credit agreement is adapted to his needs and to his financial...
+----------------------------------------------------------------------
+[R13] Art: Article 2(2) (Scope) | Template: Existence | O_Create Offer -> None | Attr: OfferedAmount >= 200.0 | TMax: None | Trap: False
+  Desc: Kiểm tra thuộc tính OfferedAmount >= 200 EUR tại sự kiện O_Create Offer theo Điều 2(2)(c).
+  Law text snippet: 2. This Directive shall not apply to the following: (a) credit agreements which are secured either by a mortgage or by another comparable security commonly used in a Member State on immovable property or secured by a right related to immovable property; (b) credit agreements...
+----------------------------------------------------------------------
+[R14] Art: Article 2(2) (Scope) | Template: Existence | O_Create Offer -> None | Attr: OfferedAmount <= 75000.0 | TMax: None | Trap: False
+  Desc: Phát hiện các đề nghị vay vượt trần OfferedAmount <= 75.000 EUR theo Điều 2(2)(c).
+  Law text snippet: 2. This Directive shall not apply to the following: (a) credit agreements which are secured either by a mortgage or by another comparable security commonly used in a Member State on immovable property or secured by a right related to immovable property; (b) credit agreements...
+----------------------------------------------------------------------
+[R15] Art: Article 14(1) (Right of withdrawal) | Template: Response | O_Sent (mail and online) -> O_Returned | Attr: None None None | TMax: 14 | Trap: False
+  Desc: Khoảng thời gian từ lúc gửi hợp đồng O_Sent (mail and online) đến lúc khách gửi trả O_Returned <= 14 ngày.
+  Law text snippet: 1. The consumer shall have a period of 14 calendar days in which to withdraw from the credit agreement without giving any reason. That period of withdrawal shall begin (a) either from the day of the conclusion of the credit agreement, or (b) from the...
+----------------------------------------------------------------------
+[R16] Art: Article 14(3) (Right of withdrawal) | Template: Response | O_Sent (mail and online) -> A_Cancelled | Attr: None None None | TMax: 30 | Trap: False
+  Desc: Các hồ sơ rút lui/hủy bỏ (A_Cancelled) sau khi gửi đề nghị diễn ra trong vòng 30 ngày lịch.
+  Law text snippet: 3. If the consumer exercises his right of withdrawal, he shall: (a) in order to give effect to the withdrawal before the expiry of the deadline referred to in paragraph 1, notify this to the creditor in line with the information given by the creditor...
+----------------------------------------------------------------------
+[R17] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Precedence | O_Create Offer -> A_Pending | Attr: CreditScore > 0 | TMax: None | Trap: False
+  Desc: Tại bước tạo đề nghị vay trước giải ngân (A_Pending), điểm CreditScore phải dương (> 0).
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R18] Art: Article 16(4) (Early repayment) | Template: Precedence | W_Validate application -> O_Accepted | Attr: OfferedAmount > 10000.0 | TMax: None | Trap: False
+  Desc: Với các đề nghị vay trên 10.000 EUR, bắt buộc qua bước thẩm định W_Validate application trước O_Accepted.
+  Law text snippet: 4. Member States may provide that: (a) such compensation may be claimed by the creditor only on condition that the amount of the early repayment exceeds the threshold defined by national law. That threshold shall not exceed EUR 10 000 within any period of 12...
+----------------------------------------------------------------------
+[R19] Art: Article 13(1) (Open-end credit agreements) | Template: Response | A_Complete -> O_Cancelled | Attr: None None None | TMax: 30 | Trap: False
+  Desc: Kiểm tra khoảng cách thời gian từ A_Complete đến khi hủy đề nghị O_Cancelled <= 30 ngày.
+  Law text snippet: 1. The consumer may effect standard termination of an open-end credit agreement free of charge at any time unless the parties have agreed on a period of notice. Such a period may not exceed one month. If agreed in the credit agreement, the creditor may...
+----------------------------------------------------------------------
+[R20] Art: Annex I(II) (N/A) | Template: Existence | O_Create Offer -> None | Attr: NumberOfTerms >= 12 | TMax: None | Trap: False
+  Desc: Kiểm tra thuộc tính số kỳ trả góp NumberOfTerms >= 12 trên sự kiện O_Create Offer.
+  Law text snippet: ...
+----------------------------------------------------------------------
+[R21] Art: Annex I(II) (N/A) | Template: Existence | A_Create Application -> None | Attr: case:RequestedAmount >= 1500.0 | TMax: None | Trap: False
+  Desc: Kiểm tra thuộc tính mức hồ sơ case:RequestedAmount >= 1500 EUR theo Phụ lục I Phần II(g).
+  Law text snippet: ...
+----------------------------------------------------------------------
+[R22] Art: Article 18(2) (Overrunning) | Template: Response | A_Create Application -> A_Pending | Attr: None None None | TMax: 90 | Trap: False
+  Desc: Toàn bộ chu trình từ lúc nộp đơn (A_Create Application) đến lúc tất toán/duyệt (A_Pending) <= 90 ngày.
+  Law text snippet: 2. In the event of a significant overrunning exceeding a period of one month, the creditor shall inform the consumer without delay, on paper or on another durable medium, (a) of the overrunning; (b) of the amount involved; (c) of the borrowing rate; (d) of...
+----------------------------------------------------------------------
+[R23] Art: Article 7 (Exemptions from the pre-contractual information requirements) | Template: Response | A_Incomplete -> A_Validating | Attr: None None None | TMax: 8 | Trap: True
+  Desc: Bẫy COND-004: Bịa thời hạn 8 ngày xử lý hồ sơ không đầy đủ gán vào Điều 7(1).
+  Law text snippet: Articles 5 and 6 shall not apply to suppliers of goods or services acting as credit intermediaries in an ancillary capacity. This is without prejudice to the creditor's obligation to ensure that the consumer receives the pre-contractual information referred to in those Articles....
+----------------------------------------------------------------------
+[R24] Art: Article 7 (Exemptions from the pre-contractual information requirements) | Template: Response | A_Incomplete -> W_Call incomplete files | Attr: None None None | TMax: None | Trap: True
+  Desc: Bẫy gán sai nguồn dẫn: Gán quy trình gọi bổ sung hồ sơ thiếu W_Call incomplete files vào Điều 7.
+  Law text snippet: Articles 5 and 6 shall not apply to suppliers of goods or services acting as credit intermediaries in an ancillary capacity. This is without prejudice to the creditor's obligation to ensure that the consumer receives the pre-contractual information referred to in those Articles....
+----------------------------------------------------------------------
+[R25] Art: Article 2(2) (Scope) | Template: Existence | A_Create Application -> None | Attr: case:LoanGoal == Mortgage_RealEstate | TMax: None | Trap: True
+  Desc: Bẫy ngoài phạm vi: Áp dụng Chỉ thị cho hợp đồng thế chấp bất động sản (đã bị loại trừ tại Điều 2(2)(a)-(b)).
+  Law text snippet: 2. This Directive shall not apply to the following: (a) credit agreements which are secured either by a mortgage or by another comparable security commonly used in a Member State on immovable property or secured by a right related to immovable property; (b) credit agreements...
+----------------------------------------------------------------------
+[R26] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Existence | O_Create Offer -> None | Attr: CreditScore >= 750 | TMax: None | Trap: True
+  Desc: Bẫy bịa ngưỡng số: Bịa điểm tín dụng tối thiểu CreditScore >= 750 vào Điều 8(1).
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------
+[R27] Art: Article 16(2) (Early repayment) | Template: Existence | O_Create Offer -> None | Attr: EarlyRepaymentCompensationFee <= 1.0 | TMax: None | Trap: True
+  Desc: Bẫy vi phạm tập Φ: Kiểm tra cột phí bồi thường trả trước EarlyRepaymentCompensationFee không có trong log BPIC 2017.
+  Law text snippet: 2. In the event of early repayment of credit the creditor shall be entitled to fair and objectively justified compensation for possible costs directly linked to early repayment of credit provided that the early repayment falls within a period for which the borrowing rate is...
+----------------------------------------------------------------------
+[R28] Art: Article 19(1) (Calculation of the annual percentage rate of charge) | Template: Existence | O_Create Offer -> None | Attr: AnnualPercentageRateAPR <= 20.0 | TMax: None | Trap: True
+  Desc: Bẫy vi phạm tập Φ: Kiểm tra cột lãi suất APR không tồn tại trong lược đồ BPIC 2017.
+  Law text snippet: 1. The annual percentage rate of charge, equating, on an annual basis, to the present value of all commitments (drawdowns, repayments and charges), future or existing, agreed by the creditor and the consumer, shall be calculated in accordance with the mathematical formula set out in...
+----------------------------------------------------------------------
+[R29] Art: Article 2(2) (Scope) | Template: Existence | O_Create Offer -> None | Attr: OfferedAmount >= 200.0 | TMax: None | Trap: True
+  Desc: Bẫy null/khuyết sự kiện trên Trace: Kiểm tra OfferedAmount trên hồ sơ bị từ chối sớm chưa từng tạo O_Create Offer.
+  Law text snippet: 2. This Directive shall not apply to the following: (a) credit agreements which are secured either by a mortgage or by another comparable security commonly used in a Member State on immovable property or secured by a right related to immovable property; (b) credit agreements...
+----------------------------------------------------------------------
+[R30] Art: Article 8(1) (Obligation to assess the creditworthiness of the consumer) | Template: Existence | O_Create Offer -> None | Attr: CreditScore > 0 | TMax: None | Trap: True
+  Desc: Bẫy null sentinel trên Trace: Kiểm tra CreditScore trên dòng sự kiện O_Create Offer có CreditScore = NaN.
+  Law text snippet: 1. Member States shall ensure that, before the conclusion of the credit agreement, the creditor assesses the consumer's creditworthiness on the basis of sufficient information, where appropriate obtained from the consumer and, where necessary, on the basis of a consultation of the relevant database. Member...
+----------------------------------------------------------------------

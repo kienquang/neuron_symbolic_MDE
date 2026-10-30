@@ -12,9 +12,9 @@
 ### 1B. Full Neuro-Symbolic Pipeline (Sau khi qua Kiến trúc 3 Tầng & Vòng lặp Tự sửa)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Lỏng - Weakened (%) ↓ | Quá Chặt - Strengthened (%) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng - Vacuous (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Tier 1: Control-Flow Only** | 91.67% | 0.0% | 0.0% | 8.33% | 0.0% |
-| **Tier 2: Temporal & Data-Aware** | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| **Overall Pipeline** | 93.33% | 0.0% | 0.0% | 6.67% | 0.0% |
+| **Tier 1: Control-Flow Only** | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **Tier 2: Temporal & Data-Aware** | 33.33% | 0.0% | 0.0% | 33.33% | 33.33% |
+| **Overall Pipeline** | 86.67% | 0.0% | 0.0% | 6.67% | 6.67% |
 
 ---
 
@@ -24,9 +24,9 @@
 | :--- | :---: | :---: | :---: |
 | **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | N/A | N/A | 0.2243 |
 | **Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)** | 75.0% | 56.67% | 0.4901 |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 68.33% | 63.33% | 0.7013 |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 78.33% | 73.33% | 0.7624 |
-| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 93.33% | 88.33% | 0.8752 |
+| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 75.0% | 70.0% | 0.7313 |
+| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 85.0% | 80.0% | 0.7884 |
+| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 100.0% | 95.0% | 0.8997 |
 
 ---
 
@@ -34,7 +34,7 @@
 
 | Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB (Avg. Retries) ↓ | Thời gian Kiểm chứng Declare4Py (s) ↓ | Độ chuẩn xác Trích dẫn Giải trình (Citation Fidelity %) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED (Tuân thủ)** | 0.8696 | 1.0 | 0.9302 | 0.0 | 0.0184s | 100.0% |
-| **CONTRADICTED (Vi phạm)** | 1.0 | 0.7 | 0.8235 | 1.0 | 0.0103s | 80.0% |
-| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.8947 | 0.85 | 0.8718 | 0.85 | 0.0039s | 100.0% |
-| **Trung bình Toàn hệ thống (Overall)** | 0.9214 | 0.85 | 0.8752 | 0.62 | 0.0116s | 100.0% |
+| **ENTAILED (Tuân thủ)** | 0.8696 | 1.0 | 0.9302 | 0.0 | 0.0286s | 100.0% |
+| **CONTRADICTED (Vi phạm)** | 1.0 | 0.85 | 0.9189 | 0.0 | 0.0248s | 100.0% |
+| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.85 | 0.85 | 0.85 | 0.85 | 0.0028s | 100.0% |
+| **Trung bình Toàn hệ thống (Overall)** | 0.9065 | 0.9 | 0.8997 | 0.28 | 0.0187s | 100.0% |
