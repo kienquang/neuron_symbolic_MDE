@@ -152,19 +152,48 @@ def check_single_trace_semantics(
     # Trường hợp 0B: Mẫu Absence, Choice, Exclusive Choice
     # =========================================================================
     if tpl == "Absence":
-        if not events_a.empty:
-            return False, {
-                "violation_subtype": "FORBIDDEN_ACTIVITY_PRESENT",
-                "activation_event": {
-                    "activity": act_a,
-                    "timestamp": str(events_a["time:timestamp"].iloc[0]),
-                },
-                "deviation_magnitude": f"Hoạt động bị cấm '{act_a}' xuất hiện {len(events_a)} lần trong hồ sơ.",
-                "minimal_correction_mcs": f"Loại bỏ toàn bộ các sự kiện '{act_a}' khỏi hồ sơ xử lý.",
+        attr = ast_obj.activation_attr
+        op = ast_obj.activation_op
+        val = ast_obj.activation_val
+        if attr and op is not None and val is not None:
+            forbidden_events = []
+            for _, row in events_a.iterrows():
+                ok_pred, actual_val = evaluate_data_predicate(row, attr, op, val)
+                if ok_pred:
+                    forbidden_events.append((row, actual_val))
+            if forbidden_events:
+                bad_ev, act_val = forbidden_events[0]
+                return False, {
+                    "violation_subtype": "DATA_ATTRIBUTE_THRESHOLD_VIOLATION",
+                    "activation_event": {
+                        "activity": act_a,
+                        "timestamp": str(bad_ev["time:timestamp"]),
+                        attr: act_val,
+                    },
+                    "deviation_magnitude": (
+                        f"Sự kiện '{act_a}' xuất hiện với {attr} = {act_val} thỏa mãn điều kiện bị cấm '{attr} {op} {val}'."
+                    ),
+                    "minimal_correction_mcs": (
+                        f"Không tạo sự kiện '{act_a}' có {attr} {op} {val}."
+                    ),
+                }
+            return True, {
+                "msg": f"Không có sự kiện '{act_a}' nào có {attr} {op} {val} (tuân thủ Absence có điều kiện dữ liệu)."
             }
-        return True, {
-            "msg": f"Hoạt động bị cấm '{act_a}' hoàn toàn không xuất hiện (tuân thủ Absence)."
-        }
+        else:
+            if not events_a.empty:
+                return False, {
+                    "violation_subtype": "FORBIDDEN_ACTIVITY_PRESENT",
+                    "activation_event": {
+                        "activity": act_a,
+                        "timestamp": str(events_a["time:timestamp"].iloc[0]),
+                    },
+                    "deviation_magnitude": f"Hoạt động bị cấm '{act_a}' xuất hiện {len(events_a)} lần trong hồ sơ.",
+                    "minimal_correction_mcs": f"Loại bỏ toàn bộ các sự kiện '{act_a}' khỏi hồ sơ xử lý.",
+                }
+            return True, {
+                "msg": f"Hoạt động bị cấm '{act_a}' hoàn toàn không xuất hiện (tuân thủ Absence)."
+            }
 
     if tpl == "Choice":
         if events_a.empty and events_b.empty:
@@ -320,11 +349,26 @@ def check_single_trace_semantics(
                     ),
                 }
 
-        # Kiểm tra điều kiện thuộc tính trên sự kiện tiền đề A nếu có (VD: R17 CreditScore > 0)
+        # Kiểm tra điều kiện thuộc tính trên sự kiện tiền đề A nếu có (VD: R17 CreditScore > 0, R18 OfferedAmount > 10000)
         if ast_obj.activation_attr and ast_obj.activation_op is not None and ast_obj.activation_val is not None:
             attr = ast_obj.activation_attr
             op = ast_obj.activation_op
             val = ast_obj.activation_val
+
+            # Nếu là điều kiện kích hoạt phạm vi quy tắc (như OfferedAmount > 10000 của R18)
+            # Nếu hồ sơ có OfferedAmount <= 10000 thì nghĩa vụ thẩm định bổ sung không áp dụng
+            case_val = None
+            if attr in case_df.columns:
+                non_null = case_df[attr].dropna()
+                if not non_null.empty:
+                    case_val = non_null.max()
+            if case_val is not None and attr == "OfferedAmount":
+                is_active, _ = evaluate_data_predicate(pd.Series({attr: case_val}), attr, op, val)
+                if not is_active:
+                    return True, {
+                        "msg": f"Khoản vay {case_val} EUR không vượt ngưỡng {val} EUR của quy định {ast_obj.article_id or ''}. Quy tắc được bảo toàn."
+                    }
+
             valid_prior_rows = []
             last_actual = None
             for _, row_a in prior_a.iterrows():

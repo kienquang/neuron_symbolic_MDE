@@ -24,6 +24,7 @@ if __name__ == "__main__":
         chunks_path=str(PROJECT_ROOT / "data" / "processed" / "directive_chunks.json"),
         parquet_path=str(PROJECT_ROOT / "data" / "interim" / "bpic2017_events.parquet"),
         max_serialized_items=300,
+        force_rebuild=True,
     )
     print(f"Đã xuất thành công {summary['rules_count']} quy tắc chuẩn (R01-R30) ra benchmark_rules_30.json & {summary['rules_path']}!")
     print(f"Đã đóng gói thành công {summary['items_count']} hồ sơ kiểm thử phân tầng (ENTAILED, CONTRADICTED, BASELESS) ra {summary['items_path']}!")

@@ -220,7 +220,7 @@
       "decomposition": null,
       "template_name": "Precedence",
       "activation_activity": "W_Validate application",
-      "target_activity": "A_Validated",
+      "target_activity": "A_Validating",
       "activation_attr": null,
       "activation_op": null,
       "activation_val": null,
@@ -233,7 +233,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Validated\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -340,7 +340,7 @@
       "decomposition": null,
       "template_name": "Precedence",
       "activation_activity": "W_Call after offers",
-      "target_activity": "A_Validated",
+      "target_activity": "A_Validating",
       "activation_attr": null,
       "activation_op": null,
       "activation_val": null,
@@ -353,7 +353,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Call after offers\",\"target_activity\":\"A_Validated\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Call after offers\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }

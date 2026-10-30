@@ -166,8 +166,27 @@ def main() -> None:
     df_raw = pd.read_parquet(parquet_path)
     df_raw["time:timestamp"] = pd.to_datetime(df_raw["time:timestamp"], utc=True)
 
-    present_offer_cols = [c for c in OFFER_LEVEL_COLS if c in df_raw.columns]
-    df_propagated = df_raw.copy()
+    sample_cids = list(
+        dict.fromkeys(
+            [
+                "Application_1108271369",
+                "Application_1171453988",
+                "Application_130761111",
+                "Application_1499090661",
+                "Application_157155173",
+                "Application_1677498057",
+                "Application_1741752833",
+                "Application_1838182698",
+                "Application_1875888758",
+                "Application_2037628374",
+            ]
+            + df_raw["case:concept:name"].drop_duplicates().iloc[:2500].tolist()
+        )
+    )
+    df_sub = df_raw[df_raw["case:concept:name"].isin(sample_cids)].copy()
+
+    present_offer_cols = [c for c in OFFER_LEVEL_COLS if c in df_sub.columns]
+    df_propagated = df_sub.copy()
     if present_offer_cols:
         grp = df_propagated.groupby("case:concept:name", sort=False)[present_offer_cols]
         df_propagated[present_offer_cols] = grp.ffill().bfill()

@@ -111,13 +111,13 @@
     "article_id": "Article 8(1)",
     "template": "Precedence",
     "act_a": "W_Validate application",
-    "act_b": "A_Validated",
+    "act_b": "A_Validating",
     "attr": null,
     "op": null,
     "val": null,
     "time_max": null,
     "is_trap": false,
-    "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validated."
+    "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validating theo Điều 8(1)."
   },
   {
     "rule_id": "R09",
@@ -171,13 +171,13 @@
     "article_id": "Article 5(6)",
     "template": "Precedence",
     "act_a": "W_Call after offers",
-    "act_b": "A_Validated",
+    "act_b": "A_Validating",
     "attr": null,
     "op": null,
     "val": null,
     "time_max": null,
     "is_trap": false,
-    "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ được xác thực phê duyệt (A_Validated) theo Điều 5(6)."
+    "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ chuyển sang trạng thái A_Validating theo Điều 5(6)."
   },
   {
     "rule_id": "R13",

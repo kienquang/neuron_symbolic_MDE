@@ -22,11 +22,11 @@
 
 | Cấu hình Hệ thống (Configuration) | Tỷ lệ Ràng buộc Hợp lệ Thực thi được (%) ↑ | Tỷ lệ Đúng Ngữ nghĩa - Eq. Rate (%) ↑ | Độ chính xác Kiểm tra Tuân thủ trên Log (F1-Score) ↑ |
 | :--- | :---: | :---: | :---: |
-| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | N/A | N/A | 0.2243 |
-| **Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)** | 75.0% | 56.67% | 0.4901 |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 75.0% | 70.0% | 0.7313 |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 85.0% | 80.0% | 0.7884 |
-| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 100.0% | 95.0% | 0.8997 |
+| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | N/A | N/A | 0.2194 |
+| **Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)** | 85.0% | 66.67% | 0.5862 |
+| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 76.67% | 68.33% | 0.8576 |
+| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 73.33% | 68.33% | 0.8381 |
+| **Full Neuro-Symbolic Pipeline (Đề xuất)** | 91.67% | 83.33% | 0.9544 |
 
 ---
 
@@ -34,7 +34,7 @@
 
 | Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB (Avg. Retries) ↓ | Thời gian Kiểm chứng Declare4Py (s) ↓ | Độ chuẩn xác Trích dẫn Giải trình (Citation Fidelity %) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED (Tuân thủ)** | 0.8696 | 1.0 | 0.9302 | 0.0 | 0.0286s | 100.0% |
-| **CONTRADICTED (Vi phạm)** | 1.0 | 0.85 | 0.9189 | 0.0 | 0.0248s | 100.0% |
-| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.85 | 0.85 | 0.85 | 0.85 | 0.0028s | 100.0% |
-| **Trung bình Toàn hệ thống (Overall)** | 0.9065 | 0.9 | 0.8997 | 0.28 | 0.0187s | 100.0% |
+| **ENTAILED (Tuân thủ)** | 1.0 | 0.95 | 0.9744 | 0.35 | 0.0156s | 95.0% |
+| **CONTRADICTED (Vi phạm)** | 1.0 | 0.8 | 0.8889 | 1.1 | 0.0094s | 80.0% |
+| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 1.0 | 1.0 | 1.0 | 0.85 | 0.0005s | 100.0% |
+| **Trung bình Toàn hệ thống (Overall)** | 1.0 | 0.9167 | 0.9544 | 0.77 | 0.0093s | 100.0% |

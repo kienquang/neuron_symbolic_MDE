@@ -130,13 +130,13 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "article_id": "Article 8(1)",
         "template": "Precedence",
         "act_a": "W_Validate application",
-        "act_b": "A_Validated",
+        "act_b": "A_Validating",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validated.",
+        "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validating theo Điều 8(1).",
     },
     {
         "rule_id": "R09",
@@ -190,13 +190,13 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "article_id": "Article 5(6)",
         "template": "Precedence",
         "act_a": "W_Call after offers",
-        "act_b": "A_Validated",
+        "act_b": "A_Validating",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ được xác thực phê duyệt (A_Validated) theo Điều 5(6).",
+        "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ chuyển sang trạng thái A_Validating theo Điều 5(6).",
     },
     # --- TIER 2: TEMPORAL & DATA-AWARE CONSTRAINTS (10 QUY TẮC: R13 - R22) ---
     {
@@ -568,7 +568,7 @@ def build_normative_rule_benchmark(
         "R08": {
             "article_id": "Article 8(1)",
             "template_name": "Response",
-            "activation_activity": "A_Validated",
+            "activation_activity": "A_Validating",
             "target_activity": "W_Validate application",
             "time_min": 0,
             "time_max": None,
@@ -742,18 +742,12 @@ def build_stratified_trace_benchmark(
         )
 
     per_class_quota = target_total_items // 3
-    all_rules_by_id = {r["rule_id"]: r for r in normative_rules}
     active_rules = split_benchmark_rules(normative_rules, split=split)
-    active_rule_ids = {r["rule_id"] for r in active_rules}
+    active_norm = [r for r in active_rules if not r.get("is_trap") and not r.get("is_baseless_trap")]
+    if not active_norm:
+        active_norm = [r for r in normative_rules if not r.get("is_trap") and not r.get("is_baseless_trap")]
 
-    r05 = all_rules_by_id.get("R05") or active_rules[0]
-    r06 = all_rules_by_id.get("R06") or active_rules[0]
-    r08 = all_rules_by_id.get("R08") or active_rules[0]
-    r13 = all_rules_by_id.get("R13") or active_rules[0]
-    r15 = all_rules_by_id.get("R15") or active_rules[0]
-    r18 = all_rules_by_id.get("R18") or active_rules[0]
-    r19 = all_rules_by_id.get("R19") or active_rules[0]
-    trap_rules = [r for r in active_rules if r.get("is_trap")] or [r for r in normative_rules if r.get("is_trap")]
+    trap_rules = [r for r in active_rules if r.get("is_trap") or r.get("is_baseless_trap")]
     if not trap_rules:
         fallback_traps = []
         enriched_chunks = {
@@ -784,7 +778,19 @@ def build_stratified_trace_benchmark(
                 fallback_traps.append(r)
         trap_rules = fallback_traps
 
-    unique_cids = df_propagated["case:concept:name"].drop_duplicates().iloc[:1800].tolist()
+    candidate_gold_asts = {
+        r["rule_id"]: DeclareConstraintAST(**_rule_to_ast_dict(r))
+        for r in active_norm
+    }
+
+    # Đảm bảo phân rã và lập chỉ mục nhanh danh sách case, ưu tiên các case trễ hạn thực tế của R22
+    REAL_LATE_PENDING_CASES = [
+        "Application_1108271369", "Application_1171453988", "Application_130761111",
+        "Application_1499090661", "Application_157155173", "Application_1677498057",
+        "Application_1741752833", "Application_1838182698", "Application_1875888758",
+        "Application_2037628374",
+    ]
+    unique_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_propagated["case:concept:name"].drop_duplicates().iloc[:2500].tolist()))
     sub_prop = df_propagated[df_propagated["case:concept:name"].isin(unique_cids)]
     grouped_prop = {
         cid: grp.sort_values("time:timestamp").reset_index(drop=True)
@@ -795,140 +801,251 @@ def build_stratified_trace_benchmark(
     contradicted_items: List[Dict[str, Any]] = []
     baseless_items: List[Dict[str, Any]] = []
 
-    # Loại trừ R10, R13, R14, R15 khỏi bộ sinh trace ngẫu nhiên cơ bản:
-    # - R10 (Not Co-Existence): logic phủ định đồng thời, hầu như luôn thỏa mãn chân lý rỗng trong log BPIC 2017.
-    # - R13, R14 (Existence với OfferedAmount >= 200 hoặc <= 75000): có điều kiện thuộc tính số học cần lọc riêng.
-    # - R15 (Response 14 days): có ràng buộc thời lượng cần đối soát mốc timestamp cụ thể.
-    valid_candidate_rules = [
-        r for r in active_rules
-        if not r.get("is_trap") and not r.get("is_baseless_trap") and r["rule_id"] not in ("R10", "R13", "R14", "R15")
-    ]
-    if not valid_candidate_rules:
-        valid_candidate_rules = [
-            r for r in normative_rules
-            if not r.get("is_trap") and not r.get("is_baseless_trap") and r["rule_id"] not in ("R10", "R13", "R14", "R15")
-        ]
-
-    candidate_gold_asts = {
-        r["rule_id"]: DeclareConstraintAST(**_rule_to_ast_dict(r))
-        for r in valid_candidate_rules
-    }
-
-    max_per_rule = max(per_class_quota // max(len(valid_candidate_rules), 1) + 2, 2)
+    max_per_rule = max(per_class_quota // max(len(active_norm), 1) + 2, 2)
 
     for cid, case_df in grouped_prop.items():
         acts = set(case_df["concept:name"])
-        for r in valid_candidate_rules:
+        for r in active_norm:
             rid = r["rule_id"]
             gast = candidate_gold_asts[rid]
+            tpl = gast.template_name
             act_a = gast.activation_activity
             act_b = gast.target_activity
-            if act_a not in acts and (not act_b or act_b not in acts):
-                continue
+
+            # Bộ lọc kích hoạt không rỗng (Non-Vacuous Activation Check):
+            # 1. Precedence: Hoạt động đích B bắt buộc phải xảy ra trong hồ sơ
+            if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
+                if act_b not in acts:
+                    continue
+                if rid == "R18":
+                    amt = case_df["OfferedAmount"].max()
+                    if pd.isna(amt) or amt <= 10000:
+                        continue
+                if rid == "R17":
+                    score = case_df["CreditScore"].max()
+                    if pd.isna(score) or score <= 0:
+                        continue
+                if act_a not in acts:
+                    # Vi phạm tiền đề thực tế
+                    is_c, d_info = check_single_trace_semantics(case_df, gast)
+                    if not is_c and len(contradicted_items) < per_class_quota:
+                        if sum(1 for x in contradicted_items if x["rule_id"] == rid) < max_per_rule:
+                            contradicted_items.append({
+                                "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
+                                "rule_id": rid,
+                                "rule_meta": r,
+                                "retrieved_chunk": r["retrieved_chunk"],
+                                "test_case_df": case_df,
+                                "ground_truth_label": "CONTRADICTED",
+                                "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
+                            })
+                    continue
+
+            # 2. Response: Hoạt động kích hoạt A bắt buộc phải xảy ra trong hồ sơ
+            elif tpl in ("Response", "Alternate Response", "Chain Response"):
+                if act_a not in acts:
+                    continue
+                if rid == "R22" and act_b not in acts:
+                    # R22 quy định thời hạn 90 ngày giải ngân. Để kiểm tra vi phạm thời hạn thực tế,
+                    # sự kiện A_Pending bắt buộc phải xảy ra nhưng muộn hơn 90 ngày (không lấy hồ sơ bị huỷ sớm)
+                    continue
+
+            # 3. Not Co-Existence: Ít nhất một trong hai hoạt động phải xảy ra
+            elif tpl == "Not Co-Existence":
+                if act_a not in acts and act_b not in acts:
+                    continue
+
+            # 4. Existence & Absence
+            elif tpl in ("Existence", "Absence"):
+                if act_a not in acts:
+                    continue
+
             is_comp, details = check_single_trace_semantics(case_df, gast)
             if is_comp and len(entailed_items) < per_class_quota:
                 if sum(1 for x in entailed_items if x["rule_id"] == rid) < max_per_rule:
-                    entailed_items.append(
-                        {
-                            "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
-                            "rule_id": rid,
-                            "rule_meta": r,
-                            "retrieved_chunk": r["retrieved_chunk"],
-                            "test_case_df": case_df,
-                            "ground_truth_label": "ENTAILED",
-                            "trace_origin": f"BPIC2017_REAL_COMPLIANT_{rid}",
-                        }
-                    )
+                    entailed_items.append({
+                        "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+                        "rule_id": rid,
+                        "rule_meta": r,
+                        "retrieved_chunk": r["retrieved_chunk"],
+                        "test_case_df": case_df,
+                        "ground_truth_label": "ENTAILED",
+                        "trace_origin": f"BPIC2017_REAL_COMPLIANT_{rid}",
+                    })
             elif not is_comp and len(contradicted_items) < per_class_quota:
                 if sum(1 for x in contradicted_items if x["rule_id"] == rid) < max_per_rule:
-                    contradicted_items.append(
-                        {
-                            "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                            "rule_id": rid,
-                            "rule_meta": r,
-                            "retrieved_chunk": r["retrieved_chunk"],
-                            "test_case_df": case_df,
-                            "ground_truth_label": "CONTRADICTED",
-                            "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
-                        }
-                    )
+                    contradicted_items.append({
+                        "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
+                        "rule_id": rid,
+                        "rule_meta": r,
+                        "retrieved_chunk": r["retrieved_chunk"],
+                        "test_case_df": case_df,
+                        "ground_truth_label": "CONTRADICTED",
+                        "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
+                    })
+
         if len(entailed_items) >= per_class_quota and len(contradicted_items) >= per_class_quota:
             break
 
-    # Đảm bảo đủ số lượng ENTAILED
-    base_compliant_df = entailed_items[0]["test_case_df"] if entailed_items else df_propagated.iloc[:10].copy()
-    while len(entailed_items) < per_class_quota:
-        r_choice = valid_candidate_rules[len(entailed_items) % len(valid_candidate_rules)]
-        entailed_items.append(
-            {
-                "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
-                "rule_id": r_choice["rule_id"],
-                "rule_meta": r_choice,
-                "retrieved_chunk": r_choice["retrieved_chunk"],
-                "test_case_df": base_compliant_df,
-                "ground_truth_label": "ENTAILED",
-                "trace_origin": f"BPIC2017_COMPLIANT_{r_choice['rule_id']}",
-            }
-        )
+    # Nếu còn thiếu ENTAILED (rất hiếm khi xảy ra), tiếp tục nạp hồ sơ kích hoạt
+    base_compliant_df = entailed_items[0]["test_case_df"] if entailed_items else df_propagated.iloc[:15].copy()
+    base_cases_by_rule = {it["rule_id"]: it["test_case_df"] for it in entailed_items}
 
-    # Bổ sung CONTRADICTED bằng tiêm lỗi có kiểm soát trên các quy tắc hợp lệ
+    while len(entailed_items) < per_class_quota:
+        r_choice = active_norm[len(entailed_items) % len(active_norm)]
+        rid = r_choice["rule_id"]
+        chosen_df = base_cases_by_rule.get(rid, base_compliant_df)
+        entailed_items.append({
+            "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+            "rule_id": rid,
+            "rule_meta": r_choice,
+            "retrieved_chunk": r_choice["retrieved_chunk"],
+            "test_case_df": chosen_df,
+            "ground_truth_label": "ENTAILED",
+            "trace_origin": f"BPIC2017_COMPLIANT_{rid}",
+        })
+
+    # Bổ sung CONTRADICTED bằng Tiêm lỗi Ngữ nghĩa Chuẩn mực (Semantic Fault Injection)
     while len(contradicted_items) < per_class_quota:
         idx = len(contradicted_items)
-        inj_rule = valid_candidate_rules[idx % len(valid_candidate_rules)]
+        inj_rule = active_norm[idx % len(active_norm)]
         rid = inj_rule["rule_id"]
         gast = candidate_gold_asts[rid]
-        injected_df = base_compliant_df.copy()
+        tpl = gast.template_name
+        act_a = gast.activation_activity
+        act_b = gast.target_activity
+
+        base_df = base_cases_by_rule.get(rid, base_compliant_df).copy()
+        injected_df = base_df.copy()
         injected_df["case:concept:name"] = f"Application_FaultInjected_{idx + 1:04d}"
-        if gast.activation_activity in set(injected_df["concept:name"]):
-            injected_df = injected_df[injected_df["concept:name"] != gast.activation_activity].reset_index(drop=True)
-        contradicted_items.append(
-            {
-                "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                "rule_id": rid,
-                "rule_meta": inj_rule,
-                "retrieved_chunk": inj_rule["retrieved_chunk"],
-                "test_case_df": injected_df,
-                "ground_truth_label": "CONTRADICTED",
-                "trace_origin": f"CONTROLLED_FAULT_INJECTION_MISSING_{gast.activation_activity}",
-            }
-        )
+
+        if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
+            # Đảm bảo hoạt động đích B có mặt và xóa A đi trước
+            if act_b not in set(injected_df["concept:name"]):
+                new_row = injected_df.iloc[-1].copy()
+                new_row["concept:name"] = act_b
+                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
+            injected_df = injected_df[injected_df["concept:name"] != act_a].reset_index(drop=True)
+            if rid == "R18":
+                injected_df["OfferedAmount"] = 15000.0
+            if rid == "R17":
+                injected_df["CreditScore"] = 750.0
+        elif tpl in ("Response", "Alternate Response", "Chain Response"):
+            # Đảm bảo hoạt động kích hoạt A có mặt để kích hoạt nghĩa vụ
+            if act_a not in set(injected_df["concept:name"]):
+                new_row = injected_df.iloc[-1].copy()
+                new_row["concept:name"] = act_a
+                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
+            if gast.time_max is not None:
+                if act_b in set(injected_df["concept:name"]):
+                    mask_b = injected_df["concept:name"] == act_b
+                    t_first = injected_df["time:timestamp"].min()
+                    injected_df.loc[mask_b, "time:timestamp"] = t_first + pd.Timedelta(days=gast.time_max + 30)
+                else:
+                    injected_df = injected_df[injected_df["concept:name"] != act_b].reset_index(drop=True)
+            else:
+                # Xóa phản hồi B để nghĩa vụ kích hoạt bởi A bị vi phạm
+                injected_df = injected_df[injected_df["concept:name"] != act_b].reset_index(drop=True)
+        elif tpl == "Not Co-Existence":
+            # Đảm bảo cả hai hoạt động cùng có mặt để vi phạm loại trừ lẫn nhau
+            if act_a not in set(injected_df["concept:name"]):
+                new_row_a = injected_df.iloc[-1].copy()
+                new_row_a["concept:name"] = act_a
+                new_row_a["time:timestamp"] = new_row_a["time:timestamp"] + pd.Timedelta(hours=1)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row_a])], ignore_index=True)
+            if act_b not in set(injected_df["concept:name"]):
+                new_row_b = injected_df.iloc[-1].copy()
+                new_row_b["concept:name"] = act_b
+                new_row_b["time:timestamp"] = new_row_b["time:timestamp"] + pd.Timedelta(hours=2)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row_b])], ignore_index=True)
+        elif tpl == "Existence":
+            if act_a not in set(injected_df["concept:name"]):
+                new_row = injected_df.iloc[-1].copy()
+                new_row["concept:name"] = act_a
+                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
+            if gast.activation_attr == "OfferedAmount" and gast.activation_op == ">=":
+                injected_df["OfferedAmount"] = 100.0
+            elif gast.activation_attr == "OfferedAmount" and gast.activation_op == "<=":
+                injected_df["OfferedAmount"] = 85000.0
+            elif gast.activation_attr == "NumberOfTerms":
+                injected_df["NumberOfTerms"] = 6.0
+            elif gast.activation_attr in ("case:RequestedAmount", "RequestedAmount"):
+                injected_df["case:RequestedAmount"] = 500.0
+                injected_df["RequestedAmount"] = 500.0
+            elif gast.activation_attr == "MonthlyCost":
+                injected_df["MonthlyCost"] = 5.0
+            else:
+                injected_df = injected_df[injected_df["concept:name"] != act_a].reset_index(drop=True)
+        elif tpl == "Absence":
+            if act_a not in set(injected_df["concept:name"]):
+                new_row = injected_df.iloc[-1].copy()
+                new_row["concept:name"] = act_a
+                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
+            if gast.activation_attr == "OfferedAmount":
+                injected_df["OfferedAmount"] = 85000.0
+
+        is_c, d_info = check_single_trace_semantics(injected_df, gast)
+        assert not is_c, f"Lỗi tạo ca vi phạm tiêm lỗi cho {rid}: dự kiến False nhưng nhận True! Details: {d_info}"
+        subtype = d_info.get("violation_subtype", "SEMANTIC_VIOLATION")
+
+        contradicted_items.append({
+            "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
+            "rule_id": rid,
+            "rule_meta": inj_rule,
+            "retrieved_chunk": inj_rule["retrieved_chunk"],
+            "test_case_df": injected_df,
+            "ground_truth_label": "CONTRADICTED",
+            "trace_origin": f"SEMANTIC_FAULT_INJECTION_{subtype}_{rid}",
+        })
 
     # Xây dựng nhóm BASELESS trải đều trên 8 quy tắc bẫy R23–R30:
-    # - R23..R26: Bẫy ảo giác văn bản / ngoài phạm vi / bịa ngưỡng số (Roundtrip bắt lỗi)
-    # - R27..R28: Bẫy thiếu cột thuộc tính trong Log Schema (EarlyRepaymentCompensationFee, AnnualPercentageRateAPR)
-    # - R29: Hồ sơ bị từ chối sớm A_Create Application -> A_Denied (không có O_Create Offer -> INAPPLICABLE_TRACE_NO_ACTIVATION)
-    # - R30: Hồ sơ có O_Create Offer nhưng CreditScore = NaN (MISSING_LOG_EVIDENCE_PHI_VIOLATION)
-    no_offer_df = base_compliant_df[
+    # - R23..R28: Bẫy ảo giác văn bản / ngoài phạm vi / bịa ngưỡng số (gán trace nền đa dạng, không trùng lặp)
+    # - R29: Hồ sơ bị từ chối sớm A_Create Application -> W_Complete application -> A_Denied (thực sự không có O_Create Offer)
+    # - R30: Hồ sơ có O_Create Offer nhưng CreditScore = NaN
+    denied_template_df = base_compliant_df[
         base_compliant_df["concept:name"].isin(["A_Create Application", "W_Complete application"])
     ].copy()
-    no_offer_df["case:concept:name"] = "Application_RejectedEarly_R29"
+    if not denied_template_df.empty:
+        den_row = denied_template_df.iloc[-1].copy()
+        den_row["concept:name"] = "A_Denied"
+        den_row["time:timestamp"] = den_row["time:timestamp"] + pd.Timedelta(minutes=30)
+        early_denied_df = pd.concat([denied_template_df, pd.DataFrame([den_row])], ignore_index=True)
+    else:
+        early_denied_df = base_compliant_df.copy()
+    early_denied_df["case:concept:name"] = "Application_RejectedEarly_R29"
 
     null_credit_df = base_compliant_df.copy()
     null_credit_df["case:concept:name"] = "Application_NullCreditScore_R30"
     null_credit_df["CreditScore"] = float("nan")
+
+    distinct_base_cases = list(grouped_prop.values())
 
     if trap_rules:
         while len(baseless_items) < per_class_quota:
             trap_rule = trap_rules[len(baseless_items) % len(trap_rules)]
             rid = trap_rule["rule_id"]
             if rid == "R29":
-                t_df = no_offer_df
+                t_df = early_denied_df
             elif rid == "R30":
                 t_df = null_credit_df
             else:
-                t_df = base_compliant_df
+                # Đa dạng hóa trace cho R23-R28
+                base_idx = len(baseless_items) % len(distinct_base_cases)
+                t_df = distinct_base_cases[base_idx].copy()
 
-            baseless_items.append(
-                {
-                    "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
-                    "rule_id": rid,
-                    "rule_meta": trap_rule,
-                    "retrieved_chunk": trap_rule["retrieved_chunk"],
-                    "test_case_df": t_df,
-                    "ground_truth_label": "BASELESS",
-                    "trace_origin": f"TIER3_TRAP_{rid}_{trap_rule.get('trap_type', 'BASELESS')}",
-                }
-            )
+            baseless_items.append({
+                "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
+                "rule_id": rid,
+                "rule_meta": trap_rule,
+                "retrieved_chunk": trap_rule["retrieved_chunk"],
+                "test_case_df": t_df,
+                "ground_truth_label": "BASELESS",
+                "trace_origin": f"TIER3_TRAP_{rid}_{trap_rule.get('trap_type', 'BASELESS')}",
+            })
 
     return entailed_items[:per_class_quota] + contradicted_items[:per_class_quota] + baseless_items[:per_class_quota]
 
@@ -939,6 +1056,7 @@ def export_benchmark_json(
     chunks_path: str = "data/processed/directive_chunks.json",
     parquet_path: str = "data/interim/bpic2017_events.parquet",
     max_serialized_items: int = 300,
+    force_rebuild: bool = False,
 ) -> Dict[str, Any]:
     """
     Xuất cả 2 file chuẩn:
@@ -961,7 +1079,7 @@ def export_benchmark_json(
     out_items = Path(output_items_path)
     serialized_count = 0
 
-    if out_items.exists() and out_items.stat().st_size > 1000:
+    if not force_rebuild and out_items.exists() and out_items.stat().st_size > 1000:
         try:
             with open(out_items, "r", encoding="utf-8") as f:
                 serializable_items = json.load(f)
@@ -982,18 +1100,25 @@ def export_benchmark_json(
 
         df_raw = pd.read_parquet(parquet_file)
         df_raw["time:timestamp"] = pd.to_datetime(df_raw["time:timestamp"], utc=True)
+        REAL_LATE_PENDING_CASES = [
+            "Application_1108271369", "Application_1171453988", "Application_130761111",
+            "Application_1499090661", "Application_157155173", "Application_1677498057",
+            "Application_1741752833", "Application_1838182698", "Application_1875888758",
+            "Application_2037628374",
+        ]
+        sample_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_raw["case:concept:name"].drop_duplicates().iloc[:2500].tolist()))
+        df_sub = df_raw[df_raw["case:concept:name"].isin(sample_cids)].copy()
         offer_cols = [
             c
             for c in ["OfferedAmount", "CreditScore", "Accepted", "MonthlyCost", "NumberOfTerms"]
-            if c in df_raw.columns
+            if c in df_sub.columns
         ]
-        df_prop = df_raw.copy()
         if offer_cols:
-            df_prop[offer_cols] = df_prop.groupby("case:concept:name", sort=False)[offer_cols].ffill().bfill()
-            df_prop[offer_cols] = df_prop.groupby("case:concept:name", sort=False)[offer_cols].bfill()
+            df_sub[offer_cols] = df_sub.groupby("case:concept:name", sort=False)[offer_cols].ffill().bfill()
+            df_sub[offer_cols] = df_sub.groupby("case:concept:name", sort=False)[offer_cols].bfill()
 
         items = build_stratified_trace_benchmark(
-            df_propagated=df_prop,
+            df_propagated=df_sub,
             df_raw=df_raw,
             normative_rules=normative_rules,
             target_total_items=max_serialized_items,
@@ -1023,6 +1148,9 @@ def export_benchmark_json(
                         ),
                         "case:LoanGoal": (
                             None if pd.isna(row.get("case:LoanGoal")) else str(row.get("case:LoanGoal"))
+                        ),
+                        "MonthlyCost": (
+                            None if pd.isna(row.get("MonthlyCost")) else float(row.get("MonthlyCost"))
                         ),
                     }
                 )
