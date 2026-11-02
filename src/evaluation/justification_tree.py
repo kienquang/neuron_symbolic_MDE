@@ -349,25 +349,11 @@ def check_single_trace_semantics(
                     ),
                 }
 
-        # Kiểm tra điều kiện thuộc tính trên sự kiện tiền đề A nếu có (VD: R17 CreditScore > 0, R18 OfferedAmount > 10000)
+        # Kiểm tra điều kiện thuộc tính trên sự kiện tiền đề A nếu có (VD: R17 CreditScore > 0)
         if ast_obj.activation_attr and ast_obj.activation_op is not None and ast_obj.activation_val is not None:
             attr = ast_obj.activation_attr
             op = ast_obj.activation_op
             val = ast_obj.activation_val
-
-            # Nếu là điều kiện kích hoạt phạm vi quy tắc (như OfferedAmount > 10000 của R18)
-            # Nếu hồ sơ có OfferedAmount <= 10000 thì nghĩa vụ thẩm định bổ sung không áp dụng
-            case_val = None
-            if attr in case_df.columns:
-                non_null = case_df[attr].dropna()
-                if not non_null.empty:
-                    case_val = non_null.max()
-            if case_val is not None and attr == "OfferedAmount":
-                is_active, _ = evaluate_data_predicate(pd.Series({attr: case_val}), attr, op, val)
-                if not is_active:
-                    return True, {
-                        "msg": f"Khoản vay {case_val} EUR không vượt ngưỡng {val} EUR của quy định {ast_obj.article_id or ''}. Quy tắc được bảo toàn."
-                    }
 
             valid_prior_rows = []
             last_actual = None

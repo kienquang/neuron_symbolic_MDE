@@ -493,18 +493,27 @@ def run_vanilla_rag_baseline(
             json.dumps(messages, sort_keys=True, ensure_ascii=False).encode("utf-8")
         ).hexdigest()
 
-        if cache_key in disk_cache:
+        if cache_key in disk_cache and disk_cache[cache_key] and disk_cache[cache_key].strip() not in ("", "{}"):
             raw_res = disk_cache[cache_key]
         else:
-            if hasattr(llm_client, "chat_json"):
-                res_obj = llm_client.chat_json(messages, temperature=0.0)
-                raw_res = res_obj if isinstance(res_obj, str) else json.dumps(res_obj, ensure_ascii=False)
-            else:
-                raw_res = llm_client.chat(messages, temperature=0.0)
-            disk_cache[cache_key] = raw_res
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(cache_path, "w", encoding="utf-8") as f:
-                json.dump(disk_cache, f, indent=2, ensure_ascii=False)
+            try:
+                if hasattr(llm_client, "chat_json"):
+                    raw_dict = llm_client.chat_json(messages, temperature=0.0)
+                    raw_res = json.dumps(raw_dict, ensure_ascii=False) if isinstance(raw_dict, dict) else str(raw_dict)
+                elif hasattr(llm_client, "chat"):
+                    raw_res = llm_client.chat(messages, temperature=0.0)
+                else:
+                    raw_res = json.dumps({"label": "BASELESS", "rationale": "No LLM chat client available."})
+            except Exception as exc:
+                raw_res = json.dumps({"label": "BASELESS", "rationale": f"API call error: {exc}"})
+
+            if raw_res and raw_res.strip() not in ("", "{}"):
+                disk_cache[cache_key] = raw_res
+                try:
+                    with open(cache_path, "w", encoding="utf-8") as f_out:
+                        json.dump(disk_cache, f_out, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
 
         pred_label = "BASELESS"
         try:

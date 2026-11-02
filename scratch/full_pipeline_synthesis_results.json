@@ -1,0 +1,651 @@
+{
+  "R01": {
+    "match": true,
+    "rounds_needed": 1,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Concept",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"W_Validate application\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links 'A_Create Application' (receipt of the loan file) to 'W_Validate application' as the required successor. In the directive, Article 8(1) obliges the creditor to assess creditworthiness *after* sufficient information has been gathered, and the bank policy explicitly states that the application must be received before the *pre‑liminary assessment* step. According to the lifecycle mapping, the preliminary assessment corresponds to activity 'A_Concept', not the detailed verification activity 'W_Validate application'. By using 'W_Validate application' the model confuses a detailed verification stage with the intended preliminary assessment stage, resulting in a semantic mismatch. The correct DECLARE constraint should be Precedence(A_Create Application, A_Concept). (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Concept\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R02": {
+    "match": true,
+    "rounds_needed": 1,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Concept",
+      "target_activity": "A_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST uses the activity 'W_Validate application' as the prerequisite for 'A_Accepted'. According to the lifecycle mapping, the legal requirement concerns the *pre‑liminary credit‑worthiness assessment* (đánh giá sơ bộ), which corresponds to the state/activity 'A_Concept', not the detailed staff verification step 'W_Validate application'. Therefore the model has confused the preliminary concept evaluation with a later verification activity. The precedence direction is correct, but the chosen workflow step is wrong, resulting in a semantic mismatch. (Back-translation: Whenever 'A_Accepted' occurs, 'W_Validate application' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Concept\",\"target_activity\":\"A_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R03": {
+    "match": true,
+    "rounds_needed": 1,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Accepted",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links A_Validating (detailed staff verification) as the prerequisite for O_Create Offer. The policy text requires a *pre‑liminary approval* of the loan file before the official offer is created, which maps to the lifecycle state A_Accepted, not A_Validating. A_Validating is a later, more detailed credit‑worthiness check and does not correspond to the \"phê duyệt sơ bộ\" step. Replace activation_activity with A_Accepted (or the appropriate preliminary‑approval activity) to correctly capture the legal requirement. The precedence pattern itself is correct, but the chosen workflow step is semantically wrong. (Back-translation: Whenever 'O_Create Offer' occurs, 'A_Validating' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Accepted\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R04": {
+    "match": false,
+    "rounds_needed": 0,
+    "reasons": [
+      "tpl: Precedence vs Chain Precedence"
+    ],
+    "ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Created",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R05": {
+    "match": false,
+    "rounds_needed": 0,
+    "reasons": [
+      "act_a: O_Create Offer vs O_Created"
+    ],
+    "ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Sent (mail and online)",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R06": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Complete",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R07": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 10(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Accepted",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R08": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Validating",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R09": {
+    "match": false,
+    "rounds_needed": 3,
+    "reasons": [
+      "AST is None"
+    ],
+    "ast": null,
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Denied\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST uses the staff‑verification activity W_Validate application as the trigger, but Article 9(2) concerns a rejection that stems specifically from a database consultation. In the lifecycle mapping, the relevant trigger is a database‑lookup step (e.g. W_ConsultDatabase), not the generic validation task. Moreover, the policy requires the loan offer to move to a refusal state (O_Refused) after the application is denied (A_Denied). The candidate targets A_Denied directly, omitting the required O_Refused transition and the consumer‑information obligation. Consequently the chosen activities do not reflect the legal and operational semantics, leading to a semantic mismatch. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Denied' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"W_Assess potential fraud\",\"target_activity\":\"O_Refused\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links 'W_Assess potential fraud' to the state transition O_Refused, but Article 9(2) obliges the creditor to *inform* the consumer of the database‑consultation result, not merely to move the offer to a refused state. Moreover, the activation activity should reflect the database‑consultation‑based rejection (e.g., a 'W_Consult database' or similar), not a generic fraud‑assessment step. The model therefore selects the wrong workflow step and omits the mandatory consumer‑notification action, resulting in a semantic mismatch with the legal requirement. (Back-translation: Whenever 'W_Assess potential fraud' occurs, 'O_Refused' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Denied\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST uses the staff‑verification activity W_Validate application as the trigger, but Article 9(2) concerns a rejection that stems specifically from a database consultation. In the lifecycle mapping, the relevant trigger is a database‑lookup step (e.g. W_ConsultDatabase), not the generic validation task. Moreover, the policy requires the loan offer to move to a refusal state (O_Refused) after the application is denied (A_Denied). The candidate targets A_Denied directly, omitting the required O_Refused transition and the consumer‑information obligation. Consequently the chosen activities do not reflect the legal and operational semantics, leading to a semantic mismatch. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Denied' must eventually occur AFTER it.)"
+      }
+    ]
+  },
+  "R10": {
+    "match": true,
+    "rounds_needed": 1,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 13(2)",
+      "decomposition": null,
+      "template_name": "Not Co-Existence",
+      "activation_activity": "A_Denied",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 13(2)\",\"template_name\":\"Not Response\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"A_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links A_Denied (loan denial) to A_Accepted (pre‑liminary application approval). The bank policy forbids *disbursement* (A_Pending) after a denial, not further acceptance of the application. Moreover, the declared template \"Not Response\" is not a valid DECLARE pattern (valid patterns are Precedence, Chain Precedence, Response, Not Co‑Existence). The correct formalisation should use a Not Co‑Existence or a negative Response between A_Denied and A_Pending (or O_Refused and A_Pending), ensuring that once a file is denied no credit performance occurs. (Back-translation: Whenever 'A_Denied' occurs, 'A_Accepted' must NOT occur after it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 13(2)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R11": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R12": {
+    "match": false,
+    "rounds_needed": 0,
+    "reasons": [
+      "tpl: Chain Precedence vs Precedence",
+      "act_a: O_Create Offer vs W_Call after offers",
+      "act_b: W_Call after offers vs A_Validating"
+    ],
+    "ast": {
+      "article_id": "Article 5(6)",
+      "decomposition": null,
+      "template_name": "Chain Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "W_Call after offers",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Chain Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"W_Call after offers\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R13": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R14": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": "<=",
+      "activation_val": 75000.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R15": {
+    "match": false,
+    "rounds_needed": 1,
+    "reasons": [
+      "act_a: O_Create Offer vs O_Sent (mail and online)",
+      "act_b: O_Cancelled vs A_Cancelled"
+    ],
+    "ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST uses O_Sent (mail and online) as the trigger, but Article 14(1) defines the withdrawal period from the day the consumer receives the contractual terms (or from contract conclusion), not from the bank’s dispatch. The correct activation activity should be the receipt event (e.g., O_Received) or the contract conclusion, not O_Sent. Moreover, the target activity for a consumer‑initiated withdrawal is O_Cancelled (offer cancellation) according to the lifecycle mapping, whereas the AST references A_Cancelled, which belongs to the application lifecycle and is unrelated to the withdrawal right. These mismatches cause the constraint to mis‑represent the legal requirement. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R16": {
+    "match": false,
+    "rounds_needed": 3,
+    "reasons": [
+      "AST is None"
+    ],
+    "ast": null,
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST models a Response from O_Sent (dispatch of pre‑contractual terms) to A_Cancelled within 30 days. Article 14(3) does NOT impose a 30‑day withdrawal window after the creditor sends the offer; it sets a 30‑day repayment deadline *after* the consumer’s withdrawal notification. Moreover, the withdrawal leads to cancellation of the *offer* (O_Cancelled), not the application (A_Cancelled). Thus the activity mapping is incorrect and the time constraint is applied to the wrong legal requirement, resulting in a semantic mismatch. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST correctly links the bank's dispatch activity (O_Sent) to a subsequent cancellation (O_Cancelled) and uses a Response pattern with a 30‑day window, so the ordering and lifecycle mapping are sound. However, Article 14(3) of Directive 2008/48/EC does **not** prescribe a 30‑day withdrawal period after the creditor’s offer is sent. The 30‑day limit in the legal text refers to the time by which the consumer must repay the capital and accrued interest **after** the withdrawal notification has been dispatched, not to the deadline for exercising the withdrawal right itself (which is set in Article 14(1) – typically 14 days after the consumer receives the credit agreement). Consequently, the back‑translated constraint misinterprets the legal timing requirement, creating a semantic mismatch with the EU Directive even though it matches the bank’s internal policy wording. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST models a Response from O_Sent (dispatch of pre‑contractual terms) to A_Cancelled within 30 days. Article 14(3) does NOT impose a 30‑day withdrawal window after the creditor sends the offer; it sets a 30‑day repayment deadline *after* the consumer’s withdrawal notification. Moreover, the withdrawal leads to cancellation of the *offer* (O_Cancelled), not the application (A_Cancelled). Thus the activity mapping is incorrect and the time constraint is applied to the wrong legal requirement, resulting in a semantic mismatch. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      }
+    ]
+  },
+  "R17": {
+    "match": false,
+    "rounds_needed": 2,
+    "reasons": [
+      "act_a: A_Validating vs O_Create Offer",
+      "act_b: O_Accepted vs A_Pending",
+      "attr: None vs CreditScore",
+      "op: None vs >",
+      "val: None vs 0"
+    ],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Validating",
+      "target_activity": "O_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Complete\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The EU Directive only obliges the creditor to assess creditworthiness before the credit agreement is concluded; it does not prescribe any quantitative credit‑score value. The candidate AST adds a concrete condition CreditScore > 0.0, which is an invented threshold not grounded in the legal text. Consequently the constraint goes beyond the statutory requirement, resulting in a threshold mismatch. (The activity mapping (A_Create Application → prerequisite, A_Complete → subsequent step) is acceptable, but the numeric threshold makes the model non‑compliant.) (Back-translation: Whenever 'A_Complete' occurs, 'A_Create Application' when CreditScore > 0.0 must have occurred BEFORE it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST links the credit‑worthiness check to activity W_Validate application and makes it a prerequisite for A_Complete. According to the lifecycle mapping, W_Validate application is a detailed verification step, not the statutory ‘assessment of creditworthiness’ required by Article 8(1). Moreover, A_Complete represents the completion of the application, not the conclusion of the credit agreement (which would be a later state such as A_Pending or O_Accepted). Therefore the chosen activities do not reflect the legal prerequisite and the constraint is semantically mis‑aligned with the Directive. (Back-translation: Whenever 'A_Complete' occurs, 'W_Validate application' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R18": {
+    "match": false,
+    "rounds_needed": 0,
+    "reasons": [
+      "act_b: A_Accepted vs O_Accepted"
+    ],
+    "ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "W_Validate application",
+      "target_activity": "A_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R19": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 13(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R20": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "A_Create Application",
+      "target_activity": null,
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">=",
+      "activation_val": 200.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R21": {
+    "match": true,
+    "rounds_needed": 0,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 2(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "A_Create Application",
+      "target_activity": null,
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": "<=",
+      "activation_val": 75000.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R22": {
+    "match": true,
+    "rounds_needed": 2,
+    "reasons": [],
+    "ast": {
+      "article_id": "Article 14(3)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Semantic Self-Loop Violation: 'activation_activity' and 'target_activity' cannot be identical ('A_Cancelled')."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Submitted\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links the initial application submission (A_Submitted) to a cancellation (A_Cancelled) within 30 days. Article 14(3) and the bank policy concern the *withdrawal notification* (the consumer’s act of exercising the right of withdrawal) and the subsequent *cancellation of the loan request* (O_Cancelled) that must occur within 30 calendar days. A_Submitted is a preliminary intake event, not the withdrawal trigger, so the activation activity is incorrect. The correct DECLARE pattern should reference the withdrawal/notification activity (e.g., A_Withdrawn or a dedicated withdrawal event) as the antecedent and O_Cancelled (or the appropriate cancellation state) as the consequent, preserving the 30‑day deadline. Adjust the AST to use the proper lifecycle activity for the withdrawal trigger to achieve semantic equivalence. (Back-translation: Whenever 'A_Submitted' occurs, 'A_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  }
+}

@@ -15,7 +15,11 @@ import hashlib
 import json
 import os
 import re
+import sys
 import time
+if hasattr(sys.stdout, "reconfigure"):
+    try: sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception: pass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -173,14 +177,17 @@ class RealLLMClient:
         last_err: Optional[Exception] = None
         content = "{}"
         print(f"      [LIVE GROQ API CALL] Sending request to Groq model '{self.model_name}'...")
-        for retry_i in range(6):
+        total_retries = 60
+        key_cooldown_until: Dict[int, float] = {}
+
+        for retry_i in range(total_retries):
             try:
                 response = self.client.chat.completions.create(
                     model=self.model_name,
                     messages=msg_list,  # type: ignore[arg-type]
                     temperature=temperature,
                     response_format={"type": "json_object"},
-                    timeout=30.0,
+                    timeout=35.0,
                 )
                 content = (response.choices[0].message.content or "{}").strip()
                 if content in ("", "{}", "[]") and retry_i < 3:
@@ -201,9 +208,8 @@ class RealLLMClient:
             except Exception as exc:
                 last_err = exc
                 err_str = str(exc).lower()
-                print(f"      [GROQ RETRY {retry_i+1}/6]: Error: {exc}")
+                print(f"      [GROQ RETRY {retry_i+1}/{total_retries}]: Error: {exc}")
                 if "json_validate_failed" in err_str or "failed to generate json" in err_str:
-                    # Thử lại không dùng response_format json_object và bóc tách bằng regex
                     try:
                         resp_fb = self.client.chat.completions.create(
                             model=self.model_name,
@@ -228,25 +234,49 @@ class RealLLMClient:
                         secs = float(wait_match.group(2)) if wait_match.group(2) else 0.0
                         total_wait = mins * 60.0 + secs
                     else:
-                        total_wait = 6.0 * (retry_i + 1)
+                        total_wait = 5.0 * (retry_i + 1)
+
+                    key_cooldown_until[self.current_key_idx] = time.time() + total_wait
 
                     if len(self.api_keys) > 1:
-                        self._rotate_api_key()
-                        sleep_s = 1.0 if total_wait > 30.0 else min(total_wait + 1.0, 5.0)
+                        now = time.time()
+                        ready_keys = [i for i in range(len(self.api_keys)) if now >= key_cooldown_until.get(i, 0.0)]
+                        if ready_keys:
+                            next_k = ready_keys[0]
+                            self.current_key_idx = next_k
+                            from openai import OpenAI
+                            self.client = OpenAI(api_key=self.api_keys[self.current_key_idx], base_url=self.base_url, timeout=35.0)
+                            print(f"      [GROQ KEY ROTATED]: Switched to ready key ({self.api_keys[self.current_key_idx][:10]}...).", flush=True)
+                            time.sleep(1.0)
+                        else:
+                            earliest_idx = min(range(len(self.api_keys)), key=lambda i: key_cooldown_until.get(i, 0.0))
+                            sleep_needed = max(key_cooldown_until[earliest_idx] - time.time() + 2.0, 2.0)
+                            print(f"      [GROQ ALL KEYS LIMITED]: All {len(self.api_keys)} keys hit quota. Waiting up to {sleep_needed:.1f}s for key ({self.api_keys[earliest_idx][:10]}...) to reset...", flush=True)
+                            sleep_end = time.time() + sleep_needed
+                            while time.time() < sleep_end:
+                                time.sleep(min(5.0, max(0.5, sleep_end - time.time())))
+                                now_c = time.time()
+                                any_ready = [i for i in range(len(self.api_keys)) if now_c >= key_cooldown_until.get(i, 0.0)]
+                                if any_ready:
+                                    earliest_idx = any_ready[0]
+                                    break
+                            self.current_key_idx = earliest_idx
+                            from openai import OpenAI
+                            self.client = OpenAI(api_key=self.api_keys[self.current_key_idx], base_url=self.base_url, timeout=35.0)
                     else:
-                        sleep_s = min(total_wait + 1.5, 30.0)
-                    time.sleep(sleep_s)
+                        sleep_s = max(total_wait + 2.0, 3.0)
+                        print(f"      [GROQ COOLDOWN]: Sleeping {sleep_s:.1f}s until quota resets...")
+                        time.sleep(sleep_s)
                 else:
-                    time.sleep(1.0)
-
-        if last_err is None:
-            # Tránh gọi dồn dập vượt TPM (Tokens Per Minute)
-            time.sleep(1.2)
+                    time.sleep(1.5)
 
         if last_err is not None:
-            # Nếu có lỗi mạng hoặc API format, trả về JSON rỗng và KHÔNG lưu vào cache để lần sau thử lại
-            content = "{}"
-        elif content.strip() not in ("", "{}", "[]"):
+            raise RuntimeError(f"RealLLMClient call failed after {total_retries} retries: {last_err}")
+
+        # Tránh gọi dồn dập vượt TPM (Tokens Per Minute)
+        time.sleep(1.0)
+
+        if content.strip() not in ("", "{}", "[]"):
             self.cache[cache_key] = content
             self._save_cache()
 

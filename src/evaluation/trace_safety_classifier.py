@@ -119,13 +119,40 @@ def evaluate_trace_safety_and_status(
                     f"và '{ast_obj.target_activity}'."
                 ),
             }
-    else:
+    elif tpl in ("Response", "Alternate Response", "Chain Response"):
         if act_events.empty:
             return {
                 "case_id": case_id,
                 "label": "BASELESS",
                 "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
                 "details": f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{ast_obj.activation_activity}'.",
+            }
+    elif tpl in ("Existence", "Exactly1", "Init"):
+        # Nếu có thuộc tính dữ liệu cần kiểm tra (như R29: OfferedAmount >= 200 trên O_Create Offer)
+        # mà sự kiện không xuất hiện, hồ sơ không kích hoạt được điều kiện dữ liệu -> BASELESS
+        if getattr(ast_obj, "activation_attr", None):
+            if act_events.empty:
+                return {
+                    "case_id": case_id,
+                    "label": "BASELESS",
+                    "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
+                    "details": (
+                        f"Hồ sơ '{case_id}' không phát sinh hoạt động '{ast_obj.activation_activity}' "
+                        f"để kiểm tra thuộc tính '{ast_obj.activation_attr}'."
+                    ),
+                }
+        # Nếu là Existence thuần túy (không có thuộc tính), việc thiếu act_events là vi phạm CONTRADICTED,
+        # cho phép chảy tiếp xuống check_single_trace_semantics bên dưới.
+    elif tpl == "Absence":
+        # Với Absence, không có act_events là hoàn toàn tuân thủ (ENTAILED), cho phép chảy xuống check_single_trace_semantics.
+        pass
+    else:
+        if act_events.empty:
+            return {
+                "case_id": case_id,
+                "label": "BASELESS",
+                "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
+                "details": f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{getattr(ast_obj, 'activation_activity', '')}'.",
             }
 
     # 4. Kiểm tra Tập điều kiện an toàn Φ đối với thuộc tính dữ liệu và thời gian (Null-dereference guard - VD: R30)

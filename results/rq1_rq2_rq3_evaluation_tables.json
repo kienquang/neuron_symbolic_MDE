@@ -1,133 +1,183 @@
 {
-  "llm_provider": {
-    "base_url": "https://api.groq.com/openai/v1",
-    "model_name": "openai/gpt-oss-120b",
-    "cache_file": "D:\\AI Project\\neuron_symbolic_reasoning\\real_llm_cache.json",
-    "trajectories_file": "D:\\AI Project\\neuron_symbolic_reasoning\\results\\real_llm_trajectories.json"
-  },
-  "benchmark_metadata": {
-    "total_normative_rules": 15,
-    "tier1_control_flow_rules": 12,
-    "tier2_temporal_data_rules": 3,
-    "tier3_baseless_traps": 0,
-    "total_stratified_trace_items": 60
-  },
-  "table1_rq1_full_pipeline": {
+  "table1_rq1_oneshot": {
     "Tier 1: Control-Flow Only": {
       "Rules_Count": 12,
-      "Eq. (%)": 100.0,
-      "Strengthened (%)": 0.0,
-      "Weakened (%)": 0.0,
-      "Reversed (%)": 0.0,
-      "Vacuous (%)": 0.0
-    },
-    "Tier 2: Temporal & Data-Aware": {
-      "Rules_Count": 3,
       "Eq. (%)": 33.33,
       "Strengthened (%)": 0.0,
-      "Weakened (%)": 0.0,
-      "Reversed (%)": 33.33,
-      "Vacuous (%)": 33.33
-    },
-    "Overall Pipeline": {
-      "Rules_Count": 15,
-      "Eq. (%)": 86.67,
-      "Strengthened (%)": 0.0,
-      "Weakened (%)": 0.0,
-      "Reversed (%)": 6.67,
-      "Vacuous (%)": 6.67
-    }
-  },
-  "table1_rq1_without_self_correction": {
-    "Tier 1: Control-Flow Only": {
-      "Rules_Count": 12,
-      "Eq. (%)": 100.0,
-      "Strengthened (%)": 0.0,
-      "Weakened (%)": 0.0,
-      "Reversed (%)": 0.0,
+      "Weakened (%)": 8.33,
+      "Reversed (%)": 58.33,
       "Vacuous (%)": 0.0
     },
     "Tier 2: Temporal & Data-Aware": {
-      "Rules_Count": 3,
-      "Eq. (%)": 100.0,
+      "Rules_Count": 10,
+      "Eq. (%)": 60.0,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 0.0,
+      "Reversed (%)": 30.0,
+      "Vacuous (%)": 10.0
+    },
+    "Overall Pipeline": {
+      "Rules_Count": 22,
+      "Eq. (%)": 45.45,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 4.55,
+      "Reversed (%)": 45.45,
+      "Vacuous (%)": 4.55
+    }
+  },
+  "table1_rq1_full": {
+    "Tier 1: Control-Flow Only": {
+      "Rules_Count": 12,
+      "Eq. (%)": 75.0,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 8.33,
+      "Reversed (%)": 16.67,
+      "Vacuous (%)": 0.0
+    },
+    "Tier 2: Temporal & Data-Aware": {
+      "Rules_Count": 10,
+      "Eq. (%)": 60.0,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 0.0,
+      "Reversed (%)": 40.0,
       "Vacuous (%)": 0.0
     },
     "Overall Pipeline": {
-      "Rules_Count": 15,
-      "Eq. (%)": 100.0,
+      "Rules_Count": 22,
+      "Eq. (%)": 68.18,
       "Strengthened (%)": 0.0,
-      "Weakened (%)": 0.0,
-      "Reversed (%)": 0.0,
+      "Weakened (%)": 4.55,
+      "Reversed (%)": 27.27,
       "Vacuous (%)": 0.0
     }
   },
-  "table2_rq2_ablation_study": [
+  "table2_rq2_ablation": [
     {
       "Configuration": "Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)",
       "Executable_Rate (%)": "N/A",
       "Eq_Rate (%)": "N/A",
-      "Conformance_F1": 0.2194
+      "Conformance_F1": 0.2558,
+      "Macro_Precision": 0.2789,
+      "Macro_Recall": 0.2867,
+      "Total_Items": 300
     },
     {
       "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
-      "Executable_Rate (%)": 85.0,
-      "Eq_Rate (%)": 66.67,
-      "Conformance_F1": 0.5862
+      "Executable_Rate (%)": 100.0,
+      "Eq_Rate (%)": 33.67,
+      "Conformance_F1": 0.4009,
+      "Macro_Precision": 0.3355,
+      "Macro_Recall": 0.5,
+      "Total_Items": 300
     },
     {
       "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
-      "Executable_Rate (%)": 76.67,
-      "Eq_Rate (%)": 68.33,
-      "Conformance_F1": 0.8576
+      "Executable_Rate (%)": 93.0,
+      "Eq_Rate (%)": 77.33,
+      "Conformance_F1": 0.8534,
+      "Macro_Precision": 0.8915,
+      "Macro_Recall": 0.8233,
+      "Total_Items": 300
     },
     {
       "Configuration": "- Self-Correction Loop (Tắt Vòng lặp Tự sửa)",
-      "Executable_Rate (%)": 73.33,
-      "Eq_Rate (%)": 68.33,
-      "Conformance_F1": 0.8381
+      "Executable_Rate (%)": 67.0,
+      "Eq_Rate (%)": 56.0,
+      "Conformance_F1": 0.696,
+      "Macro_Precision": 0.8728,
+      "Macro_Recall": 0.58,
+      "Total_Items": 300
     },
     {
       "Configuration": "Full Neuro-Symbolic Pipeline (Đề xuất)",
-      "Executable_Rate (%)": 91.67,
-      "Eq_Rate (%)": 83.33,
-      "Conformance_F1": 0.9544
+      "Executable_Rate (%)": 97.0,
+      "Eq_Rate (%)": 81.33,
+      "Conformance_F1": 0.8775,
+      "Macro_Precision": 0.8932,
+      "Macro_Recall": 0.8633,
+      "Total_Items": 300
     }
   ],
-  "table3_rq3_diagnostic_and_efficiency": {
+  "table3_rq3_metrics": {
     "ENTAILED (Tuân thủ)": {
-      "Precision": 1.0,
-      "Recall": 0.95,
-      "F1-Score": 0.9744,
-      "Avg_Retries": 0.35,
-      "Avg_Verification_Time (s)": 0.0156,
-      "Citation_Fidelity (%)": 95.0
+      "Precision": 0.9184,
+      "Recall": 0.9,
+      "F1-Score": 0.9091,
+      "Avg_Retries": 0.49,
+      "Avg_Verification_Time (s)": 0.0154,
+      "Citation_Fidelity (%)": 99.0
     },
     "CONTRADICTED (Vi phạm)": {
-      "Precision": 1.0,
-      "Recall": 0.8,
-      "F1-Score": 0.8889,
-      "Avg_Retries": 1.1,
-      "Avg_Verification_Time (s)": 0.0094,
-      "Citation_Fidelity (%)": 80.0
+      "Precision": 0.7941,
+      "Recall": 0.81,
+      "F1-Score": 0.802,
+      "Avg_Retries": 0.98,
+      "Avg_Verification_Time (s)": 0.0135,
+      "Citation_Fidelity (%)": 92.0
     },
     "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
-      "Precision": 1.0,
-      "Recall": 1.0,
-      "F1-Score": 1.0,
-      "Avg_Retries": 0.85,
-      "Avg_Verification_Time (s)": 0.0005,
+      "Precision": 0.967,
+      "Recall": 0.88,
+      "F1-Score": 0.9215,
+      "Avg_Retries": 0.6,
+      "Avg_Verification_Time (s)": 0.0035,
       "Citation_Fidelity (%)": 100.0
     },
     "Trung bình Toàn hệ thống (Overall)": {
-      "Precision": 1.0,
-      "Recall": 0.9167,
-      "F1-Score": 0.9544,
-      "Avg_Retries": 0.77,
-      "Avg_Verification_Time (s)": 0.0093,
+      "Precision": 0.8932,
+      "Recall": 0.8633,
+      "F1-Score": 0.8775,
+      "Avg_Retries": 0.69,
+      "Avg_Verification_Time (s)": 0.0111,
       "Citation_Fidelity (%)": 100.0
     }
+  },
+  "table4_baseless_traps": {
+    "total_traps": 8,
+    "detected_traps": 7,
+    "detection_rate_pct": 87.5,
+    "details": [
+      {
+        "rule_id": "R23",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 0
+      },
+      {
+        "rule_id": "R24",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 0
+      },
+      {
+        "rule_id": "R25",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 0
+      },
+      {
+        "rule_id": "R26",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 0
+      },
+      {
+        "rule_id": "R27",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 4
+      },
+      {
+        "rule_id": "R28",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 1
+      },
+      {
+        "rule_id": "R29",
+        "status": "DETECTED_BASELESS_TRAP",
+        "rounds": 0
+      },
+      {
+        "rule_id": "R30",
+        "status": "MISSED_TRAP",
+        "rounds": 0,
+        "reason": "LLM omitted collateral trap, synthesized valid generic precedence"
+      }
+    ]
   }
 }

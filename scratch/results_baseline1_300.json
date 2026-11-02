@@ -1,0 +1,27 @@
+{
+  "Configuration": "Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)",
+  "Total_Items": 300,
+  "Macro_Precision": 0.2789,
+  "Macro_Recall": 0.2867,
+  "Macro_F1": 0.2558,
+  "Per_Class_Metrics": {
+    "ENTAILED": {
+      "Precision": 0.2456,
+      "Recall": 0.14,
+      "F1-Score": 0.1783,
+      "Support": 100
+    },
+    "CONTRADICTED": {
+      "Precision": 0.2941,
+      "Recall": 0.15,
+      "F1-Score": 0.1987,
+      "Support": 100
+    },
+    "BASELESS": {
+      "Precision": 0.2969,
+      "Recall": 0.57,
+      "F1-Score": 0.3904,
+      "Support": 100
+    }
+  }
+}

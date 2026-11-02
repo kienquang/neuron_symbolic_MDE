@@ -31,7 +31,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Phải khởi tạo hồ sơ vay (A_Create Application) trước khi bước vào đánh giá sơ bộ (A_Concept).",
+        "description": "Để thu thập đầy đủ thông tin từ người vay phục vụ việc đánh giá khả năng trả nợ theo Điều 8(1), quy trình ngân hàng bắt buộc phải tiếp nhận hồ sơ vay của khách hàng trước khi tiến hành bước đánh giá sơ bộ hồ sơ.",
     },
     {
         "rule_id": "R02",
@@ -46,7 +46,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Hoạt động đánh giá sơ bộ A_Concept bắt buộc xảy ra trước A_Accepted.",
+        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Bước đánh giá sơ bộ hồ sơ bắt buộc phải hoàn thành trước khi hồ sơ vay được ngân hàng phê duyệt sơ bộ.",
     },
     {
         "rule_id": "R03",
@@ -61,7 +61,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Đánh giá khả năng trả nợ được phê duyệt sơ bộ (A_Accepted) trước khi ngân hàng tạo lập đề nghị vay chính thức (O_Create Offer) theo Điều 8(1).",
+        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Hồ sơ vay bắt buộc phải được phê duyệt sơ bộ trước khi ngân hàng tạo lập đề nghị vay chính thức cho khách hàng.",
     },
     {
         "rule_id": "R04",
@@ -76,7 +76,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Ngay trước khi O_Created được ghi nhận vào hệ thống phải có O_Create Offer.",
+        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Ngay trước khi văn bản đề nghị vay được ghi nhận chính thức vào hệ thống, ngân hàng bắt buộc phải thực hiện bước tạo lập đề nghị vay.",
     },
     {
         "rule_id": "R05",
@@ -91,7 +91,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Văn bản đề nghị vay (O_Created) phải được tạo lập trước khi gửi thông tin tiền hợp đồng O_Sent (mail and online).",
+        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Văn bản đề nghị vay phải được tạo lập trên hệ thống trước khi gửi thông tin tiền hợp đồng cho khách hàng qua thư hoặc trực tuyến.",
     },
     {
         "rule_id": "R06",
@@ -106,7 +106,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Bắt buộc gửi thông tin tiền hợp đồng O_Sent (mail and online) trước khi hồ sơ chuyển sang A_Complete.",
+        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Thông tin tiền hợp đồng bắt buộc phải được gửi tới người tiêu dùng qua thư hoặc trực tuyến trước khi hồ sơ chuyển sang trạng thái hoàn tất thủ tục.",
     },
     {
         "rule_id": "R07",
@@ -121,7 +121,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Khách hàng phải chấp nhận đề nghị (O_Accepted) trước khi khoản vay được giải ngân (A_Pending).",
+        "description": "Quy định về hình thức hợp đồng theo Điều 10(1): Khách hàng bắt buộc phải chấp thuận đề nghị vay trước khi ngân hàng chuyển hồ sơ sang bước chờ giải ngân tiền vay.",
     },
     {
         "rule_id": "R08",
@@ -136,7 +136,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Tác vụ thẩm định W_Validate application phải diễn ra trước trạng thái xác thực A_Validating theo Điều 8(1).",
+        "description": "Nghĩa vụ thẩm định khả năng trả nợ theo Điều 8(1): Tác vụ thẩm định chi tiết hồ sơ của nhân viên ngân hàng phải diễn ra trước khi hồ sơ chuyển sang trạng thái xác thực trên hệ thống.",
     },
     {
         "rule_id": "R09",
@@ -151,7 +151,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Khi hồ sơ bị từ chối do tra cứu dữ liệu (A_Denied), đề nghị vay tương ứng phải chuyển sang trạng thái từ chối (O_Refused) theo Điều 9(2).",
+        "description": "Quy chuẩn thông báo khi từ chối theo Điều 9(2): Khi hồ sơ bị từ chối do kết quả tra cứu cơ sở dữ liệu, đề nghị vay tương ứng bắt buộc phải chuyển sang trạng thái từ chối.",
     },
     {
         "rule_id": "R10",
@@ -166,7 +166,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Một hồ sơ đã bị từ chối (A_Denied) thì tuyệt đối không thể được giải ngân (A_Pending).",
+        "description": "Quy chuẩn quản lý rủi ro và chấm dứt theo Điều 13(2): Một hồ sơ vay một khi đã bị từ chối thì tuyệt đối không được phép tiến hành giải ngân tiền vay.",
     },
     {
         "rule_id": "R11",
@@ -181,7 +181,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn vận hành quyền rút lui theo Điều 14(1): Khi hồ sơ bị khách hủy hoặc rút lui (A_Cancelled), đề nghị vay liên kết phải được hủy theo (O_Cancelled).",
+        "description": "Quy chuẩn vận hành quyền rút lui hợp đồng theo Điều 14(1): Khi người tiêu dùng thông báo hủy hoặc rút lui hồ sơ vay, đề nghị vay liên kết bắt buộc phải được hủy bỏ.",
     },
     {
         "rule_id": "R12",
@@ -196,7 +196,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Thực hiện nghĩa vụ giải thích thỏa đáng cho khách hàng qua cuộc gọi sau đề nghị (W_Call after offers) trước khi hồ sơ chuyển sang trạng thái A_Validating theo Điều 5(6).",
+        "description": "Nghĩa vụ giải thích thỏa đáng theo Điều 5(6): Ngân hàng bắt buộc phải thực hiện cuộc gọi tư vấn giải thích thỏa đáng cho khách hàng sau khi tạo đề nghị trước khi hồ sơ chuyển sang trạng thái xác thực.",
     },
     # --- TIER 2: TEMPORAL & DATA-AWARE CONSTRAINTS (10 QUY TẮC: R13 - R22) ---
     {
@@ -212,7 +212,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": 200.0,
         "time_max": None,
         "is_trap": False,
-        "description": "Kiểm tra thuộc tính OfferedAmount >= 200 EUR tại sự kiện O_Create Offer theo Điều 2(2)(c).",
+        "description": "Quy chuẩn mức sàn hạn mức tín dụng theo Điều 2(2)(c): Đề nghị vay do ngân hàng tạo lập phải có số tiền đề nghị không được thấp hơn mức sàn luật định là 200 EUR.",
     },
     {
         "rule_id": "R14",
@@ -227,22 +227,22 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": 75000.0,
         "time_max": None,
         "is_trap": False,
-        "description": "Phát hiện các đề nghị vay vượt trần OfferedAmount <= 75.000 EUR theo Điều 2(2)(c).",
+        "description": "Quy chuẩn mức trần hạn mức tín dụng theo Điều 2(2)(c): Đề nghị vay do ngân hàng tạo lập phải có số tiền đề nghị không được vượt quá mức trần luật định là 75.000 EUR.",
     },
     {
         "rule_id": "R15",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 5(1)",
+        "article_id": "Article 14(1)",
         "template": "Response",
         "act_a": "O_Sent (mail and online)",
-        "act_b": "O_Returned",
+        "act_b": "A_Cancelled",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": 14,
         "is_trap": False,
-        "description": "Quy chuẩn thông tin tiền hợp đồng theo Điều 5(1): Khoảng thời gian từ lúc gửi đề nghị O_Sent (mail and online) đến lúc khách gửi trả O_Returned <= 14 ngày lịch.",
+        "description": "Quy chuẩn thời hạn rút lui hợp đồng theo Điều 14(1): Khách hàng có quyền thông báo hủy hồ sơ vay trong vòng 14 ngày lịch sau khi ngân hàng gửi thông tin đề nghị qua thư hoặc trực tuyến.",
     },
     {
         "rule_id": "R16",
@@ -257,7 +257,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": 30,
         "is_trap": False,
-        "description": "Thời hạn rút lui theo Điều 14(3): Khách hàng chỉ được hủy bỏ hồ sơ (A_Cancelled) trong vòng 30 ngày lịch sau khi nhận văn bản đề nghị O_Sent.",
+        "description": "Quy chuẩn giới hạn thời gian thông báo theo Điều 14(3): Khách hàng chỉ có thể thực hiện quyền hủy hồ sơ vay trong thời hạn tối đa 30 ngày lịch sau khi ngân hàng gửi văn bản đề nghị.",
     },
     {
         "rule_id": "R17",
@@ -272,7 +272,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": 0,
         "time_max": None,
         "is_trap": False,
-        "description": "Tại bước tạo đề nghị vay trước giải ngân (A_Pending), điểm CreditScore phải dương (> 0).",
+        "description": "Nghĩa vụ thẩm định điểm tín dụng theo Điều 8(1): Trước khi ngân hàng giải ngân khoản vay, đề nghị vay tương ứng bắt buộc phải có điểm tín dụng hợp lệ lớn hơn 0.",
     },
     {
         "rule_id": "R18",
@@ -282,72 +282,72 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "template": "Precedence",
         "act_a": "W_Validate application",
         "act_b": "O_Accepted",
-        "attr": "OfferedAmount",
-        "op": ">",
-        "val": 10000.0,
+        "attr": None,
+        "op": None,
+        "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Thẩm định khả năng trả nợ nâng cao theo Điều 8(1): Với các đề nghị vay trên 10.000 EUR, bắt buộc qua bước thẩm định W_Validate application trước O_Accepted.",
+        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Trước khi ngân hàng chấp thuận đề nghị vay, hồ sơ bắt buộc phải hoàn thành tác vụ thẩm định chi tiết của nhân viên tín dụng.",
     },
     {
         "rule_id": "R19",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
         "article_id": "Article 13(1)",
-        "template": "Precedence",
-        "act_a": "A_Complete",
+        "template": "Response",
+        "act_a": "A_Cancelled",
+        "act_b": "O_Cancelled",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Quy chuẩn chấm dứt hợp đồng mở theo Điều 13(1): Khi người tiêu dùng thực hiện quyền chấm dứt thỏa thuận vay, việc hủy bỏ đề nghị tín dụng tương ứng bắt buộc phải được thực hiện.",
+    },
+    {
+        "rule_id": "R20",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "A_Create Application",
+        "act_b": None,
+        "attr": "case:RequestedAmount",
+        "op": ">=",
+        "val": 200.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Quy chuẩn hạn mức số tiền vay theo Điều 2(2)(c): Số tiền vay do khách hàng yêu cầu tại bước nộp đơn ban đầu không được thấp hơn mức sàn luật định là 200 EUR.",
+    },
+    {
+        "rule_id": "R21",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 2(2)",
+        "template": "Existence",
+        "act_a": "A_Create Application",
+        "act_b": None,
+        "attr": "case:RequestedAmount",
+        "op": "<=",
+        "val": 75000.0,
+        "time_max": None,
+        "is_trap": False,
+        "description": "Quy chuẩn hạn mức số tiền vay theo Điều 2(2)(c): Số tiền vay do khách hàng yêu cầu tại bước nộp đơn ban đầu không được vượt quá mức trần luật định là 75.000 EUR.",
+    },
+    {
+        "rule_id": "R22",
+        "tier": "Tier2_TemporalData",
+        "complexity_tier": "Tier 2: Temporal & Data-Aware",
+        "article_id": "Article 14(3)",
+        "template": "Response",
+        "act_a": "A_Cancelled",
         "act_b": "O_Cancelled",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": 30,
         "is_trap": False,
-        "description": "Thời hạn chấm dứt theo Điều 13(1): Việc hủy đề nghị vay O_Cancelled chỉ được diễn ra trong vòng 30 ngày sau khi hoàn tất hồ sơ A_Complete.",
-    },
-    {
-        "rule_id": "R20",
-        "tier": "Tier2_TemporalData",
-        "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Annex I(II)",
-        "template": "Existence",
-        "act_a": "O_Create Offer",
-        "act_b": None,
-        "attr": "NumberOfTerms",
-        "op": ">=",
-        "val": 12,
-        "time_max": None,
-        "is_trap": False,
-        "description": "Kiểm tra thuộc tính số kỳ trả góp NumberOfTerms >= 12 trên sự kiện O_Create Offer.",
-    },
-    {
-        "rule_id": "R21",
-        "tier": "Tier2_TemporalData",
-        "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Annex I(II)",
-        "template": "Existence",
-        "act_a": "A_Create Application",
-        "act_b": None,
-        "attr": "case:RequestedAmount",
-        "op": ">=",
-        "val": 1500.0,
-        "time_max": None,
-        "is_trap": False,
-        "description": "Kiểm tra thuộc tính mức hồ sơ case:RequestedAmount >= 1500 EUR theo Phụ lục I Phần II(g).",
-    },
-    {
-        "rule_id": "R22",
-        "tier": "Tier2_TemporalData",
-        "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 2(3)",
-        "template": "Response",
-        "act_a": "A_Create Application",
-        "act_b": "A_Pending",
-        "attr": None,
-        "op": None,
-        "val": None,
-        "time_max": 90,
-        "is_trap": False,
-        "description": "Quy chuẩn thời hạn tín dụng thấu chi hoàn trả trong 3 tháng (90 ngày) theo Điều 2(3): Toàn bộ chu trình từ lúc nộp đơn (A_Create Application) đến lúc tất toán/duyệt (A_Pending) <= 90 ngày.",
+        "description": "Quy chuẩn thời hạn xử lý sau khi rút lui theo Điều 14(3): Khi khách hàng thông báo rút lui hoặc hủy hồ sơ, đề nghị vay tương ứng bắt buộc phải được hủy bỏ trong vòng 30 ngày lịch.",
     },
     # --- TIER 3: HALLUCINATION & MISSING EVIDENCE TRAPS (8 QUY TẮC BẪY BASELESS: R23 - R30) ---
     {
@@ -364,7 +364,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": 8,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Bẫy COND-004: Bịa thời hạn 8 ngày xử lý hồ sơ không đầy đủ gán vào Điều 7(1).",
+        "description": "Quy định gài bẫy phạm vi: Yêu cầu áp dụng thời hạn 8 ngày xử lý hồ sơ không đầy đủ dựa trên Điều 7(1).",
     },
     {
         "rule_id": "R24",
@@ -380,7 +380,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Bẫy gán sai nguồn dẫn: Gán quy trình gọi bổ sung hồ sơ thiếu W_Call incomplete files vào Điều 7.",
+        "description": "Quy định gài bẫy nguồn dẫn: Gán quy trình gọi điện thu thập bổ sung hồ sơ thiếu vào Điều 7.",
     },
     {
         "rule_id": "R25",
@@ -396,7 +396,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "OUT_OF_DIRECTIVE_SCOPE",
-        "description": "Bẫy ngoài phạm vi: Áp dụng Chỉ thị cho hợp đồng thế chấp bất động sản (đã bị loại trừ tại Điều 2(2)(a)-(b)).",
+        "description": "Quy định gài bẫy ngoài phạm vi: Ép buộc áp dụng Chỉ thị tín dụng tiêu dùng cho các hợp đồng thế chấp bất động sản nhà ở.",
     },
     {
         "rule_id": "R26",
@@ -412,7 +412,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_NUMERIC_HALLUCINATION",
-        "description": "Bẫy bịa ngưỡng số: Bịa điểm tín dụng tối thiểu CreditScore >= 750 vào Điều 8(1).",
+        "description": "Quy định gài bẫy ngưỡng định lượng: Bắt buộc người vay phải đạt điểm tín dụng giả định từ 750 điểm trở lên theo Điều 8(1).",
     },
     {
         "rule_id": "R27",
@@ -428,7 +428,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Bẫy vi phạm tập Φ: Kiểm tra cột phí bồi thường trả trước EarlyRepaymentCompensationFee không có trong log BPIC 2017.",
+        "description": "Quy định gài bẫy thuộc tính ngoài lược đồ: Yêu cầu kiểm tra mức phí bồi thường trả nợ trước hạn theo Điều 16(2).",
     },
     {
         "rule_id": "R28",
@@ -444,7 +444,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Bẫy vi phạm tập Φ: Kiểm tra cột lãi suất APR không tồn tại trong lược đồ BPIC 2017.",
+        "description": "Quy định gài bẫy công thức lãi suất: Bắt buộc kiểm tra cột tỷ lệ phần trăm chi phí hàng năm theo công thức của Điều 19(1).",
     },
     {
         "rule_id": "R29",
@@ -460,7 +460,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
-        "description": "Bẫy null/khuyết sự kiện trên Trace: Kiểm tra OfferedAmount trên hồ sơ bị từ chối sớm chưa từng tạo O_Create Offer.",
+        "description": "Quy định gài bẫy thuộc tính khuyết: Kiểm tra số tiền đề nghị vay trên những hồ sơ đã bị từ chối sớm trước khi tạo đề nghị.",
     },
     {
         "rule_id": "R30",
@@ -476,7 +476,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Bẫy null sentinel trên Trace: Kiểm tra CreditScore trên dòng sự kiện O_Create Offer có CreditScore = NaN.",
+        "description": "Quy định gài bẫy điều kiện thế chấp: Bắt buộc khách hàng phải cung cấp tài sản bảo đảm thế chấp theo Điều 8(1).",
     },
 ]
 
@@ -587,33 +587,12 @@ def build_normative_rule_benchmark(
             "time_unit": "d",
         },
         "R15": {
-            "article_id": "Article 5(1)",
+            "article_id": "Article 14(1)",
             "template_name": "Response",
             "activation_activity": "O_Sent (mail and online)",
-            "target_activity": "O_Returned",
+            "target_activity": "A_Cancelled",
             "time_min": 0,
             "time_max": 30,
-            "time_unit": "d",
-        },
-        "R18": {
-            "article_id": "Article 8(1)",
-            "template_name": "Precedence",
-            "activation_activity": "W_Validate application",
-            "target_activity": "O_Accepted",
-            "activation_attr": "OfferedAmount",
-            "activation_op": ">",
-            "activation_val": 99999999.0,
-            "time_min": 0,
-            "time_max": None,
-            "time_unit": "d",
-        },
-        "R19": {
-            "article_id": "Article 13(1)",
-            "template_name": "Response",
-            "activation_activity": "A_Complete",
-            "target_activity": "O_Cancelled",
-            "time_min": 0,
-            "time_max": None,
             "time_unit": "d",
         },
     }
@@ -692,7 +671,7 @@ def load_annotated_trace_benchmark(
         if "events" in rec and isinstance(rec["events"], list) and rec["events"]:
             case_df = pd.DataFrame(rec["events"])
             if "time:timestamp" in case_df.columns:
-                case_df["time:timestamp"] = pd.to_datetime(case_df["time:timestamp"], utc=True)
+                case_df["time:timestamp"] = pd.to_datetime(case_df["time:timestamp"], format="ISO8601")
         else:
             cid = str(rec.get("case_id", ""))
             if cid not in grouped_cases:
@@ -790,7 +769,7 @@ def build_stratified_trace_benchmark(
         "Application_1741752833", "Application_1838182698", "Application_1875888758",
         "Application_2037628374",
     ]
-    unique_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_propagated["case:concept:name"].drop_duplicates().iloc[:2500].tolist()))
+    unique_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_propagated["case:concept:name"].drop_duplicates().iloc[:600].tolist()))
     sub_prop = df_propagated[df_propagated["case:concept:name"].isin(unique_cids)]
     grouped_prop = {
         cid: grp.sort_values("time:timestamp").reset_index(drop=True)
@@ -817,10 +796,7 @@ def build_stratified_trace_benchmark(
             if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
                 if act_b not in acts:
                     continue
-                if rid == "R18":
-                    amt = case_df["OfferedAmount"].max()
-                    if pd.isna(amt) or amt <= 10000:
-                        continue
+                # R18 now applies to all cases
                 if rid == "R17":
                     score = case_df["CreditScore"].max()
                     if pd.isna(score) or score <= 0:
@@ -845,10 +821,7 @@ def build_stratified_trace_benchmark(
             elif tpl in ("Response", "Alternate Response", "Chain Response"):
                 if act_a not in acts:
                     continue
-                if rid == "R22" and act_b not in acts:
-                    # R22 quy định thời hạn 90 ngày giải ngân. Để kiểm tra vi phạm thời hạn thực tế,
-                    # sự kiện A_Pending bắt buộc phải xảy ra nhưng muộn hơn 90 ngày (không lấy hồ sơ bị huỷ sớm)
-                    continue
+                # R22 Response check
 
             # 3. Not Co-Existence: Ít nhất một trong hai hoạt động phải xảy ra
             elif tpl == "Not Co-Existence":
@@ -973,8 +946,12 @@ def build_stratified_trace_benchmark(
             elif gast.activation_attr == "NumberOfTerms":
                 injected_df["NumberOfTerms"] = 6.0
             elif gast.activation_attr in ("case:RequestedAmount", "RequestedAmount"):
-                injected_df["case:RequestedAmount"] = 500.0
-                injected_df["RequestedAmount"] = 500.0
+                if gast.activation_op == ">=":
+                    injected_df["case:RequestedAmount"] = 100.0
+                    injected_df["RequestedAmount"] = 100.0
+                else:
+                    injected_df["case:RequestedAmount"] = 85000.0
+                    injected_df["RequestedAmount"] = 85000.0
             elif gast.activation_attr == "MonthlyCost":
                 injected_df["MonthlyCost"] = 5.0
             else:

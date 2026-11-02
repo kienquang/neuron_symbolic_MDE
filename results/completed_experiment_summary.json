@@ -1,0 +1,120 @@
+{
+  "table1_rq1_oneshot": {
+    "Tier 1: Control-Flow Only": {
+      "Rules_Count": 12,
+      "Eq. (%)": 33.33,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 8.33,
+      "Reversed (%)": 58.33,
+      "Vacuous (%)": 0.0
+    },
+    "Tier 2: Temporal & Data-Aware": {
+      "Rules_Count": 10,
+      "Eq. (%)": 60.0,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 0.0,
+      "Reversed (%)": 30.0,
+      "Vacuous (%)": 10.0
+    },
+    "Overall Pipeline": {
+      "Rules_Count": 22,
+      "Eq. (%)": 45.45,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 4.55,
+      "Reversed (%)": 45.45,
+      "Vacuous (%)": 4.55
+    }
+  },
+  "table1_rq1_full": {
+    "Tier 1: Control-Flow Only": {
+      "Rules_Count": 12,
+      "Eq. (%)": 75.0,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 8.33,
+      "Reversed (%)": 16.67,
+      "Vacuous (%)": 0.0
+    },
+    "Tier 2: Temporal & Data-Aware": {
+      "Rules_Count": 10,
+      "Eq. (%)": 60.0,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 0.0,
+      "Reversed (%)": 40.0,
+      "Vacuous (%)": 0.0
+    },
+    "Overall Pipeline": {
+      "Rules_Count": 22,
+      "Eq. (%)": 68.18,
+      "Strengthened (%)": 0.0,
+      "Weakened (%)": 4.55,
+      "Reversed (%)": 27.27,
+      "Vacuous (%)": 0.0
+    }
+  },
+  "table2_rq2_ablation": [
+    {
+      "Configuration": "Baseline 1: Vanilla RAG + LLM Direct QA (Đang gom: 223 mẫu)",
+      "Executable_Rate (%)": "N/A",
+      "Eq_Rate (%)": "N/A",
+      "Conformance_F1": "Chờ hoàn tất"
+    },
+    {
+      "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
+      "Executable_Rate (%)": 100.0,
+      "Eq_Rate (%)": 35.0,
+      "Conformance_F1": 0.4502
+    },
+    {
+      "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
+      "Executable_Rate (%)": 86.67,
+      "Eq_Rate (%)": 66.67,
+      "Conformance_F1": 0.8382
+    },
+    {
+      "Configuration": "- Self-Correction Loop (Tắt Vòng lặp Tự sửa)",
+      "Executable_Rate (%)": 60.0,
+      "Eq_Rate (%)": 51.67,
+      "Conformance_F1": 0.6634
+    },
+    {
+      "Configuration": "Full Neuro-Symbolic Pipeline (Đề xuất)",
+      "Executable_Rate (%)": 90.0,
+      "Eq_Rate (%)": 70.0,
+      "Conformance_F1": 0.8577
+    }
+  ],
+  "table3_rq3_metrics": {
+    "ENTAILED (Tuân thủ)": {
+      "Precision": 0.9474,
+      "Recall": 0.9,
+      "F1-Score": 0.9231,
+      "Avg_Retries": 0.45,
+      "Avg_Verification_Time (s)": 0.0094,
+      "Citation_Fidelity (%)": 100.0
+    },
+    "CONTRADICTED (Vi phạm)": {
+      "Precision": 0.7647,
+      "Recall": 0.65,
+      "F1-Score": 0.7027,
+      "Avg_Retries": 1.8,
+      "Avg_Verification_Time (s)": 0.0087,
+      "Citation_Fidelity (%)": 70.0
+    },
+    "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
+      "Precision": 1.0,
+      "Recall": 0.9,
+      "F1-Score": 0.9474,
+      "Avg_Retries": 0.5,
+      "Avg_Verification_Time (s)": 0.0017,
+      "Citation_Fidelity (%)": 100.0
+    },
+    "Trung bình Toàn hệ thống (Overall)": {
+      "Precision": 0.904,
+      "Recall": 0.8167,
+      "F1-Score": 0.8577,
+      "Avg_Retries": 0.92,
+      "Avg_Verification_Time (s)": 0.0073,
+      "Citation_Fidelity (%)": 100.0
+    }
+  }
+}
