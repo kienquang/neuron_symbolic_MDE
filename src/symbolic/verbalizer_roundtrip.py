@@ -448,7 +448,7 @@ def verify_generic_numeric_entities(
 
         if entities
 
-        else "Không có mốc số học nào được quy định trong điều khoản này"
+        else "No quantitative bounds specified in this clause"
 
     )
 
@@ -470,11 +470,11 @@ def verify_generic_numeric_entities(
 
                 (
 
-                    f"[Diagnostic Mismatch]: Con số time_max={t_max} bạn chọn không xuất hiện dưới dạng mốc thời gian "
+                    f"[Diagnostic Mismatch]: The selected time_max={t_max} does not appear as a temporal bound "
 
-                    f"trong văn bản luật của điều khoản này ({formatted_entities}). "
+                    f"in the legal text of this clause ({formatted_entities}). "
 
-                    f"Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc."
+                    f"This represents an ungrounded inference from the statutory text."
 
                 ),
 
@@ -514,11 +514,11 @@ def verify_generic_numeric_entities(
 
                     (
 
-                        f"[Diagnostic Mismatch]: Con số time_max={t_max} ({canonical_ast_unit}) không tương thích "
+                        f"[Diagnostic Mismatch]: The selected time_max={t_max} ({canonical_ast_unit}) is incompatible "
 
-                        f"về đơn vị thời gian được quy định trong văn bản luật. Các mốc định lượng được đề cập gồm: {formatted_entities}. "
+                        f"with the time units defined in the legal clause. Allowed entities: {formatted_entities}. "
 
-                        f"Hãy đọc lại văn bản và tự hiệu chỉnh đơn vị/chỉ số."
+                        f"Please review the text and adjust the unit/value accordingly."
 
                     ),
 
@@ -532,11 +532,11 @@ def verify_generic_numeric_entities(
 
                 (
 
-                    f"[Diagnostic Mismatch]: Con số time_max={t_max} ({canonical_ast_unit}) bạn chọn không xuất hiện trong văn bản luật "
+                    f"[Diagnostic Mismatch]: The selected time_max={t_max} ({canonical_ast_unit}) does not appear in the legal clause "
 
-                    f"của điều khoản này. Các mốc định lượng được luật đề cập gồm: {formatted_entities}. "
+                    f"of this article. Allowed entities mentioned in the text: {formatted_entities}. "
 
-                    f"Hãy đọc lại văn bản và tự hiệu chỉnh."
+                    f"Please review the text and adjust accordingly."
 
                 ),
 
@@ -562,9 +562,9 @@ def verify_generic_numeric_entities(
 
                 (
 
-                    f"[Diagnostic Mismatch]: Con số activation_val={act_val} bạn chọn không xuất hiện trong văn bản luật "
+                    f"[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
 
-                    f"của điều khoản này ({formatted_entities}). Văn bản gốc không quy định ngưỡng số học này."
+                    f"of this article ({formatted_entities}). The statutory text does not prescribe this numeric threshold."
 
                 ),
 
@@ -580,11 +580,11 @@ def verify_generic_numeric_entities(
 
                 (
 
-                    f"[Diagnostic Mismatch]: Con số activation_val={act_val} bạn chọn không xuất hiện trong văn bản luật "
+                    f"[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
 
-                    f"của điều khoản này. Các mốc định lượng được luật đề cập gồm: {formatted_entities}. "
+                    f"of this article. Allowed entities mentioned in the text: {formatted_entities}. "
 
-                    f"Hãy đọc lại văn bản và tự hiệu chỉnh."
+                    f"Please review the text and adjust accordingly."
 
                 ),
 
@@ -689,15 +689,11 @@ def verbalize_declare_ast(ast_dict: Dict[str, Any]) -> str:
 
 
 def check_roundtrip_fidelity(
-
     ast_dict: Dict[str, Any],
-
     retrieved_chunk: Dict[str, Any],
-
     llm_client: Any,
-
     rule_meta: Optional[Dict[str, Any]] = None,
-
+    process_schema: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str]:
 
     """
@@ -728,13 +724,30 @@ def check_roundtrip_fidelity(
 
 
 
+    if not process_schema:
+            from pathlib import Path
+            schema_path = Path("data/processed/process_schema.json")
+            if schema_path.exists():
+                try:
+                    with open(schema_path, "r", encoding="utf-8") as f:
+                        process_schema = json.load(f)
+                except Exception:
+                    pass
+
+    schema_context = ""
+    if process_schema and isinstance(process_schema, dict):
+        act_descs = process_schema.get("activity_descriptions") or process_schema.get("activities") or {}
+        if isinstance(act_descs, dict):
+            lines = [f"  - `{k}`: {v}" for k, v in act_descs.items()]
+            schema_context = "- Event Log Activity Data Dictionary:\n" + "\n".join(lines) + "\n"
+
     policy_context = ""
 
     if rule_meta and rule_meta.get("description"):
 
         raw_desc = str(rule_meta.get("description") or "").strip()
 
-        policy_req = re.sub(r"^(?:Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
+        policy_req = re.sub(r"^(?:Quy định gài bẫy|Quy định bẫy|Gài bẫy|Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
 
         if policy_req:
 
@@ -743,54 +756,34 @@ def check_roundtrip_fidelity(
 
 
     prompt = f"""You are a formal semantic compliance judge for financial process mining.
-
 Compare the original EU Directive 2008/48/EC legal clause with the back-translated business process constraint:
-
 - Original Legal Clause ({retrieved_chunk['article_id']}): "{retrieved_chunk['text']}"
-
-{policy_context}- Candidate AST JSON: {json.dumps(ast_dict, ensure_ascii=False)}
-
+{policy_context}{schema_context}- Candidate AST JSON: {json.dumps(ast_dict, ensure_ascii=False)}
 - Back-translated Constraint: "{verbalized_rule}"
 
+Evaluation Principles:
+1. DECLARE Template Semantics:
+   - 'Precedence(A, B)': Activity A is a required prerequisite for Activity B (A must happen before B). Back-translated as: "Whenever 'B' occurs, 'A' must have occurred BEFORE it." This means A occurs before B. Do NOT classify as reversed when the policy specifies A before B.
+   - 'Chain Precedence(A, B)': Activity A must occur IMMEDIATELY before Activity B.
+   - 'Response(A, B)': Activity A triggers Activity B (B must occur after A).
+   - 'Not Co-Existence(A, B)': Activities A and B cannot both occur in the same case.
 
+2. Semantic Alignment & Lifecycle Fidelity (Classify as EQUIVALENT):
+   - The candidate AST faithfully implements the workflow steps, temporal direction, and conditions described in the directive and operational policy requirement.
+   - For statutory bounds with two-sided limits (floors and ceilings), an atomic DECLARE constraint enforcing either bound independently is considered a legitimate operationalization.
+   - In Declarative Process Mining, an atomic DECLARE constraint models a single discrete operationalization of the legal clause in the event log (e.g. forbidding disbursement after denial, or cancelling offers upon customer withdrawal). If the candidate AST faithfully operationalizes the requirement defined in the Bank Operational Policy and is consistent with the cited Directive clause, it MUST be classified as EQUIVALENT. Do NOT classify as SEMANTIC_MISMATCH simply because the statutory text contains additional collateral legal clauses (such as consumer compensation, durable medium, or database consultation notices) that cannot be expressed in a single atomic DECLARE rule.
 
-Context:
+3. Semantic Discrepancy (Classify as SEMANTIC_MISMATCH or REVERSED_ORDER):
+   - SEMANTIC_MISMATCH: The candidate AST selects an activity or attribute that does not correspond to the required workflow lifecycle stage, or misses key logical conditions of the policy.
+   - REVERSED_ORDER: The candidate AST inverts prerequisite/consequence order (e.g. using Response instead of Precedence for a prerequisite duty).
 
-In business process modeling for financial institutions, statutory principles (such as creditworthiness assessments under Article 8, pre-contractual disclosures under Article 5, contract formalization and agreement execution before credit performance under Article 10, statutory withdrawal under Article 14, and agreement termination under Article 13) are operationalized into concrete workflow steps and lifecycle state transitions.
+4. Unwarranted / Out-of-Scope Rule (Classify as BASELESS):
+   - The constraint or operational policy invents arbitrary quantitative thresholds, metrics, or requirements that have no statutory basis in the cited directive clause (e.g., inventing an 8-day deadline or a 750 credit score when the clause specifies no such metric).
+   - The constraint or operational policy addresses transactions, products, or workflow stages completely unsupported by or outside the statutory scope of the cited directive clause (e.g., applying to mortgages when the directive explicitly excludes mortgages, or demanding tasks that have zero textual support in the clause).
+   - The constraint fundamentally contradicts the statutory text.
 
-DECLARE Template Semantics:
-- 'Precedence(A, B)': Activity A is a required prerequisite for Activity B (A must happen before B). Back-translated as: "Whenever 'B' occurs, 'A' must have occurred BEFORE it." This means A occurs before B. Do NOT classify as reversed when the policy specifies A before B.
-- 'Chain Precedence(A, B)': Activity A must occur IMMEDIATELY before Activity B.
-- 'Response(A, B)': Activity A triggers Activity B (B must occur after A).
-- 'Not Co-Existence(A, B)': Activities A and B cannot both occur in the same case.
-
-Lifecycle Activity Mapping & Disambiguation:
-- Preliminary assessment / intake concept evaluation ('đánh giá sơ bộ'): corresponds to 'A_Concept' (application concept state), NOT detailed staff verification 'W_Validate application'.
-- Preliminary application approval ('phê duyệt sơ bộ hồ sơ'): corresponds to 'A_Accepted', NOT validation state 'A_Validating'.
-- Offer recorded on system ('văn bản đề nghị vay được ghi nhận chính thức vào hệ thống'): corresponds to 'O_Created' (offer recorded state), preceded immediately by 'O_Create Offer' ('Chain Precedence').
-- Dispatch of pre-contractual terms ('gửi thông tin tiền hợp đồng'): corresponds to 'O_Sent (mail and online)'.
-- Staff advice call ('cuộc gọi tư vấn giải thích thỏa đáng'): corresponds to 'W_Call after offers'.
-- Customer acceptance of offer ('khách hàng chấp thuận đề nghị vay'): corresponds to 'O_Accepted' (offer accepted), NOT 'A_Accepted' (application intake accepted).
-- Loan disbursement ('giải ngân tiền vay' / credit performance): corresponds to 'A_Pending'.
-- Offer rejection upon denial ('đề nghị vay chuyển sang từ chối'): corresponds to 'O_Refused' following 'A_Denied'.
-- Offer cancellation upon withdrawal ('đề nghị vay liên kết phải được hủy bỏ'): corresponds to 'O_Cancelled' following 'A_Cancelled'.
-
-Legitimate Operational Implementations (Classify as EQUIVALENT):
-1. Candidate AST uses the exact workflow steps and lifecycle state transitions aligned with the Bank Operational Policy Requirement.
-2. Scope thresholds: When Article 2(2)(c) excludes credit agreements < 200 EUR or > 75 000 EUR, an atomic DECLARE constraint enforcing EITHER the floor (OfferedAmount >= 200.0) OR ceiling (OfferedAmount <= 75000.0) is EACH an independent, legitimate operationalization. Classify each single-bound constraint as EQUIVALENT.
-
-Classify as SEMANTIC_MISMATCH or REVERSED_ORDER if:
-1. The candidate AST confuses preliminary concept evaluation ('A_Concept') with detailed verification ('W_Validate application'), or confuses 'O_Accepted' with 'A_Accepted', or selects the wrong workflow step. Provide clear diagnostic feedback explaining the lifecycle distinction so the model can correct its choice.
-2. The candidate AST inverts prerequisite/consequence order.
-
-STRICTLY classify as BASELESS if and only if:
-1. The constraint invents arbitrary, unauthorized quantitative thresholds (e.g. minimum CreditScore >= 750, fabricated interest rates/penalties, or 8-day deadlines without basis in the directive);
-2. The transaction or product is entirely unrelated to consumer credit (e.g. real estate mortgage loans or pawnshop pledges);
-3. The claimed rule directly contradicts the legal text.
-
-Provide compiler-style diagnostic feedback WITHOUT revealing any benchmark ground-truth answers.
+Provide compiler-style diagnostic feedback explaining any discrepancies WITHOUT revealing specific target answers.
 Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "SEMANTIC_MISMATCH" | "THRESHOLD_MISMATCH" | "BASELESS", "diagnostic_feedback": "..."}}
-
 """
 
     if hasattr(llm_client, "chat_json"):

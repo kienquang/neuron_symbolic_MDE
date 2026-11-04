@@ -87,8 +87,12 @@ def evaluate_trace_safety_and_status(
                 ),
             }
 
-    # 3. Kiểm tra sự tồn tại của sự kiện kích hoạt quy tắc trong hồ sơ (VD: R29)
-    tpl = getattr(ast_obj, "template_name", "Response")
+    # 3. Kiểm tra Tập điều kiện an toàn Φ đối với sự kiện kích hoạt mang điều kiện thuộc tính (Null-dereference guard - VD: R29)
+    # Theo chuẩn OVAS và logic hình thức: Nếu quy tắc yêu cầu kiểm tra giá trị thuộc tính trên một sự kiện,
+    # nhưng sự kiện đó hoàn toàn không phát sinh trong hồ sơ, ta không thể giải tham chiếu giá trị (Null-dereference)
+    # -> Phân loại là BASELESS (INAPPLICABLE_TRACE_NO_ACTIVATION).
+    # Ngược lại, đối với ràng buộc dòng điều khiển thuần túy (Control-Flow): Nếu sự kiện kích hoạt không xuất hiện,
+    # quy tắc được coi là Thỏa mãn rỗng (Vacuously Satisfied / ENTAILED), cho phép chảy tiếp xuống bộ kiểm chứng Declare4Py.
     act_events = filter_activity_events(case_df, getattr(ast_obj, "activation_activity", ""))
     tgt_events = (
         filter_activity_events(case_df, ast_obj.target_activity)
@@ -96,64 +100,26 @@ def evaluate_trace_safety_and_status(
         else pd.DataFrame()
     )
 
-    if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
-        # Trong họ Precedence, sự kiện kích hoạt là target_activity B (mỗi khi B xảy ra)
-        if tgt_events.empty:
-            return {
-                "case_id": case_id,
-                "label": "BASELESS",
-                "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
-                "details": (
-                    f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{ast_obj.target_activity}' "
-                    f"của ràng buộc {tpl}."
-                ),
-            }
-    elif tpl == "Not Co-Existence":
-        if act_events.empty and tgt_events.empty:
-            return {
-                "case_id": case_id,
-                "label": "BASELESS",
-                "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
-                "details": (
-                    f"Hồ sơ '{case_id}' không phát sinh cả hai hoạt động '{ast_obj.activation_activity}' "
-                    f"và '{ast_obj.target_activity}'."
-                ),
-            }
-    elif tpl in ("Response", "Alternate Response", "Chain Response"):
-        if act_events.empty:
-            return {
-                "case_id": case_id,
-                "label": "BASELESS",
-                "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
-                "details": f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{ast_obj.activation_activity}'.",
-            }
-    elif tpl in ("Existence", "Exactly1", "Init"):
-        # Nếu có thuộc tính dữ liệu cần kiểm tra (như R29: OfferedAmount >= 200 trên O_Create Offer)
-        # mà sự kiện không xuất hiện, hồ sơ không kích hoạt được điều kiện dữ liệu -> BASELESS
-        if getattr(ast_obj, "activation_attr", None):
-            if act_events.empty:
-                return {
-                    "case_id": case_id,
-                    "label": "BASELESS",
-                    "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
-                    "details": (
-                        f"Hồ sơ '{case_id}' không phát sinh hoạt động '{ast_obj.activation_activity}' "
-                        f"để kiểm tra thuộc tính '{ast_obj.activation_attr}'."
-                    ),
-                }
-        # Nếu là Existence thuần túy (không có thuộc tính), việc thiếu act_events là vi phạm CONTRADICTED,
-        # cho phép chảy tiếp xuống check_single_trace_semantics bên dưới.
-    elif tpl == "Absence":
-        # Với Absence, không có act_events là hoàn toàn tuân thủ (ENTAILED), cho phép chảy xuống check_single_trace_semantics.
-        pass
-    else:
-        if act_events.empty:
-            return {
-                "case_id": case_id,
-                "label": "BASELESS",
-                "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
-                "details": f"Hồ sơ '{case_id}' không phát sinh hoạt động kích hoạt '{getattr(ast_obj, 'activation_activity', '')}'.",
-            }
+    if getattr(ast_obj, "activation_attr", None) and act_events.empty:
+        return {
+            "case_id": case_id,
+            "label": "BASELESS",
+            "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
+            "details": (
+                f"Hồ sơ '{case_id}' không phát sinh hoạt động '{ast_obj.activation_activity}' "
+                f"để kiểm tra thuộc tính '{ast_obj.activation_attr}'."
+            ),
+        }
+    if getattr(ast_obj, "target_attr", None) and tgt_events.empty:
+        return {
+            "case_id": case_id,
+            "label": "BASELESS",
+            "reason_type": ReasonType.INAPPLICABLE_TRACE_NO_ACTIVATION.value,
+            "details": (
+                f"Hồ sơ '{case_id}' không phát sinh hoạt động đích '{ast_obj.target_activity}' "
+                f"để kiểm tra thuộc tính '{ast_obj.target_attr}'."
+            ),
+        }
 
     # 4. Kiểm tra Tập điều kiện an toàn Φ đối với thuộc tính dữ liệu và thời gian (Null-dereference guard - VD: R30)
     attrs_to_check = []
@@ -169,6 +135,8 @@ def evaluate_trace_safety_and_status(
             val = row.get(attr_col, None)
             if val is None and not attr_col.startswith("case:"):
                 val = row.get(f"case:{attr_col}", None)
+            elif val is None and attr_col.startswith("case:"):
+                val = row.get(attr_col.replace("case:", "", 1), None)
             if val is None or (isinstance(val, float) and math.isnan(val)) or pd.isna(val):
                 safety_conditions_phi.append(
                     f"Thuộc tính '{attr_col}' tại sự kiện '{row['concept:name']}' bị khuyết (null/NaN)."

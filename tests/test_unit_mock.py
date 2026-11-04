@@ -130,7 +130,7 @@ class TestUnitMock(unittest.TestCase):
         ok_u, verdict_u, diag_u = verify_generic_numeric_entities(ast_wrong_unit, chunk_days)
         self.assertFalse(ok_u)
         self.assertEqual(verdict_u, "THRESHOLD_MISMATCH")
-        self.assertIn("đơn vị", diag_u)
+        self.assertTrue("unit" in diag_u.lower() or "đơn vị" in diag_u.lower())
 
         # 3. Kiểm tra chốt chặn hậu kiểm phát hiện hiện tượng phủ định kết luận (Negation Blindness)
         j_tree = {

@@ -306,10 +306,18 @@ def run_single_rule_with_real_llm(
     Không chứa bất kỳ câu mớm bẫy viết cứng nào.
     """
     raw_desc = str(rule_item.get("description") or "").strip()
-    policy_req = re.sub(r"^(?:Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
+    policy_req = re.sub(r"^(?:Quy định gài bẫy|Quy định bẫy|Gài bẫy|Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
     req_line = f"Compliance Policy Requirement: {policy_req}\n" if policy_req else ""
 
     allowed_templates = sorted(list(ALLOWED_DECLARE_TEMPLATES))
+    act_desc_map = process_schema.get("activity_descriptions", {})
+    if act_desc_map:
+        activities_formatted = "\n".join(
+            [f"  - {act}: {act_desc_map.get(act, 'Activity in process log')}" for act in process_schema["valid_activities"]]
+        )
+        activities_str = f"Allowed Activities (with operational domain definitions):\n{activities_formatted}"
+    else:
+        activities_str = f"Allowed Activities: {process_schema['valid_activities']}"
     messages: List[Dict[str, str]] = [
         {
             "role": "system",
@@ -322,10 +330,14 @@ def run_single_rule_with_real_llm(
                 "activation_attr, activation_op, activation_val, time_min, time_max, time_unit.\n"
                 "IMPORTANT RULES:\n"
                 "1. Only specify activation_attr, activation_op, activation_val, or time_max if explicitly stated in the compliance policy requirement or directive; otherwise, you MUST set them to null.\n"
-                "2. Numeric monetary thresholds (e.g. 200, 75000) belong to activation_val as a float (e.g. 75000.0) with activation_op (e.g. '<=', '>=').\n"
+                "2. Numeric monetary thresholds (e.g. 500, 10000) belong to activation_val as a float (e.g. 10000.0) with activation_op (e.g. '<=', '>=').\n"
                 "3. Durations (e.g. 14 days) belong to time_max (e.g. 14) with time_unit ('s', 'm', 'h', 'd').\n"
-                "4. DECLARE constraints define the REQUIRED condition for valid/compliant execution (not the violation trigger). E.g., to enforce a statutory ceiling of 75,000 EUR, specify '<= 75000.0'; to enforce a statutory floor of 200 EUR, specify '>= 200.0'.\n"
-                "5. 'article_id' must match the exact clause ID provided in the prompt header (e.g. 'Article 2(2)')."
+                "4. DECLARE constraints define the REQUIRED condition for valid/compliant execution (not the violation trigger). E.g., to enforce a statutory ceiling of 50,000 EUR, specify '<= 50000.0'; to enforce a statutory floor of 500 EUR, specify '>= 500.0'.\n"
+                "5. Affirmative duties where event A triggers mandatory event B use template 'Response(activation_activity=A, target_activity=B)'.\n"
+                "6. Prerequisite conditions or deadline windows where action B is only permitted after or within a duration of A use template 'Precedence(activation_activity=A, target_activity=B, time_max=...)'.\n"
+                "7. Universal prohibitions on an event when a condition holds (e.g. offers below 200 EUR are forbidden) use template 'Absence(activation_activity=..., activation_attr=..., activation_op='<', activation_val=200.0)'.\n"
+                "8. Mutual exclusion between two events uses template 'Not Co-Existence'.\n"
+                "9. 'article_id' must match the exact clause ID provided in the prompt header (e.g. 'Article 2(2)')."
             ),
         },
         # Neutral In-Context Example 1: Pure Control-Flow
@@ -390,7 +402,7 @@ def run_single_rule_with_real_llm(
             "content": (
                 f"Directive Clause ({retrieved_chunk['article_id']}): {retrieved_chunk['text']}\n"
                 f"{req_line}"
-                f"Allowed Activities: {process_schema['valid_activities']}\n"
+                f"{activities_str}\n"
                 f"Allowed Case Attributes: {list(process_schema['case_attributes'].keys())}\n"
                 f"Allowed Event Attributes: {list(process_schema['event_attributes'].keys())}\n"
                 "Return the DECLARE constraint as a valid JSON object."
@@ -441,11 +453,10 @@ def run_single_rule_with_real_llm(
 
         # Nếu qua Tầng 1 & 2 -> Kiểm tra Tầng 3 (Generic Entity Matcher + Roundtrip Check)
         if enable_l3_roundtrip:
-            ok_rt, rt_msg = check_roundtrip_fidelity(ast_dict, retrieved_chunk, llm, rule_meta=rule_item)
-            is_trap = bool(rule_item.get("is_baseless_trap", False))
+            ok_rt, rt_msg = check_roundtrip_fidelity(ast_dict, retrieved_chunk, llm, rule_meta=rule_item, process_schema=process_schema)
             if not ok_rt:
-                if is_trap and "BASELESS" in rt_msg:
-                    # Đúng là bẫy ảo giác được thiết kế sẵn và đã phát hiện thành công
+                # Nếu ở vòng cuối cùng (đã hết số lần thử) và Tầng 3 kết luận BASELESS: Chốt là DETECTED_BASELESS_TRAP
+                if attempt == max_retry and "BASELESS" in rt_msg:
                     trajectory.append(
                         {
                             "round": attempt,
@@ -462,16 +473,26 @@ def run_single_rule_with_real_llm(
                         "roundtrip_msg": rt_msg,
                     }
 
-                # Đối với quy tắc nghiệp vụ thông thường, tiếp tục vòng lặp tự sửa
+                # Ở các vòng trung gian (attempt < max_retry): Cung cấp phản hồi chẩn đoán để LLM tự sửa sai
+                status_lbl = "DETECTED_BASELESS_TRAP" if "BASELESS" in rt_msg else "FAILED_L3_ROUNDTRIP"
                 print(f"      [Round {attempt} Feedback (L3)]: {rt_msg}")
                 trajectory.append(
                     {
                         "round": attempt,
                         "output": raw_output,
-                        "status": "FAILED_L3_ROUNDTRIP",
+                        "status": status_lbl,
                         "error": rt_msg,
                     }
                 )
+                if attempt == max_retry:
+                    return {
+                        "final_ast": ast_dict,
+                        "rounds_needed": attempt - 1,
+                        "trajectory": trajectory,
+                        "roundtrip_ok": False,
+                        "roundtrip_msg": rt_msg,
+                    }
+
                 messages.append({"role": "assistant", "content": raw_output})
                 messages.append(
                     {

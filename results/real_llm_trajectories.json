@@ -98,7 +98,7 @@
     "final_ast": {
       "article_id": "Article 5(1)",
       "decomposition": null,
-      "template_name": "Chain Precedence",
+      "template_name": "Precedence",
       "activation_activity": "O_Create Offer",
       "target_activity": "O_Created",
       "activation_attr": null,
@@ -113,7 +113,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Chain Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -129,7 +129,7 @@
       "article_id": "Article 5(1)",
       "decomposition": null,
       "template_name": "Precedence",
-      "activation_activity": "O_Created",
+      "activation_activity": "O_Create Offer",
       "target_activity": "O_Sent (mail and online)",
       "activation_attr": null,
       "activation_op": null,
@@ -143,7 +143,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Created\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -244,26 +244,44 @@
     "dataset_split": "dev",
     "tier": "Tier1_ControlFlow",
     "article_id": "Article 9(2)",
-    "rounds_needed": 0,
+    "rounds_needed": 3,
     "final_ast": {
       "article_id": "Article 9(2)",
       "decomposition": null,
       "template_name": "Response",
-      "activation_activity": "A_Denied",
-      "target_activity": "O_Refused",
-      "activation_attr": null,
-      "activation_op": null,
-      "activation_val": null,
+      "activation_activity": "A_Validating",
+      "target_activity": "A_Denied",
+      "activation_attr": "Action",
+      "activation_op": "==",
+      "activation_val": "DatabaseLookup",
       "time_min": null,
-      "time_max": null,
-      "time_unit": null
+      "time_max": 0,
+      "time_unit": "d"
     },
     "roundtrip_ok": true,
     "roundtrip_msg": "Roundtrip check passed.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"O_Refused\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"A_Denied\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST models a generic Response constraint from A_Validating to A_Denied, implying that every validation must be followed by a denial. The Directive 9(2) and the bank policy only require a denial (and subsequent state change) when the rejection is specifically caused by a database consultation, and additionally mandate immediate consumer notification. The AST neither conditions the denial on a database lookup nor captures the notification obligation, and it over‑generalises the workflow by triggering denial after any validation step. Hence the activity choice and logical condition do not align with the legal requirement. (Back-translation: Whenever 'A_Validating' occurs, 'A_Denied' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"W_Call after offers\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST models a Response constraint from A_Denied to the workflow task \"W_Call after offers\" with a 0‑day deadline. Article 9(2) obliges the creditor to inform the consumer immediately after a denial based on database consultation. The required follow‑up is a consumer notification, not a post‑offer call. Moreover, the operational policy only mandates a state change to \"rejected\" and does not prescribe any call activity. Therefore the selected target activity does not correspond to the legal duty, resulting in a semantic mismatch. (Back-translation: Whenever 'A_Denied' occurs, 'W_Call after offers' must eventually occur AFTER it within 0 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"A_Denied\",\"activation_attr\":\"Action\",\"activation_op\":\"=\",\"activation_val\":\"DatabaseLookup\",\"time_min\":null,\"time_max\":0,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'activation_op': Input should be '==', '!=', '<', '<=', '>' or '>='"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 9(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"A_Denied\",\"activation_attr\":\"Action\",\"activation_op\":\"==\",\"activation_val\":\"DatabaseLookup\",\"time_min\":null,\"time_max\":0,\"time_unit\":\"d\"}",
         "status": "PASSED",
         "error": null
       }
@@ -278,7 +296,7 @@
     "final_ast": {
       "article_id": "Article 13(2)",
       "decomposition": null,
-      "template_name": "Not Response",
+      "template_name": "Not Co-Existence",
       "activation_activity": "A_Denied",
       "target_activity": "A_Pending",
       "activation_attr": null,
@@ -293,7 +311,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 13(2)\",\"template_name\":\"Not Response\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 13(2)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"A_Pending\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -338,9 +356,9 @@
     "final_ast": {
       "article_id": "Article 5(6)",
       "decomposition": null,
-      "template_name": "Precedence",
-      "activation_activity": "W_Call after offers",
-      "target_activity": "A_Validating",
+      "template_name": "Response",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "W_Call after offers",
       "activation_attr": null,
       "activation_op": null,
       "activation_val": null,
@@ -353,7 +371,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Call after offers\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 5(6)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"W_Call after offers\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -368,11 +386,11 @@
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "O_Create Offer",
       "target_activity": null,
       "activation_attr": "OfferedAmount",
-      "activation_op": ">=",
+      "activation_op": "<",
       "activation_val": 200.0,
       "time_min": null,
       "time_max": null,
@@ -383,7 +401,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -398,11 +416,11 @@
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "O_Create Offer",
       "target_activity": null,
       "activation_attr": "OfferedAmount",
-      "activation_op": "<=",
+      "activation_op": ">",
       "activation_val": 75000.0,
       "time_min": null,
       "time_max": null,
@@ -413,7 +431,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -428,7 +446,7 @@
     "final_ast": {
       "article_id": "Article 14(1)",
       "decomposition": null,
-      "template_name": "Response",
+      "template_name": "Precedence",
       "activation_activity": "O_Sent (mail and online)",
       "target_activity": "A_Cancelled",
       "activation_attr": null,
@@ -443,7 +461,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
+        "output": "{\"article_id\":\"Article 14(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":14,\"time_unit\":\"d\"}",
         "status": "PASSED",
         "error": null
       }
@@ -454,7 +472,7 @@
     "dataset_split": "heldout_test",
     "tier": "Tier2_TemporalData",
     "article_id": "Article 14(3)",
-    "rounds_needed": 0,
+    "rounds_needed": 1,
     "final_ast": {
       "article_id": "Article 14(3)",
       "decomposition": null,
@@ -473,6 +491,12 @@
     "trajectory": [
       {
         "round": 1,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Activity, 'O_Sent'): Activity 'O_Sent' does not exist in Process Metamodel Γ. Did you mean: ['O_Created', 'O_Returned', 'O_Accepted']? Valid activities are: ['A_Accepted', 'A_Cancelled', 'A_Complete', 'A_Concept', 'A_Create Application', 'A_Denied', 'A_Incomplete', 'A_Pending', 'A_Submitted', 'A_Validating', 'O_Accepted', 'O_Cancelled', 'O_Create Offer', 'O_Created', 'O_Refused', 'O_Returned', 'O_Sent (mail and online)', 'O_Sent (online only)', 'W_Assess potential fraud', 'W_Call after offers', 'W_Call incomplete files', 'W_Complete application', 'W_Handle leads', 'W_Personal Loan collection', 'W_Shortened completion ', 'W_Validate application', 'A_Validated']."
+      },
+      {
+        "round": 2,
         "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
         "status": "PASSED",
         "error": null
@@ -489,7 +513,7 @@
       "article_id": "Article 8(1)",
       "decomposition": null,
       "template_name": "Precedence",
-      "activation_activity": "O_Create Offer",
+      "activation_activity": "A_Validating",
       "target_activity": "A_Pending",
       "activation_attr": "CreditScore",
       "activation_op": ">",
@@ -503,7 +527,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"A_Pending\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"A_Pending\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -519,7 +543,7 @@
       "article_id": "Article 8(1)",
       "decomposition": null,
       "template_name": "Precedence",
-      "activation_activity": "W_Validate application",
+      "activation_activity": "A_Validating",
       "target_activity": "O_Accepted",
       "activation_attr": null,
       "activation_op": null,
@@ -533,7 +557,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"O_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -544,7 +568,7 @@
     "dataset_split": "heldout_test",
     "tier": "Tier2_TemporalData",
     "article_id": "Article 13(1)",
-    "rounds_needed": 0,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 13(1)",
       "decomposition": null,
@@ -555,17 +579,41 @@
       "activation_op": null,
       "activation_val": null,
       "time_min": null,
-      "time_max": null,
-      "time_unit": null
+      "time_max": 30,
+      "time_unit": "d"
     },
-    "roundtrip_ok": true,
-    "roundtrip_msg": "Roundtrip check passed.",
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The AST captures the correct causal direction (consumer‑initiated cancellation (A_Cancelled) triggers offer cancellation (O_Cancelled)), which aligns with the legal clause and bank policy. However, the clause and policy do not prescribe any time limit for the creditor to cancel the offer. Introducing a 30‑day deadline adds an unsupported quantitative requirement, making the rule out‑of‑scope and baseless with respect to the cited directive. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)",
     "trajectory": [
       {
         "round": 1,
         "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "PASSED",
-        "error": null
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links A_Cancelled (application cancelled) to O_Cancelled (offer cancelled) via a Response constraint. However, the Directive and the bank policy refer to the consumer's termination of an open‑end credit agreement, not to the cancellation of a loan application. The appropriate activation should represent the consumer's termination action (which is not captured by A_Cancelled). Consequently, the selected activation activity does not correspond to the required workflow stage, leading to a semantic mismatch. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links A_Cancelled (application cancelled) to O_Cancelled (offer cancelled) via a Response constraint. However, the Directive and the bank policy refer to the consumer's termination of an open‑end credit agreement, not to the cancellation of a loan application. The appropriate activation should represent the consumer's termination action (which is not captured by A_Cancelled). Consequently, the selected activation activity does not correspond to the required workflow stage, leading to a semantic mismatch. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links A_Cancelled (application cancelled) to O_Cancelled (offer cancelled) via a Response constraint. However, the Directive and the bank policy refer to the consumer's termination of an open‑end credit agreement, not to the cancellation of a loan application. The appropriate activation should represent the consumer's termination action (which is not captured by A_Cancelled). Consequently, the selected activation activity does not correspond to the required workflow stage, leading to a semantic mismatch. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Pending\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST uses a Response(A_Pending, O_Cancelled) constraint, meaning every occurrence of A_Pending (loan finalized awaiting disbursement) must be followed by O_Cancelled (offer cancellation). The Directive and bank policy only require cancellation when the consumer *exercises* the termination right, not for all pending loans. Moreover, the activation activity should represent the consumer's termination action, which is not captured by A_Pending. Consequently the selected activities and the unconditional response do not reflect the optional, consumer‑initiated nature of the legal requirement, leading to a semantic mismatch. (Back-translation: Whenever 'A_Pending' occurs, 'O_Cancelled' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The AST captures the correct causal direction (consumer‑initiated cancellation (A_Cancelled) triggers offer cancellation (O_Cancelled)), which aligns with the legal clause and bank policy. However, the clause and policy do not prescribe any time limit for the creditor to cancel the offer. Introducing a 30‑day deadline adds an unsupported quantitative requirement, making the rule out‑of‑scope and baseless with respect to the cited directive. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
       }
     ]
   },
@@ -578,11 +626,11 @@
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "A_Create Application",
       "target_activity": null,
       "activation_attr": "case:RequestedAmount",
-      "activation_op": ">=",
+      "activation_op": "<",
       "activation_val": 200.0,
       "time_min": null,
       "time_max": null,
@@ -593,7 +641,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\"<\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -608,11 +656,11 @@
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "A_Create Application",
       "target_activity": null,
       "activation_attr": "case:RequestedAmount",
-      "activation_op": "<=",
+      "activation_op": ">",
       "activation_val": 75000.0,
       "time_min": null,
       "time_max": null,
@@ -623,7 +671,7 @@
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\"<=\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\">\",\"activation_val\":75000.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "PASSED",
         "error": null
       }
@@ -634,28 +682,40 @@
     "dataset_split": "heldout_test",
     "tier": "Tier2_TemporalData",
     "article_id": "Article 14(3)",
-    "rounds_needed": 0,
-    "final_ast": {
-      "article_id": "Article 14(3)",
-      "decomposition": null,
-      "template_name": "Response",
-      "activation_activity": "A_Cancelled",
-      "target_activity": "O_Cancelled",
-      "activation_attr": null,
-      "activation_op": null,
-      "activation_val": null,
-      "time_min": null,
-      "time_max": 30,
-      "time_unit": "d"
-    },
-    "roundtrip_ok": true,
-    "roundtrip_msg": "Roundtrip check passed.",
+    "rounds_needed": 5,
+    "final_ast": null,
+    "roundtrip_ok": false,
+    "roundtrip_msg": "Exceeded max retries.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
-        "status": "PASSED",
-        "error": null
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Semantic Self-Loop Violation: 'activation_activity' and 'target_activity' cannot be identical ('A_Cancelled')."
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Submitted\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST uses A_Submitted as the trigger for the 30‑day cancellation deadline, but the legal clause and bank policy refer to the consumer’s withdrawal notification (i.e., the act of informing the creditor of the withdrawal). A_Submitted represents the initial loan application, not the withdrawal event. Consequently the constraint does not capture the required lifecycle stage and mis‑aligns with the directive’s temporal requirement. The Response pattern is appropriate, but the chosen activation activity is incorrect, leading to a semantic mismatch. (Back-translation: Whenever 'A_Submitted' occurs, 'A_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST ties the 30‑day cancellation deadline to the activity A_Validating, which represents the bank's internal validation step. The EU Directive and the bank's operational policy refer to the consumer's withdrawal notification (or request to cancel) as the trigger for the 30‑day deadline, not to the validation phase. Consequently the selected activation activity does not correspond to the required workflow stage, and the constraint misrepresents the legal obligation. The temporal direction (Response) is therefore applied to the wrong antecedent, leading to a semantic mismatch with the source clause. (Back-translation: Whenever 'A_Validating' occurs, 'A_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Cancelled\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The legal clause and bank policy require that after a consumer withdraws (or notifies cancellation), the loan request must be terminated/cancelled within 30 calendar days. The candidate AST models a Response constraint from A_Cancelled to A_Complete, i.e., it forces the loan application to reach the 'A_Complete' state (completion after offer return) within 30 days of cancellation. 'A_Complete' does not represent the required termination activity; the appropriate target would be an activity such as A_Cancelled (or a dedicated cancellation finalisation) rather than A_Complete. Consequently the selected target activity does not correspond to the mandated workflow stage, leading to a semantic mismatch with the statutory and operational requirements. (Back-translation: Whenever 'A_Cancelled' occurs, 'A_Complete' must eventually occur AFTER it within 30 calendar days.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 14(3)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Submitted\",\"target_activity\":\"A_Cancelled\",\"activation_attr\":\"Action\",\"activation_op\":\"=\",\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\"}",
+        "status": "FAILED_L1_L2",
+        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'activation_op': Input should be '==', '!=', '<', '<=', '>' or '>='"
       }
     ]
   },
@@ -664,13 +724,13 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 7",
-    "rounds_needed": 0,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 7",
       "decomposition": null,
       "template_name": "Response",
       "activation_activity": "A_Incomplete",
-      "target_activity": "A_Complete",
+      "target_activity": "A_Validating",
       "activation_attr": null,
       "activation_op": null,
       "activation_val": null,
@@ -679,13 +739,37 @@
       "time_unit": "d"
     },
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=8 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Complete' must eventually occur AFTER it within 8 calendar days.)",
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Validating' must eventually occur AFTER it within 8 calendar days.)",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
         "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số time_max=8 bạn chọn không xuất hiện dưới dạng mốc thời gian trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Đây là suy luận thiếu căn cứ định lượng từ văn bản gốc. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Complete' must eventually occur AFTER it within 8 calendar days.)"
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Validating' occurs, 'A_Incomplete' must have occurred BEFORE it within 8 calendar days.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Validating' must eventually occur AFTER it within 8 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Validating' must eventually occur AFTER it within 8 calendar days.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Validating' occurs, 'A_Incomplete' must have occurred BEFORE it within 8 calendar days.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":8,\"time_unit\":\"d\"}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected time_max=8 does not appear as a temporal bound in the legal text of this clause (No quantitative bounds specified in this clause). This represents an ungrounded inference from the statutory text. (Back-translation: Whenever 'A_Incomplete' occurs, 'A_Validating' must eventually occur AFTER it within 8 calendar days.)"
       }
     ]
   },
@@ -694,13 +778,13 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 7",
-    "rounds_needed": 0,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 7",
       "decomposition": null,
-      "template_name": "Existence",
-      "activation_activity": "W_Call incomplete files",
-      "target_activity": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Incomplete",
+      "target_activity": "O_Sent (mail and online)",
       "activation_attr": null,
       "activation_op": null,
       "activation_val": null,
@@ -709,13 +793,37 @@
       "time_unit": null
     },
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The legal clause (Art.7) concerns the non‑application of Articles 5‑6 to certain credit‑intermediary suppliers while preserving the creditor's duty to deliver pre‑contractual information. The candidate constraint merely enforces the existence of an activity 'W_Call incomplete files' in a credit case, which does not capture either the exemption scope or the information‑provision obligation. Consequently the constraint does not operationalise the statutory requirement and is classified as BASELESS. (Back-translation: Activity 'W_Call incomplete files' must occur at least once in the credit case.)",
+    "roundtrip_msg": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links the 'A_Incomplete' state to the sending of the loan offer (O_Sent (mail and online)) via a Precedence constraint. The cited operational policy, however, mandates that when an application is incomplete the credit officer must place a call to the customer to obtain missing documentation (activity W_Call incomplete files). The legal clause concerns the creditor's duty to ensure pre‑contractual information is provided, which is reflected in the offer‑sending step, but the policy requirement focuses on a remedial call, not on the timing of the offer. Consequently, the selected target activity and the implied workflow logic do not correspond to the policy’s prescribed action, resulting in a semantic mismatch. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Incomplete' must have occurred BEFORE it.)",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Existence\",\"activation_activity\":\"W_Call incomplete files\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The legal clause (Art.7) concerns the non‑application of Articles 5‑6 to certain credit‑intermediary suppliers while preserving the creditor's duty to deliver pre‑contractual information. The candidate constraint merely enforces the existence of an activity 'W_Call incomplete files' in a credit case, which does not capture either the exemption scope or the information‑provision obligation. Consequently the constraint does not operationalise the statutory requirement and is classified as BASELESS. (Back-translation: Activity 'W_Call incomplete files' must occur at least once in the credit case.)"
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"W_Call incomplete files\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST correctly models a Response constraint (A_Incomplete → W_Call incomplete files) that matches the bank's operational rule, but the legal clause (Article 7) concerns the creditor's duty to ensure the consumer receives pre‑contractual information, not a mandatory follow‑up call when an application is incomplete. The policy’s focus on completing missing documentation is not a direct operationalization of the pre‑contractual information obligation, so the semantic content diverges from the statutory requirement. (Back-translation: Whenever 'A_Incomplete' occurs, 'W_Call incomplete files' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links the 'A_Incomplete' state to the subsequent sending of the loan offer ('O_Sent (mail and online)') via a Response constraint. However, the Bank Operational Policy Requirement (translated from Vietnamese) mandates that when an application is incomplete, a credit officer must place a call to the customer to guide the completion of missing documentation (activity 'W_Call incomplete files'). The legal clause requires the creditor to ensure the consumer receives pre‑contractual information, but the policy’s specific operationalisation concerns a call, not the dispatch of the offer. Consequently, the selected target activity does not reflect the required procedural step, resulting in a semantic mismatch between the AST and the policy requirement. (Back-translation: Whenever 'A_Incomplete' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"W_Call incomplete files\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The AST correctly models a Response constraint (A_Incomplete → W_Call incomplete files) that matches the bank's operational rule, but the legal clause (Article 7) concerns the creditor's duty to ensure the consumer receives pre‑contractual information, not a mandatory follow‑up call when an application is incomplete. The policy’s focus on completing missing documentation is not a direct operationalization of the pre‑contractual information obligation, so the semantic content diverges from the statutory requirement. (Back-translation: Whenever 'A_Incomplete' occurs, 'W_Call incomplete files' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Response\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links the 'A_Incomplete' state to the subsequent sending of the loan offer ('O_Sent (mail and online)') via a Response constraint. However, the Bank Operational Policy Requirement (translated from Vietnamese) mandates that when an application is incomplete, a credit officer must place a call to the customer to guide the completion of missing documentation (activity 'W_Call incomplete files'). The legal clause requires the creditor to ensure the consumer receives pre‑contractual information, but the policy’s specific operationalisation concerns a call, not the dispatch of the offer. Consequently, the selected target activity does not reflect the required procedural step, resulting in a semantic mismatch between the AST and the policy requirement. (Back-translation: Whenever 'A_Incomplete' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 7\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Incomplete\",\"target_activity\":\"O_Sent (mail and online)\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST links the 'A_Incomplete' state to the sending of the loan offer (O_Sent (mail and online)) via a Precedence constraint. The cited operational policy, however, mandates that when an application is incomplete the credit officer must place a call to the customer to obtain missing documentation (activity W_Call incomplete files). The legal clause concerns the creditor's duty to ensure pre‑contractual information is provided, which is reflected in the offer‑sending step, but the policy requirement focuses on a remedial call, not on the timing of the offer. Consequently, the selected target activity and the implied workflow logic do not correspond to the policy’s prescribed action, resulting in a semantic mismatch. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Incomplete' must have occurred BEFORE it.)"
       }
     ]
   },
@@ -724,12 +832,12 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 2(2)",
-    "rounds_needed": 1,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
-      "activation_activity": "A_Create Application",
+      "template_name": "Absence",
+      "activation_activity": "O_Sent (mail and online)",
       "target_activity": null,
       "activation_attr": "case:LoanGoal",
       "activation_op": "==",
@@ -739,19 +847,37 @@
       "time_unit": null
     },
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate constraint enforces that an activity A_Create Application must exist whenever the loan goal is 'mortgage'. Article 2(2)(a)-(b) explicitly excludes credit agreements secured by a mortgage or aimed at acquiring land/building from the Directive, meaning the Directive imposes no obligations on such cases. The bank policy wording itself notes the exclusion, yet the constraint introduces a mandatory step for mortgage loans, which is not authorized by the legal text and contradicts the exclusion. Therefore the rule is unsupported (baseless). (Back-translation: Activity 'A_Create Application' when case:LoanGoal == mortgage must occur at least once in the credit case.)",
+    "roundtrip_msg": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST encodes an Absence rule that forbids the activity O_Sent (mail and online) whenever the case attribute LoanGoal equals 'mortgage'. This reflects the Directive’s exclusion of mortgage‑secured credit agreements (Article 2(2)(a)). However, the Bank Operational Policy explicitly states that all Directive requirements must be applied to mortgage loans for real‑estate purchases. Consequently the constraint contradicts the policy’s intent, resulting in a semantic mismatch between the back‑translated constraint and the operational requirement. (Back-translation: Activity 'O_Sent (mail and online)' when case:LoanGoal == mortgage must never occur in the credit case.)",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"=\",\"activation_val\":\"mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:RequestedAmount\",\"activation_op\":\"<\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST encodes an Absence constraint that forbids the activity 'A_Create Application' when the requested amount is below EUR 200. This operationalises clause (c) of Article 2(2) (the low‑amount exclusion), but the Bank Operational Policy requirement concerns the applicability of the Directive to mortgage‑secured real‑estate loans, which is unrelated to the amount threshold. Consequently, the selected activity and condition do not reflect the policy’s focus on mortgage credit and miss the core legal requirement. The constraint therefore does not align with the stated operational policy, resulting in a semantic mismatch. (Back-translation: Activity 'A_Create Application' when case:RequestedAmount < 200.0 must never occur in the credit case.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The candidate AST models a generic response constraint (A_Create Application → A_Validating) that is unrelated to the substantive content of Article 2(2). Article 2(2) enumerates specific categories of credit agreements that are excluded from the Directive (e.g., mortgage‑secured loans, low‑value credits, etc.). The bank policy interprets the article as mandating the Directive for mortgage loans, which directly conflicts with the statutory exclusion. Neither the exclusion list nor the policy’s applicability statement is captured by a simple \"whenever A_Create Application occurs, A_Validating must eventually occur\" rule. Consequently, the proposed constraint operates on workflow activities that have no textual or logical basis in the cited legal provision, making it out‑of‑scope (BASELESS). (Back-translation: Whenever 'A_Create Application' occurs, 'A_Validating' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Validating\",\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"=\",\"activation_val\":\"mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "FAILED_L1_L2",
         "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'activation_op': Input should be '==', '!=', '<', '<=', '>' or '>='"
       },
       {
-        "round": 2,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"==\",\"activation_val\":\"mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "round": 4,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Validating\",\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"==\",\"activation_val\":\"mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint enforces that an activity A_Create Application must exist whenever the loan goal is 'mortgage'. Article 2(2)(a)-(b) explicitly excludes credit agreements secured by a mortgage or aimed at acquiring land/building from the Directive, meaning the Directive imposes no obligations on such cases. The bank policy wording itself notes the exclusion, yet the constraint introduces a mandatory step for mortgage loans, which is not authorized by the legal text and contradicts the exclusion. Therefore the rule is unsupported (baseless). (Back-translation: Activity 'A_Create Application' when case:LoanGoal == mortgage must occur at least once in the credit case.)"
+        "error": "[Layer 3 Semantic BASELESS]: The cited Directive (Art. 2(2)) explicitly excludes credit agreements secured by a mortgage, i.e., the Directive does NOT apply to mortgage loans. The Bank Operational Policy, however, incorrectly states that the Directive’s requirements must be applied to mortgage loans – a direct contradiction of the statutory text. The candidate AST models a generic ‘Response(A_Create Application → A_Validating)’ for cases where case:LoanGoal == mortgage, which is not derived from any provision of Art. 2(2) nor from the (contradictory) policy requirement. It invents a process‑level obligation (validation after application) that has no textual support in the legal clause, and it does not capture the exclusion or the policy’s (mis‑stated) scope. Consequently the constraint is unsupported by the cited legal source and is classified as BASELESS. (Back-translation: Whenever 'A_Create Application' when case:LoanGoal == mortgage occurs, 'A_Validating' must eventually occur AFTER it.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Sent (mail and online)\",\"target_activity\":null,\"activation_attr\":\"case:LoanGoal\",\"activation_op\":\"==\",\"activation_val\":\"mortgage\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST encodes an Absence rule that forbids the activity O_Sent (mail and online) whenever the case attribute LoanGoal equals 'mortgage'. This reflects the Directive’s exclusion of mortgage‑secured credit agreements (Article 2(2)(a)). However, the Bank Operational Policy explicitly states that all Directive requirements must be applied to mortgage loans for real‑estate purchases. Consequently the constraint contradicts the policy’s intent, resulting in a semantic mismatch between the back‑translated constraint and the operational requirement. (Back-translation: Activity 'O_Sent (mail and online)' when case:LoanGoal == mortgage must never occur in the credit case.)"
       }
     ]
   },
@@ -760,28 +886,52 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 8(1)",
-    "rounds_needed": 0,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 8(1)",
       "decomposition": null,
       "template_name": "Precedence",
-      "activation_activity": "W_Validate application",
-      "target_activity": "A_Accepted",
-      "activation_attr": "CreditScore",
-      "activation_op": ">=",
-      "activation_val": 750.0,
+      "activation_activity": "A_Validating",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
       "time_min": null,
       "time_max": null,
       "time_unit": null
     },
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số activation_val=750.0 bạn chọn không xuất hiện trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Văn bản gốc không quy định ngưỡng số học này. (Back-translation: Whenever 'A_Accepted' occurs, 'W_Validate application' when CreditScore >= 750.0 must have occurred BEFORE it.)",
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate DECLARE constraint correctly models a precedence relationship (credit‑worthiness validation before offer creation), which aligns with the Directive’s requirement that the creditor assess creditworthiness before concluding the agreement. However, the Bank Operational Policy introduces an explicit quantitative credit‑score threshold (≥750) that is not present in the EU Directive. This threshold is an arbitrary requirement unsupported by the cited legal clause, and the candidate AST does not capture it. Consequently, the operationalization is considered baseless with respect to the statutory text. (Back-translation: Whenever 'O_Create Offer' occurs, 'A_Validating' must have occurred BEFORE it.)",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"W_Validate application\",\"target_activity\":\"A_Accepted\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">=\",\"activation_val\":750.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"<\",\"activation_val\":750.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: Con số activation_val=750.0 bạn chọn không xuất hiện trong văn bản luật của điều khoản này (Không có mốc số học nào được quy định trong điều khoản này). Văn bản gốc không quy định ngưỡng số học này. (Back-translation: Whenever 'A_Accepted' occurs, 'W_Validate application' when CreditScore >= 750.0 must have occurred BEFORE it.)"
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected activation_val=750.0 does not appear in the legal clause of this article (No quantitative bounds specified in this clause). The statutory text does not prescribe this numeric threshold. (Back-translation: Activity 'O_Create Offer' when CreditScore < 750.0 must never occur in the credit case.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"<\",\"activation_val\":750.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected activation_val=750.0 does not appear in the legal clause of this article (No quantitative bounds specified in this clause). The statutory text does not prescribe this numeric threshold. (Back-translation: Activity 'O_Create Offer' when CreditScore < 750.0 must never occur in the credit case.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"<\",\"activation_val\":750.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected activation_val=750.0 does not appear in the legal clause of this article (No quantitative bounds specified in this clause). The statutory text does not prescribe this numeric threshold. (Back-translation: Activity 'O_Create Offer' when CreditScore < 750.0 must never occur in the credit case.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The candidate DECLARE constraint correctly models a precedence relationship (credit‑worthiness validation before offer creation), which aligns with the Directive’s requirement that the creditor assess creditworthiness before concluding the agreement. However, the Bank Operational Policy introduces an explicit quantitative credit‑score threshold (≥750) that is not present in the EU Directive. This threshold is an arbitrary requirement unsupported by the cited legal clause, and the candidate AST does not capture it. Consequently, the operationalization is considered baseless with respect to the statutory text. (Back-translation: Whenever 'O_Create Offer' occurs, 'A_Validating' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The candidate DECLARE constraint correctly models a precedence relationship (credit‑worthiness validation before offer creation), which aligns with the Directive’s requirement that the creditor assess creditworthiness before concluding the agreement. However, the Bank Operational Policy introduces an explicit quantitative credit‑score threshold (≥750) that is not present in the EU Directive. This threshold is an arbitrary requirement unsupported by the cited legal clause, and the candidate AST does not capture it. Consequently, the operationalization is considered baseless with respect to the statutory text. (Back-translation: Whenever 'O_Create Offer' occurs, 'A_Validating' must have occurred BEFORE it.)"
       }
     ]
   },
@@ -790,46 +940,40 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 16(2)",
-    "rounds_needed": 3,
-    "final_ast": {
-      "article_id": "Article 16(2)",
-      "decomposition": null,
-      "template_name": "Absence",
-      "activation_activity": "A_Create Application",
-      "target_activity": null,
-      "activation_attr": null,
-      "activation_op": null,
-      "activation_val": null,
-      "time_min": null,
-      "time_max": null,
-      "time_unit": null
-    },
+    "rounds_needed": 5,
+    "final_ast": null,
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate constraint asserts that activity 'A_Create Application' must never occur, which bears no logical connection to Article 16(2) on early‑repayment compensation limits, nor to the bank policy that requires checking the absence of the EarlyRepaymentCompensationFee column in the BPIC 2017 log. It invents an unrelated activity constraint, does not enforce any of the quantitative limits (1 % or 0.5 %) or the condition on the repayment period, and therefore does not operationalise the legal or policy requirement. Hence it is classified as BASELESS. (Back-translation: Activity 'A_Create Application' must never occur in the credit case.)",
+    "roundtrip_msg": "Exceeded max retries.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"EarlyRepaymentCompensationFee\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "FAILED_L1_L2",
-        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Activity, 'EarlyRepaymentCompensationFee'): Activity 'EarlyRepaymentCompensationFee' does not exist in Process Metamodel Γ. Did you mean: ['W_Shortened completion ']? Valid activities are: ['A_Accepted', 'A_Cancelled', 'A_Complete', 'A_Concept', 'A_Create Application', 'A_Denied', 'A_Incomplete', 'A_Pending', 'A_Submitted', 'A_Validating', 'O_Accepted', 'O_Cancelled', 'O_Create Offer', 'O_Created', 'O_Refused', 'O_Returned', 'O_Sent (mail and online)', 'O_Sent (online only)', 'W_Assess potential fraud', 'W_Call after offers', 'W_Call incomplete files', 'W_Complete application', 'W_Handle leads', 'W_Personal Loan collection', 'W_Shortened completion ', 'W_Validate application', 'A_Validated']."
+        "error": "- [Layer 2 Static Error]: Semantic Self-Loop Violation: 'activation_activity' and 'target_activity' cannot be identical ('O_Create Offer')."
       },
       {
         "round": 2,
-        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":null,\"target_activity\":null,\"activation_attr\":\"EarlyRepaymentCompensationFee\",\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L1_L2",
-        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'activation_activity': Input should be a valid string"
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Accepted\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: The candidate AST models a generic Response constraint between the creation of a loan offer (O_Create Offer) and its acceptance (O_Accepted). The EU Directive 2008/48/EC Article 16(2) and the bank's operational policy concern the quantitative ceiling on early‑repayment compensation (1 % or 0.5 % depending on timing). Neither the legal text nor the policy refer to the sequencing of offer creation and acceptance, nor impose any obligation that an acceptance must follow an offer. Consequently the selected activities and the Response semantics do not reflect the statutory requirement, missing the core quantitative condition and the relevant lifecycle stage (early repayment). The AST therefore fails to operationalize the clause and is classified as a semantic mismatch. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Accepted' must eventually occur AFTER it.)"
       },
       {
         "round": 3,
-        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":\"EarlyRepaymentCompensationFee\",\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L1_L2",
-        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field '': Value error, Layer 1 Structural Error: Data condition requires all three fields ('activation_attr', 'activation_op', 'activation_val') to be set together."
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">\",\"activation_val\":0.01,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: [Diagnostic Mismatch]: The selected activation_val=0.01 does not appear in the legal clause of this article. Allowed entities mentioned in the text: [365, 'days'], [1, 'years']. Please review the text and adjust accordingly. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 0.01 must never occur in the credit case.)"
       },
       {
         "round": 4,
-        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":365,\"time_unit\":\"d\"}",
         "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate constraint asserts that activity 'A_Create Application' must never occur, which bears no logical connection to Article 16(2) on early‑repayment compensation limits, nor to the bank policy that requires checking the absence of the EarlyRepaymentCompensationFee column in the BPIC 2017 log. It invents an unrelated activity constraint, does not enforce any of the quantitative limits (1 % or 0.5 %) or the condition on the repayment period, and therefore does not operationalise the legal or policy requirement. Hence it is classified as BASELESS. (Back-translation: Activity 'A_Create Application' must never occur in the credit case.)"
+        "error": "[Layer 3 Semantic BASELESS]: The candidate DECLARE constraint models a temporal precedence between 'O_Create Offer' and 'A_Complete' with a 365‑day window. The EU Directive 2008/48/EC Article 16(2) and the bank's operational policy concern the maximum compensation fee for early repayment of credit, not the ordering of offer creation and application completion. Consequently the constraint addresses a workflow aspect that is unrelated to the statutory requirement and introduces an arbitrary 365‑day limit that has no basis in the legal text. Hence the rule is out‑of‑scope and baseless with respect to the cited clause. (Back-translation: Whenever 'A_Complete' occurs, 'O_Create Offer' must have occurred BEFORE it within 365 calendar days.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"A_Complete\",\"target_activity\":null,\"activation_attr\":\"CompensationRate\",\"activation_op\":\">\",\"activation_val\":0.01,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Process, 'CompensationRate'): Attribute 'CompensationRate' is undefined in Typing Environment Γ. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource']."
       }
     ]
   },
@@ -838,40 +982,52 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 19(1)",
-    "rounds_needed": 2,
+    "rounds_needed": 4,
     "final_ast": {
       "article_id": "Article 19(1)",
       "decomposition": null,
-      "template_name": "Not Co-Existence",
-      "activation_activity": "A_Create Application",
-      "target_activity": "A_Validating",
-      "activation_attr": null,
-      "activation_op": null,
-      "activation_val": null,
+      "template_name": "Absence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "MonthlyCost",
+      "activation_op": ">",
+      "activation_val": 20.0,
       "time_min": null,
       "time_max": null,
       "time_unit": null
     },
     "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate AST defines a Not Co-Existence constraint between activities A_Create Application and A_Validating, which bears no logical connection to the legal requirement on APR calculation (Article 19(1)) nor to the bank policy that the APR column must not exist in the BPIC 2017 schema. It neither enforces the APR formula nor checks for the presence/absence of an APR data element. Consequently, the constraint invents an unrelated rule and is classified as BASELESS. (Back-translation: Activities 'A_Create Application' and 'A_Validating' cannot both occur in the same credit case.)",
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected activation_val=20.0 does not appear in the legal clause of this article (No quantitative bounds specified in this clause). The statutory text does not prescribe this numeric threshold. (Back-translation: Activity 'O_Create Offer' when MonthlyCost > 20.0 must never occur in the credit case.)",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Create Application\",\"activation_attr\":\"APR\",\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"APR\",\"activation_op\":\">\",\"activation_val\":20.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "FAILED_L1_L2",
-        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field '': Value error, Layer 1 Structural Error: Data condition requires all three fields ('activation_attr', 'activation_op', 'activation_val') to be set together."
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Process, 'APR'): Attribute 'APR' is undefined in Typing Environment Γ. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource']."
       },
       {
         "round": 2,
-        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Create Application\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L1_L2",
-        "error": "- [Layer 2 Static Error]: Semantic Self-Loop Violation: 'activation_activity' and 'target_activity' cannot be identical ('A_Create Application')."
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: The Directive and the bank policy regulate the calculation and ceiling of the annual percentage rate (APR) for a loan. The candidate AST encodes an Absence constraint that forbids the activity 'O_Create Offer' from occurring in any case. This activity is a normal step in the loan‑offering workflow and is unrelated to APR computation or any statutory ceiling. Consequently, the constraint introduces a requirement that has no basis in the cited legal clause and does not reflect the policy’s quantitative limit, resulting in a baseless operationalization. (Back-translation: Activity 'O_Create Offer' must never occur in the credit case.)"
       },
       {
         "round": 3,
-        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"A_Validating\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
         "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate AST defines a Not Co-Existence constraint between activities A_Create Application and A_Validating, which bears no logical connection to the legal requirement on APR calculation (Article 19(1)) nor to the bank policy that the APR column must not exist in the BPIC 2017 schema. It neither enforces the APR formula nor checks for the presence/absence of an APR data element. Consequently, the constraint invents an unrelated rule and is classified as BASELESS. (Back-translation: Activities 'A_Create Application' and 'A_Validating' cannot both occur in the same credit case.)"
+        "error": "[Layer 3 Semantic BASELESS]: The candidate DECLARE constraint models a temporal prerequisite (A_Validating must precede O_Create Offer). The cited Directive 2008/48/EC Article 19(1) and the bank's operational policy both address the calculation and ceiling of the annual percentage rate (APR), not the ordering of validation and offer‑creation activities. Consequently the constraint introduces a requirement that is unrelated to the statutory text and the policy’s quantitative APR limit, making it out‑of‑scope and unsupported by the legal clause. (Back-translation: Whenever 'O_Create Offer' occurs, 'A_Validating' must have occurred BEFORE it.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"APR\",\"activation_op\":\">\",\"activation_val\":20.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "FAILED_L1_L2",
+        "error": "- [Layer 2 Static Error]: Navigational Violation in δ(Process, 'APR'): Attribute 'APR' is undefined in Typing Environment Γ. Valid attributes: ['case:LoanGoal', 'case:concept:name', 'case:ApplicationType', 'case:RequestedAmount', 'Action', 'EventID', 'EventOrigin', 'Accepted', 'lifecycle:transition', 'time:timestamp', 'OfferedAmount', 'MonthlyCost', 'FirstWithdrawalAmount', 'CreditScore', 'Selected', 'OfferID', 'NumberOfTerms', 'concept:name', 'org:resource']."
+      },
+      {
+        "round": 5,
+        "output": "{\"article_id\":\"Article 19(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"MonthlyCost\",\"activation_op\":\">\",\"activation_val\":20.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Diagnostic Mismatch]: The selected activation_val=20.0 does not appear in the legal clause of this article (No quantitative bounds specified in this clause). The statutory text does not prescribe this numeric threshold. (Back-translation: Activity 'O_Create Offer' when MonthlyCost > 20.0 must never occur in the credit case.)"
       }
     ]
   },
@@ -880,34 +1036,28 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 2(2)",
-    "rounds_needed": 1,
+    "rounds_needed": 0,
     "final_ast": {
       "article_id": "Article 2(2)",
       "decomposition": null,
-      "template_name": "Existence",
-      "activation_activity": "A_Denied",
+      "template_name": "Absence",
+      "activation_activity": "O_Create Offer",
       "target_activity": null,
       "activation_attr": "OfferedAmount",
-      "activation_op": ">=",
+      "activation_op": "<",
       "activation_val": 200.0,
       "time_min": null,
       "time_max": null,
       "time_unit": null
     },
-    "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The candidate AST enforces that activity A_Denied must occur whenever OfferedAmount ≥ 200.0. Article 2(2)(c) only defines a scope exclusion (amount < 200 or > 75 000) and does not prescribe any mandatory activity. The bank policy requirement concerns checking OfferedAmount on early‑denied cases that never created an O_Create Offer, not triggering a denial activity based on the amount. Therefore the constraint adds an unauthorized operational condition that is not derived from the Directive and does not satisfy the stated policy. It is thus classified as BASELESS. (Back-translation: Activity 'A_Denied' when OfferedAmount >= 200.0 must occur at least once in the credit case.)",
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Not Co-Existence\",\"activation_activity\":\"A_Denied\",\"target_activity\":\"O_Create Offer\",\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L3_ROUNDTRIP",
-        "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: The candidate AST ties the not‑co‑existence of A_Denied and O_Create Offer to OfferedAmount < 200 EUR. The EU Directive exclusion (Art 2(2)(c)) indeed uses the 200 EUR floor, but the legal text does not prescribe any relationship between a denial activity and an offer‑creation activity. The bank policy merely requires that for early‑denied cases the OfferedAmount be checked and that O_Create Offer never occur, without any 200 EUR condition. By inserting the <200 threshold the constraint deviates from the policy intent and mis‑represents the legal scope, which should be expressed as a simple DECLARE bound (OfferedAmount ≥ 200) rather than a Not‑Co‑Existence rule. Hence the quantitative condition is mismatched. (Back-translation: Activities 'A_Denied' when OfferedAmount < 200.0 and 'O_Create Offer' cannot both occur in the same credit case.)"
-      },
-      {
-        "round": 2,
-        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"A_Denied\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\">=\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The candidate AST enforces that activity A_Denied must occur whenever OfferedAmount ≥ 200.0. Article 2(2)(c) only defines a scope exclusion (amount < 200 or > 75 000) and does not prescribe any mandatory activity. The bank policy requirement concerns checking OfferedAmount on early‑denied cases that never created an O_Create Offer, not triggering a denial activity based on the amount. Therefore the constraint adds an unauthorized operational condition that is not derived from the Directive and does not satisfy the stated policy. It is thus classified as BASELESS. (Back-translation: Activity 'A_Denied' when OfferedAmount >= 200.0 must occur at least once in the credit case.)"
+        "output": "{\"article_id\":\"Article 2(2)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"OfferedAmount\",\"activation_op\":\"<\",\"activation_val\":200.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
       }
     ]
   },
@@ -916,40 +1066,28 @@
     "dataset_split": "heldout_test",
     "tier": "Tier3_BaselessTrap",
     "article_id": "Article 8(1)",
-    "rounds_needed": 2,
+    "rounds_needed": 0,
     "final_ast": {
       "article_id": "Article 8(1)",
       "decomposition": null,
-      "template_name": "Existence",
+      "template_name": "Absence",
       "activation_activity": "O_Create Offer",
       "target_activity": null,
       "activation_attr": "CreditScore",
-      "activation_op": "==",
-      "activation_val": "NaN",
+      "activation_op": "<=",
+      "activation_val": 0.0,
       "time_min": null,
       "time_max": null,
       "time_unit": null
     },
-    "roundtrip_ok": false,
-    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: The legal clause mandates a pre‑contractual creditworthiness assessment using sufficient information (including database consultation). The candidate constraint merely requires that the O_Create Offer event occurs with CreditScore == NaN, i.e., with a missing/invalid score, and does not perform any assessment or use of sufficient data. This operational rule neither implements the statutory assessment nor aligns with its intent, and thus is baseless with respect to Article 8(1). (Back-translation: Activity 'O_Create Offer' when CreditScore == NaN must occur at least once in the credit case.)",
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Roundtrip check passed.",
     "trajectory": [
       {
         "round": 1,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Existence\",\"activation_activity\":null,\"target_activity\":\"O_Create Offer\",\"activation_attr\":\"CreditScore\",\"activation_op\":\"=\",\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L1_L2",
-        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'activation_activity': Input should be a valid string; field 'activation_op': Input should be '==', '!=', '<', '<=', '>' or '>='"
-      },
-      {
-        "round": 2,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"==\",\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "FAILED_L1_L2",
-        "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field '': Value error, Layer 1 Structural Error: Data condition requires all three fields ('activation_attr', 'activation_op', 'activation_val') to be set together."
-      },
-      {
-        "round": 3,
-        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"==\",\"activation_val\":\"NaN\",\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
-        "status": "DETECTED_BASELESS_TRAP",
-        "error": "[Layer 3 Semantic BASELESS]: The legal clause mandates a pre‑contractual creditworthiness assessment using sufficient information (including database consultation). The candidate constraint merely requires that the O_Create Offer event occurs with CreditScore == NaN, i.e., with a missing/invalid score, and does not perform any assessment or use of sufficient data. This operational rule neither implements the statutory assessment nor aligns with its intent, and thus is baseless with respect to Article 8(1). (Back-translation: Activity 'O_Create Offer' when CreditScore == NaN must occur at least once in the credit case.)"
+        "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Absence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":\"CreditScore\",\"activation_op\":\"<=\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null}",
+        "status": "PASSED",
+        "error": null
       }
     ]
   }

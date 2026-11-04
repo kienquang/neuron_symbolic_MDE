@@ -364,7 +364,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": 8,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Quy định gài bẫy phạm vi: Yêu cầu áp dụng thời hạn 8 ngày xử lý hồ sơ không đầy đủ dựa trên Điều 7(1).",
+        "description": "Quy chuẩn thời hạn xử lý hồ sơ theo Điều 7: Khi hồ sơ vay ở trạng thái chưa hoàn tất, quy trình bắt buộc phải chuyển sang bước xác thực hồ sơ trong thời hạn tối đa 8 ngày lịch.",
     },
     {
         "rule_id": "R24",
@@ -380,7 +380,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Quy định gài bẫy nguồn dẫn: Gán quy trình gọi điện thu thập bổ sung hồ sơ thiếu vào Điều 7.",
+        "description": "Nghĩa vụ hỗ trợ hoàn thiện hồ sơ theo Điều 7: Khi hồ sơ vay ở trạng thái chưa hoàn tất, nhân viên tín dụng bắt buộc phải tiến hành cuộc gọi hướng dẫn khách hàng bổ sung hồ sơ thiếu.",
     },
     {
         "rule_id": "R25",
@@ -396,7 +396,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "OUT_OF_DIRECTIVE_SCOPE",
-        "description": "Quy định gài bẫy ngoài phạm vi: Ép buộc áp dụng Chỉ thị tín dụng tiêu dùng cho các hợp đồng thế chấp bất động sản nhà ở.",
+        "description": "Quy chuẩn đối tượng áp dụng Chỉ thị theo Điều 2(2): Toàn bộ các yêu cầu của Chỉ thị bắt buộc phải áp dụng đối với các khoản tín dụng vay mua nhà thế chấp bằng bất động sản.",
     },
     {
         "rule_id": "R26",
@@ -412,7 +412,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "UNSUPPORTED_NUMERIC_HALLUCINATION",
-        "description": "Quy định gài bẫy ngưỡng định lượng: Bắt buộc người vay phải đạt điểm tín dụng giả định từ 750 điểm trở lên theo Điều 8(1).",
+        "description": "Quy chuẩn hạn mức điểm tín dụng theo Điều 8(1): Khách hàng bắt buộc phải đạt điểm tín dụng định lượng từ 750 điểm trở lên khi ngân hàng tạo lập đề nghị vay chính thức.",
     },
     {
         "rule_id": "R27",
@@ -428,7 +428,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Quy định gài bẫy thuộc tính ngoài lược đồ: Yêu cầu kiểm tra mức phí bồi thường trả nợ trước hạn theo Điều 16(2).",
+        "description": "Nghĩa vụ giới hạn phí trả nợ trước hạn theo Điều 16(2): Mức phí bồi thường trả nợ trước hạn của người tiêu dùng không được vượt quá mức trần 1.0% khi ngân hàng tạo lập đề nghị vay.",
     },
     {
         "rule_id": "R28",
@@ -444,7 +444,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Quy định gài bẫy công thức lãi suất: Bắt buộc kiểm tra cột tỷ lệ phần trăm chi phí hàng năm theo công thức của Điều 19(1).",
+        "description": "Quy chuẩn tỷ lệ phần trăm chi phí hàng năm theo Điều 19(1): Tỷ lệ phần trăm chi phí hàng năm của khoản vay không được vượt quá 20.0% khi ngân hàng phát hành đề nghị tín dụng.",
     },
     {
         "rule_id": "R29",
@@ -460,7 +460,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
-        "description": "Quy định gài bẫy thuộc tính khuyết: Kiểm tra số tiền đề nghị vay trên những hồ sơ đã bị từ chối sớm trước khi tạo đề nghị.",
+        "description": "Quy chuẩn mức sàn hạn mức tín dụng theo Điều 2(2)(c): Đề nghị tín dụng do ngân hàng phát hành phải có số tiền đề nghị tối thiểu từ 200 EUR trở lên.",
     },
     {
         "rule_id": "R30",
@@ -476,7 +476,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "time_max": None,
         "is_trap": True,
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Quy định gài bẫy điều kiện thế chấp: Bắt buộc khách hàng phải cung cấp tài sản bảo đảm thế chấp theo Điều 8(1).",
+        "description": "Nghĩa vụ lưu trữ dữ liệu thẩm định theo Điều 8(1): Đề nghị vay chính thức do ngân hàng tạo lập bắt buộc phải có thông tin điểm tín dụng hợp lệ lớn hơn 0 được ghi nhận đầy đủ.",
     },
 ]
 
@@ -890,7 +890,9 @@ def build_stratified_trace_benchmark(
 
         base_df = base_cases_by_rule.get(rid, base_compliant_df).copy()
         injected_df = base_df.copy()
-        injected_df["case:concept:name"] = f"Application_FaultInjected_{idx + 1:04d}"
+        orig_cid = str(base_df["case:concept:name"].iloc[0])
+        seed_num = (abs(hash(f"{orig_cid}_{idx}")) % 900000000) + 100000000
+        injected_df["case:concept:name"] = f"Application_{seed_num}"
 
         if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
             # Đảm bảo hoạt động đích B có mặt và xóa A đi trước
@@ -993,10 +995,14 @@ def build_stratified_trace_benchmark(
         early_denied_df = pd.concat([denied_template_df, pd.DataFrame([den_row])], ignore_index=True)
     else:
         early_denied_df = base_compliant_df.copy()
-    early_denied_df["case:concept:name"] = "Application_RejectedEarly_R29"
+    orig_denied = str(denied_template_df["case:concept:name"].iloc[0]) if not denied_template_df.empty else "Application_100000000"
+    seed_denied = (abs(hash(f"{orig_denied}_early_denied")) % 900000000) + 100000000
+    early_denied_df["case:concept:name"] = f"Application_{seed_denied}"
 
     null_credit_df = base_compliant_df.copy()
-    null_credit_df["case:concept:name"] = "Application_NullCreditScore_R30"
+    orig_null = str(base_compliant_df["case:concept:name"].iloc[0])
+    seed_null = (abs(hash(f"{orig_null}_null_credit")) % 900000000) + 100000000
+    null_credit_df["case:concept:name"] = f"Application_{seed_null}"
     null_credit_df["CreditScore"] = float("nan")
 
     distinct_base_cases = list(grouped_prop.values())

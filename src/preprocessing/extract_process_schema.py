@@ -9,6 +9,36 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 
+BPIC2017_ACTIVITY_DESCRIPTIONS: Dict[str, str] = {
+    "A_Create Application": "Initial creation and receipt of the credit/loan application.",
+    "A_Concept": "Preliminary assessment and evaluation of the loan application concept.",
+    "A_Accepted": "Preliminary approval / acceptance of the credit application by the bank.",
+    "A_Complete": "Completion of loan application processing after offer returned.",
+    "A_Validating": "Validation and verification stage of customer documentation and creditworthiness.",
+    "A_Pending": "Loan finalized, awaiting disbursement / payout.",
+    "A_Denied": "Credit application denied or rejected by the creditor.",
+    "A_Cancelled": "Credit application cancelled by customer withdrawal or bank.",
+    "A_Incomplete": "Application marked as incomplete pending missing documentation.",
+    "A_Submitted": "Loan application submitted by applicant or broker.",
+    "O_Create Offer": "Creation of a formal loan offer for the applicant.",
+    "O_Created": "Loan offer document officially created and registered in the bank system.",
+    "O_Sent (mail and online)": "Loan offer and pre-contractual information sent to the customer via mail and online portal.",
+    "O_Sent (online only)": "Loan offer sent to the customer via online banking portal only.",
+    "O_Returned": "Signed loan offer contract returned by the customer.",
+    "O_Accepted": "Loan offer officially accepted and confirmed.",
+    "O_Refused": "Loan offer refused or rejected.",
+    "O_Cancelled": "Loan offer cancelled.",
+    "W_Validate application": "Workflow task for bank clerk to manually validate application documents.",
+    "W_Complete application": "Workflow task to complete application details.",
+    "W_Call after offers": "Workflow task to make consultation/explanation call to applicant after offer creation.",
+    "W_Call incomplete files": "Workflow task to contact applicant regarding missing files.",
+    "W_Handle leads": "Workflow task to handle incoming credit leads.",
+    "W_Assess potential fraud": "Workflow task to investigate potential fraud indicators.",
+    "W_Personal Loan collection": "Workflow task for debt collection on personal loans.",
+    "W_Shortened completion ": "Workflow task for expedited application completion.",
+}
+
+
 def load_bpic2017_dataframe(
     xes_path: Union[str, Path],
     parquet_cache_path: Optional[Union[str, Path]] = None,
@@ -111,6 +141,7 @@ def extract_bpic2017_schema(
             "A_Validated": "A_Validating",
             "A_Validating": "A_Validated",
         },
+        "activity_descriptions": BPIC2017_ACTIVITY_DESCRIPTIONS,
         "valid_activities": all_activities,
         "activities_by_origin": activities_by_origin,
         "case_attributes": case_attributes,

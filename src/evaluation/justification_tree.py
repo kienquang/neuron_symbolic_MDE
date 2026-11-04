@@ -44,6 +44,8 @@ def evaluate_data_predicate(row: pd.Series, attr: str, op: str, expected_val: An
     actual = row.get(attr, None)
     if actual is None and not attr.startswith("case:"):
         actual = row.get(f"case:{attr}", None)
+    elif actual is None and attr.startswith("case:"):
+        actual = row.get(attr.replace("case:", "", 1), None)
     if actual is None or pd.isna(actual):
         return False, None
 

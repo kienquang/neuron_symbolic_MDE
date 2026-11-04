@@ -2,10 +2,10 @@
   "table1_rq1_oneshot": {
     "Tier 1: Control-Flow Only": {
       "Rules_Count": 12,
-      "Eq. (%)": 33.33,
+      "Eq. (%)": 66.67,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 8.33,
-      "Reversed (%)": 58.33,
+      "Reversed (%)": 25.0,
       "Vacuous (%)": 0.0
     },
     "Tier 2: Temporal & Data-Aware": {
@@ -13,42 +13,42 @@
       "Eq. (%)": 60.0,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 30.0,
-      "Vacuous (%)": 10.0
+      "Reversed (%)": 20.0,
+      "Vacuous (%)": 20.0
     },
     "Overall Pipeline": {
       "Rules_Count": 22,
-      "Eq. (%)": 45.45,
+      "Eq. (%)": 63.64,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 4.55,
-      "Reversed (%)": 45.45,
-      "Vacuous (%)": 4.55
+      "Reversed (%)": 22.73,
+      "Vacuous (%)": 9.09
     }
   },
   "table1_rq1_full": {
     "Tier 1: Control-Flow Only": {
       "Rules_Count": 12,
-      "Eq. (%)": 75.0,
+      "Eq. (%)": 66.67,
       "Strengthened (%)": 0.0,
       "Weakened (%)": 8.33,
-      "Reversed (%)": 16.67,
+      "Reversed (%)": 25.0,
       "Vacuous (%)": 0.0
     },
     "Tier 2: Temporal & Data-Aware": {
       "Rules_Count": 10,
       "Eq. (%)": 60.0,
-      "Strengthened (%)": 0.0,
+      "Strengthened (%)": 10.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 40.0,
-      "Vacuous (%)": 0.0
+      "Reversed (%)": 10.0,
+      "Vacuous (%)": 20.0
     },
     "Overall Pipeline": {
       "Rules_Count": 22,
-      "Eq. (%)": 68.18,
-      "Strengthened (%)": 0.0,
+      "Eq. (%)": 63.64,
+      "Strengthened (%)": 4.55,
       "Weakened (%)": 4.55,
-      "Reversed (%)": 27.27,
-      "Vacuous (%)": 0.0
+      "Reversed (%)": 18.18,
+      "Vacuous (%)": 9.09
     }
   },
   "table2_rq2_ablation": [
@@ -63,121 +63,73 @@
     },
     {
       "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
-      "Executable_Rate (%)": 100.0,
-      "Eq_Rate (%)": 33.67,
-      "Conformance_F1": 0.4009,
-      "Macro_Precision": 0.3355,
-      "Macro_Recall": 0.5,
-      "Total_Items": 300
-    },
-    {
-      "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
       "Executable_Rate (%)": 93.0,
-      "Eq_Rate (%)": 77.33,
-      "Conformance_F1": 0.8534,
-      "Macro_Precision": 0.8915,
-      "Macro_Recall": 0.8233,
+      "Eq_Rate (%)": 44.67,
+      "Conformance_F1": 0.4674,
+      "Macro_Precision": 0.4284,
+      "Macro_Recall": 0.5567,
       "Total_Items": 300
     },
     {
       "Configuration": "- Self-Correction Loop (Tắt Vòng lặp Tự sửa)",
-      "Executable_Rate (%)": 67.0,
-      "Eq_Rate (%)": 56.0,
-      "Conformance_F1": 0.696,
-      "Macro_Precision": 0.8728,
-      "Macro_Recall": 0.58,
+      "Executable_Rate (%)": 85.67,
+      "Eq_Rate (%)": 61.33,
+      "Conformance_F1": 0.814,
+      "Macro_Precision": 0.9002,
+      "Macro_Recall": 0.76,
+      "Total_Items": 300
+    },
+    {
+      "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
+      "Executable_Rate (%)": 82.33,
+      "Eq_Rate (%)": 66.0,
+      "Conformance_F1": 0.7809,
+      "Macro_Precision": 0.8808,
+      "Macro_Recall": 0.7167,
       "Total_Items": 300
     },
     {
       "Configuration": "Full Neuro-Symbolic Pipeline (Đề xuất)",
-      "Executable_Rate (%)": 97.0,
-      "Eq_Rate (%)": 81.33,
-      "Conformance_F1": 0.8775,
-      "Macro_Precision": 0.8932,
-      "Macro_Recall": 0.8633,
+      "Executable_Rate (%)": 92.67,
+      "Eq_Rate (%)": 65.0,
+      "Conformance_F1": 0.8514,
+      "Macro_Precision": 0.902,
+      "Macro_Recall": 0.8233,
       "Total_Items": 300
     }
   ],
   "table3_rq3_metrics": {
     "ENTAILED (Tuân thủ)": {
-      "Precision": 0.9184,
-      "Recall": 0.9,
-      "F1-Score": 0.9091,
-      "Avg_Retries": 0.49,
-      "Avg_Verification_Time (s)": 0.0154,
-      "Citation_Fidelity (%)": 99.0
+      "Precision": 0.8679,
+      "Recall": 0.92,
+      "F1-Score": 0.8932,
+      "Avg_Retries": 0.34,
+      "Avg_Verification_Time (s)": 0.0058,
+      "Citation_Fidelity (%)": 97.0
     },
     "CONTRADICTED (Vi phạm)": {
-      "Precision": 0.7941,
-      "Recall": 0.81,
-      "F1-Score": 0.802,
-      "Avg_Retries": 0.98,
-      "Avg_Verification_Time (s)": 0.0135,
-      "Citation_Fidelity (%)": 92.0
+      "Precision": 1.0,
+      "Recall": 0.67,
+      "F1-Score": 0.8024,
+      "Avg_Retries": 0.86,
+      "Avg_Verification_Time (s)": 0.0052,
+      "Citation_Fidelity (%)": 93.0
     },
     "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
-      "Precision": 0.967,
+      "Precision": 0.8381,
       "Recall": 0.88,
-      "F1-Score": 0.9215,
-      "Avg_Retries": 0.6,
-      "Avg_Verification_Time (s)": 0.0035,
-      "Citation_Fidelity (%)": 100.0
+      "F1-Score": 0.8585,
+      "Avg_Retries": 3.16,
+      "Avg_Verification_Time (s)": 0.0005,
+      "Citation_Fidelity (%)": 88.0
     },
     "Trung bình Toàn hệ thống (Overall)": {
-      "Precision": 0.8932,
-      "Recall": 0.8633,
-      "F1-Score": 0.8775,
-      "Avg_Retries": 0.69,
-      "Avg_Verification_Time (s)": 0.0111,
+      "Precision": 0.902,
+      "Recall": 0.8233,
+      "F1-Score": 0.8514,
+      "Avg_Retries": 1.45,
+      "Avg_Verification_Time (s)": 0.0042,
       "Citation_Fidelity (%)": 100.0
     }
-  },
-  "table4_baseless_traps": {
-    "total_traps": 8,
-    "detected_traps": 7,
-    "detection_rate_pct": 87.5,
-    "details": [
-      {
-        "rule_id": "R23",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 0
-      },
-      {
-        "rule_id": "R24",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 0
-      },
-      {
-        "rule_id": "R25",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 0
-      },
-      {
-        "rule_id": "R26",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 0
-      },
-      {
-        "rule_id": "R27",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 4
-      },
-      {
-        "rule_id": "R28",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 1
-      },
-      {
-        "rule_id": "R29",
-        "status": "DETECTED_BASELESS_TRAP",
-        "rounds": 0
-      },
-      {
-        "rule_id": "R30",
-        "status": "MISSED_TRAP",
-        "rounds": 0,
-        "reason": "LLM omitted collateral trap, synthesized valid generic precedence"
-      }
-    ]
   }
 }
