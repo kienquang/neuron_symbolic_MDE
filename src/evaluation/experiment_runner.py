@@ -854,7 +854,7 @@ def run_ablation_experiment(
         "Avg_Retry_Rounds": round(sum(retry_counts) / max(len(retry_counts), 1), 2),
         "Avg_Verification_Time (s)": round(sum(solving_times) / max(len(solving_times), 1), 4),
         "Citation_Fidelity (%)": round(
-            citation_verified_count / max(executable_count, 1) * 100.0, 2
+            citation_verified_count / max(len(benchmark_items), 1) * 100.0, 2
         ),
         "Per_Class_Metrics": per_class_metrics,
         "Trajectories": trajectories_by_rule,

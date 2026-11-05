@@ -6,15 +6,15 @@
     "Macro_Recall": 0.5567,
     "Macro_F1": 0.4674,
     "Avg_Retry_Rounds": 0.0,
-    "Avg_Verification_Time (s)": 0.0036,
-    "Citation_Fidelity (%)": 100.0,
+    "Avg_Verification_Time (s)": 0.0052,
+    "Citation_Fidelity (%)": 93.0,
     "Per_Class_Metrics": {
       "ENTAILED": {
         "Precision": 0.5211,
         "Recall": 0.99,
         "F1-Score": 0.6828,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0043,
+        "Avg_Verification_Time (s)": 0.0072,
         "Citation_Fidelity (%)": 99.0
       },
       "CONTRADICTED": {
@@ -22,7 +22,7 @@
         "Recall": 0.68,
         "F1-Score": 0.7196,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0032,
+        "Avg_Verification_Time (s)": 0.0036,
         "Citation_Fidelity (%)": 92.0
       },
       "BASELESS": {
@@ -30,7 +30,7 @@
         "Recall": 0.0,
         "F1-Score": 0.0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0027,
+        "Avg_Verification_Time (s)": 0.0037,
         "Citation_Fidelity (%)": 88.0
       }
     },
@@ -284,15 +284,15 @@
     "Macro_Recall": 0.7167,
     "Macro_F1": 0.7809,
     "Avg_Retry_Rounds": 1.36,
-    "Avg_Verification_Time (s)": 0.0052,
-    "Citation_Fidelity (%)": 100.0,
+    "Avg_Verification_Time (s)": 0.0063,
+    "Citation_Fidelity (%)": 82.33,
     "Per_Class_Metrics": {
       "ENTAILED": {
         "Precision": 0.8835,
         "Recall": 0.91,
         "F1-Score": 0.8966,
         "Avg_Retries": 0.34,
-        "Avg_Verification_Time (s)": 0.0071,
+        "Avg_Verification_Time (s)": 0.0074,
         "Citation_Fidelity (%)": 97.0
       },
       "CONTRADICTED": {
@@ -300,7 +300,7 @@
         "Recall": 0.61,
         "F1-Score": 0.7578,
         "Avg_Retries": 0.81,
-        "Avg_Verification_Time (s)": 0.0051,
+        "Avg_Verification_Time (s)": 0.0075,
         "Citation_Fidelity (%)": 87.0
       },
       "BASELESS": {
@@ -308,7 +308,7 @@
         "Recall": 0.63,
         "F1-Score": 0.6885,
         "Avg_Retries": 2.93,
-        "Avg_Verification_Time (s)": 0.0006,
+        "Avg_Verification_Time (s)": 0.0008,
         "Citation_Fidelity (%)": 63.0
       }
     },
@@ -742,15 +742,15 @@
     "Macro_Recall": 0.76,
     "Macro_F1": 0.814,
     "Avg_Retry_Rounds": 0.14,
-    "Avg_Verification_Time (s)": 0.0041,
-    "Citation_Fidelity (%)": 100.0,
+    "Avg_Verification_Time (s)": 0.0073,
+    "Citation_Fidelity (%)": 85.67,
     "Per_Class_Metrics": {
       "ENTAILED": {
         "Precision": 0.8835,
         "Recall": 0.91,
         "F1-Score": 0.8966,
         "Avg_Retries": 0.04,
-        "Avg_Verification_Time (s)": 0.0061,
+        "Avg_Verification_Time (s)": 0.0103,
         "Citation_Fidelity (%)": 96.0
       },
       "CONTRADICTED": {
@@ -758,7 +758,7 @@
         "Recall": 0.61,
         "F1-Score": 0.7578,
         "Avg_Retries": 0.15,
-        "Avg_Verification_Time (s)": 0.004,
+        "Avg_Verification_Time (s)": 0.0076,
         "Citation_Fidelity (%)": 85.0
       },
       "BASELESS": {
@@ -766,7 +766,7 @@
         "Recall": 0.76,
         "F1-Score": 0.7876,
         "Avg_Retries": 0.24,
-        "Avg_Verification_Time (s)": 0.0005,
+        "Avg_Verification_Time (s)": 0.001,
         "Citation_Fidelity (%)": 76.0
       }
     },
@@ -1020,15 +1020,15 @@
     "Macro_Recall": 0.8233,
     "Macro_F1": 0.8514,
     "Avg_Retry_Rounds": 1.45,
-    "Avg_Verification_Time (s)": 0.0042,
-    "Citation_Fidelity (%)": 100.0,
+    "Avg_Verification_Time (s)": 0.0069,
+    "Citation_Fidelity (%)": 92.67,
     "Per_Class_Metrics": {
       "ENTAILED": {
         "Precision": 0.8679,
         "Recall": 0.92,
         "F1-Score": 0.8932,
         "Avg_Retries": 0.34,
-        "Avg_Verification_Time (s)": 0.0058,
+        "Avg_Verification_Time (s)": 0.0092,
         "Citation_Fidelity (%)": 97.0
       },
       "CONTRADICTED": {
@@ -1036,7 +1036,7 @@
         "Recall": 0.67,
         "F1-Score": 0.8024,
         "Avg_Retries": 0.86,
-        "Avg_Verification_Time (s)": 0.0052,
+        "Avg_Verification_Time (s)": 0.0092,
         "Citation_Fidelity (%)": 93.0
       },
       "BASELESS": {
@@ -1044,7 +1044,7 @@
         "Recall": 0.88,
         "F1-Score": 0.8585,
         "Avg_Retries": 3.16,
-        "Avg_Verification_Time (s)": 0.0005,
+        "Avg_Verification_Time (s)": 0.0008,
         "Citation_Fidelity (%)": 88.0
       }
     },

@@ -42,7 +42,7 @@ Thực nghiệm được thực hiện độc lập, khách quan 100% trên mode
 ## Bảng 3 (Trả lời RQ3): Hiệu năng Chẩn đoán Tuân thủ & Tính Giải trình trên 300 Mẫu (Diagnostic & Efficiency)
 | Nhãn Phân loại Tuân thủ (Compliance Verdict) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng sửa TB (Avg Retries) | Thời gian kiểm chứng TB (giây) ↓ | Độ tin cậy Trích dẫn (Citation Fidelity %) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED (Tuân thủ)** | 0.8679 | 0.92 | **0.8932** | 0.34 | 0.0058s | **97.0%** |
-| **CONTRADICTED (Vi phạm)** | 1.0 | 0.67 | **0.8024** | 0.86 | 0.0052s | **93.0%** |
-| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.8381 | 0.88 | **0.8585** | 3.16 | 0.0005s | **88.0%** |
-| **Trung bình Toàn hệ thống (Overall)** | **0.902** | **0.8233** | **0.8514** | **1.45** | **0.0042s** | **100.0%** |
+| **ENTAILED (Tuân thủ)** | 0.8679 | 0.92 | **0.8932** | 0.34 | 0.0092s | **97.0%** |
+| **CONTRADICTED (Vi phạm)** | 1.0 | 0.67 | **0.8024** | 0.86 | 0.0092s | **93.0%** |
+| **BASELESS (Ảo giác / Thiếu bằng chứng Φ)** | 0.8381 | 0.88 | **0.8585** | 3.16 | 0.0008s | **88.0%** |
+| **Trung bình Toàn hệ thống (Overall)** | **0.902** | **0.8233** | **0.8514** | **1.45** | **0.0069s** | **92.67%** |

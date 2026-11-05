@@ -104,7 +104,7 @@
       "Recall": 0.92,
       "F1-Score": 0.8932,
       "Avg_Retries": 0.34,
-      "Avg_Verification_Time (s)": 0.0058,
+      "Avg_Verification_Time (s)": 0.0092,
       "Citation_Fidelity (%)": 97.0
     },
     "CONTRADICTED (Vi phạm)": {
@@ -112,7 +112,7 @@
       "Recall": 0.67,
       "F1-Score": 0.8024,
       "Avg_Retries": 0.86,
-      "Avg_Verification_Time (s)": 0.0052,
+      "Avg_Verification_Time (s)": 0.0092,
       "Citation_Fidelity (%)": 93.0
     },
     "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
@@ -120,7 +120,7 @@
       "Recall": 0.88,
       "F1-Score": 0.8585,
       "Avg_Retries": 3.16,
-      "Avg_Verification_Time (s)": 0.0005,
+      "Avg_Verification_Time (s)": 0.0008,
       "Citation_Fidelity (%)": 88.0
     },
     "Trung bình Toàn hệ thống (Overall)": {
@@ -128,8 +128,8 @@
       "Recall": 0.8233,
       "F1-Score": 0.8514,
       "Avg_Retries": 1.45,
-      "Avg_Verification_Time (s)": 0.0042,
-      "Citation_Fidelity (%)": 100.0
+      "Avg_Verification_Time (s)": 0.0069,
+      "Citation_Fidelity (%)": 92.67
     }
   }
 }

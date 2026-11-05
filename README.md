@@ -125,14 +125,14 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 | **ENTAILED** (Tuân thủ - 100 mẫu) | 0.8679 | 0.9200 | **0.8932** | 0.34 lượt | 8.7 ms | 97.0% |
 | **CONTRADICTED** (Vi phạm - 100 mẫu) | 1.0000 | 0.6700 | **0.8024** | 0.86 lượt | 7.3 ms | 93.0% |
 | **BASELESS** (Ảo giác / Thiếu bằng chứng Φ - 100 mẫu) | 0.8381 | 0.8800 | **0.8585** | 3.16 lượt | 0.6 ms | 88.0% |
-| **Trung bình Toàn hệ thống (Overall - 300 mẫu)** | **0.9020** | **0.8233** | **0.8514** | **1.45 lượt** | **6.0 ms** | **100.0%** |
+| **Trung bình Toàn hệ thống (Overall - 300 mẫu)** | **0.9020** | **0.8233** | **0.8514** | **1.45 lượt** | **6.0 ms** | **92.67%** |
 
 > **Nhận xét RQ3**:
 > 1. **Hiệu năng chẩn đoán toàn diện**: Toàn hệ thống đạt Macro F1 = **0.8514** (Precision = 0.9020, Recall = 0.8233) trên toàn bộ 300 mẫu kiểm thử chuẩn hóa hoàn toàn khách quan, không rò rỉ đáp án.
 > 2. **Độ chính xác hoàn hảo với Vi phạm (CONTRADICTED Precision = 1.0000)**: Không có bất kỳ cảnh báo vi phạm giả nào; mọi trường hợp phán quyết CONTRADICTED đều là vi phạm thực tế 100%.
 > 3. **Ngăn chặn bẫy ảo giác (BASELESS Recall = 0.8800, F1 = 0.8585)**: Nhờ chốt chặn phạm vi áp dụng (Directive Scope Exclusion), loại bỏ nghĩa vụ vô căn cứ và điều kiện an toàn $\Phi$, hệ thống phát hiện chính xác các bẫy ảo giác.
 > 4. **Tốc độ kiểm chứng siêu tốc (6.0 ms / trace)**: Động cơ toán học Declare4Py thực thi kiểm chứng vết sự kiện trong thời gian mili-giây, nhanh hơn hàng trăm lần so với việc để LLM tự suy luận qua prompt.
-> 5. **Khả năng giải trình minh bạch (100% Citation Fidelity)**: Mọi phán quyết đều được neo chặt với Cây biện minh tất định xpSHACL, viện dẫn chính xác mã điều khoản luật và vết sự kiện vi phạm trong log.
+> 5. **Khả năng giải trình minh bạch (92.67% Citation Fidelity trên toàn bộ 300 mẫu, đạt 100.0% trên 278 ca thực thi)**: Mọi phán quyết sinh ra khi thực thi đều được neo chặt với Cây biện minh tất định xpSHACL, viện dẫn chính xác mã điều khoản luật và vết sự kiện vi phạm trong log.
 
 ---
 
