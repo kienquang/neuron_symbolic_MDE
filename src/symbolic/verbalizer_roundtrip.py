@@ -410,11 +410,57 @@ def extract_clause_numeric_entities(clause_text: str) -> List[Tuple[float, str]]
 
 
 
+def extract_any_numbers_from_text(text: str) -> set:
+
+    """
+
+    Trích xuất tập hợp tất cả các giá trị số định lượng xuất hiện trong một đoạn văn bản
+
+    (sau khi đã loại bỏ số hiệu Điều khoản như 'Article 8(1)' hoặc 'Điều 14(1)' và chuẩn hóa dấu phân cách hàng nghìn).
+
+    """
+
+    if not text:
+
+        return set()
+
+    cleaned = re.sub(r"\b(?:Article|Điều)\s+\d+(?:\(\d+\))*(?:\([a-z]\))*", " ", text, flags=re.IGNORECASE)
+
+    nums = {val for val, _ in extract_clause_numeric_entities(cleaned)}
+
+    for m in re.finditer(r"\b(\d{1,3}(?:[\s.,]\d{3})+|\d+(?:[.,]\d+)?)\b", cleaned):
+
+        raw = m.group(1).replace(" ", "")
+
+        if re.match(r"^\d{1,3}(?:[.,]\d{3})+$", raw):
+
+            raw = raw.replace(".", "").replace(",", "")
+
+        else:
+
+            raw = raw.replace(",", ".")
+
+        try:
+
+            nums.add(float(raw))
+
+        except ValueError:
+
+            pass
+
+    return nums
+
+
+
+
+
 def verify_generic_numeric_entities(
 
     ast_dict: Dict[str, Any],
 
     retrieved_chunk: Dict[str, Any],
+
+    policy_text: Optional[str] = None,
 
 ) -> Tuple[bool, Optional[str], Optional[str]]:
 
@@ -426,7 +472,13 @@ def verify_generic_numeric_entities(
 
     được trích xuất tự động bằng Regex từ văn bản điều khoản `retrieved_chunk['text']`.
 
-    Kiểm tra cả giá trị số và tính tương thích đơn vị (chống lỗ hổng lấy số 14 nhưng gán nhầm đơn vị).
+    - Nếu con số không có trong Luật nhưng lại nằm trong chính Câu hỏi/Chính sách (`policy_text`), đó là Xung đột Số học
+
+      Nội tại giữa Chính sách và Luật (`POLICY_STATUTE_NUMERIC_CONFLICT` -> dừng Retry và kết luận `BASELESS`).
+
+    - Nếu con số không có trong Luật và cũng không có trong Chính sách (`policy_text`), đó là lỗi trích xuất của LLM
+
+      -> trả về `THRESHOLD_MISMATCH` để LLM tự sửa ở vòng tiếp theo.
 
     """
 
@@ -438,7 +490,7 @@ def verify_generic_numeric_entities(
 
     temporal_entities = [(v, u) for v, u in entities if u in TEMPORAL_UNITS]
 
-    allowed_temporal_values = {v for v, _ in temporal_entities}
+    policy_numbers = extract_any_numbers_from_text(policy_text or "")
 
 
 
@@ -460,21 +512,35 @@ def verify_generic_numeric_entities(
 
     if isinstance(t_max, (int, float)) and t_max > 0:
 
+        val_float = float(t_max)
+
+        is_from_policy = val_float in policy_numbers
+
+        conflict_prefix = (
+
+            "[Layer 3 Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
+
+            if is_from_policy
+
+            else ""
+
+        )
+
         if not entities or not temporal_entities:
 
             return (
 
                 False,
 
-                "BASELESS",
+                "BASELESS" if is_from_policy else "THRESHOLD_MISMATCH",
 
                 (
 
-                    f"[Diagnostic Mismatch]: The selected time_max={t_max} does not appear as a temporal bound "
+                    f"{conflict_prefix}[Diagnostic Mismatch]: The selected time_max={t_max} does not appear as a temporal bound "
 
                     f"in the legal text of this clause ({formatted_entities}). "
 
-                    f"This represents an ungrounded inference from the statutory text."
+                    f"{'This represents an ungrounded inference from the statutory text.' if is_from_policy else 'Please review the text and adjust accordingly.'}"
 
                 ),
 
@@ -486,18 +552,14 @@ def verify_generic_numeric_entities(
 
         canonical_ast_unit = AST_UNIT_CANONICAL.get(raw_unit, "days")
 
-        val_float = float(t_max)
 
 
-
-        # Kiểm tra sự xuất hiện chính xác cả giá trị lẫn đơn vị tương thích
-
+        # Check exact match or standard calendar month/year-to-day statutory equivalence (1 month = 30d, 1 year = 365d)
         has_exact_match = any(
-
-            val_float == v and canonical_ast_unit == u
-
+            (val_float == v and canonical_ast_unit == u)
+            or (u == "months" and canonical_ast_unit == "days" and val_float == v * 30.0)
+            or (u == "years" and canonical_ast_unit == "days" and val_float == v * 365.0)
             for v, u in temporal_entities
-
         )
 
         if not has_exact_match:
@@ -528,11 +590,11 @@ def verify_generic_numeric_entities(
 
                 False,
 
-                "THRESHOLD_MISMATCH",
+                "BASELESS" if is_from_policy else "THRESHOLD_MISMATCH",
 
                 (
 
-                    f"[Diagnostic Mismatch]: The selected time_max={t_max} ({canonical_ast_unit}) does not appear in the legal clause "
+                    f"{conflict_prefix}[Diagnostic Mismatch]: The selected time_max={t_max} ({canonical_ast_unit}) does not appear in the legal clause "
 
                     f"of this article. Allowed entities mentioned in the text: {formatted_entities}. "
 
@@ -552,17 +614,29 @@ def verify_generic_numeric_entities(
 
         val_act_float = float(act_val)
 
+        is_from_policy = val_act_float in policy_numbers
+
+        conflict_prefix = (
+
+            "[Layer 3 Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
+
+            if is_from_policy
+
+            else ""
+
+        )
+
         if not entities:
 
             return (
 
                 False,
 
-                "BASELESS",
+                "BASELESS" if is_from_policy else "THRESHOLD_MISMATCH",
 
                 (
 
-                    f"[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
+                    f"{conflict_prefix}[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
 
                     f"of this article ({formatted_entities}). The statutory text does not prescribe this numeric threshold."
 
@@ -576,11 +650,11 @@ def verify_generic_numeric_entities(
 
                 False,
 
-                "THRESHOLD_MISMATCH",
+                "BASELESS" if is_from_policy else "THRESHOLD_MISMATCH",
 
                 (
 
-                    f"[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
+                    f"{conflict_prefix}[Diagnostic Mismatch]: The selected activation_val={act_val} does not appear in the legal clause "
 
                     f"of this article. Allowed entities mentioned in the text: {formatted_entities}. "
 
@@ -706,11 +780,23 @@ def check_roundtrip_fidelity(
 
     verbalized_rule = verbalize_declare_ast(ast_dict)
 
+    policy_req = ""
+    policy_context = ""
+    if rule_meta and rule_meta.get("description"):
+        raw_desc = str(rule_meta.get("description") or "").strip()
+        policy_req = re.sub(
+            r"^(?:Quy định gài bẫy|Quy định bẫy|Gài bẫy|Bẫy|Trap)[^:\-]*[:\-]\s*",
+            "",
+            raw_desc,
+            flags=re.IGNORECASE,
+        ).strip()
+        if policy_req:
+            policy_context = f"- Bank Operational Policy Requirement: \"{policy_req}\"\n"
 
-
-    # Bước A: Chạy Generic Entity Matcher (kiểm tra tính có căn cứ của các con số bằng Regex)
-
-    ok_num, num_verdict, num_diag = verify_generic_numeric_entities(ast_dict, retrieved_chunk)
+    # Step A: Run deterministic Generic Entity Matcher (numeric + unit check against statute & policy text)
+    ok_num, num_verdict, num_diag = verify_generic_numeric_entities(
+        ast_dict, retrieved_chunk, policy_text=policy_req
+    )
 
     if not ok_num and num_verdict and num_diag:
 
@@ -721,8 +807,6 @@ def check_roundtrip_fidelity(
             f"[Layer 3 Semantic {num_verdict}]: {num_diag} (Back-translation: {verbalized_rule})",
 
         )
-
-
 
     if not process_schema:
             from pathlib import Path
@@ -741,20 +825,6 @@ def check_roundtrip_fidelity(
             lines = [f"  - `{k}`: {v}" for k, v in act_descs.items()]
             schema_context = "- Event Log Activity Data Dictionary:\n" + "\n".join(lines) + "\n"
 
-    policy_context = ""
-
-    if rule_meta and rule_meta.get("description"):
-
-        raw_desc = str(rule_meta.get("description") or "").strip()
-
-        policy_req = re.sub(r"^(?:Quy định gài bẫy|Quy định bẫy|Gài bẫy|Bẫy|Trap)[^:\-]*[:\-]\s*", "", raw_desc, flags=re.IGNORECASE).strip()
-
-        if policy_req:
-
-            policy_context = f"- Bank Operational Policy Requirement: \"{policy_req}\"\n"
-
-
-
     prompt = f"""You are a formal semantic compliance judge for financial process mining.
 Compare the original EU Directive 2008/48/EC legal clause with the back-translated business process constraint:
 - Original Legal Clause ({retrieved_chunk['article_id']}): "{retrieved_chunk['text']}"
@@ -771,15 +841,15 @@ Evaluation Principles:
 2. Semantic Alignment & Lifecycle Fidelity (Classify as EQUIVALENT):
    - The candidate AST faithfully implements the workflow steps, temporal direction, and conditions described in the directive and operational policy requirement.
    - For statutory bounds with two-sided limits (floors and ceilings), an atomic DECLARE constraint enforcing either bound independently is considered a legitimate operationalization.
-   - In Declarative Process Mining, an atomic DECLARE constraint models a single discrete operationalization of the legal clause in the event log (e.g. forbidding disbursement after denial, or cancelling offers upon customer withdrawal). If the candidate AST faithfully operationalizes the requirement defined in the Bank Operational Policy and is consistent with the cited Directive clause, it MUST be classified as EQUIVALENT. Do NOT classify as SEMANTIC_MISMATCH simply because the statutory text contains additional collateral legal clauses (such as consumer compensation, durable medium, or database consultation notices) that cannot be expressed in a single atomic DECLARE rule.
+   - In Declarative Process Mining, an atomic DECLARE constraint models a single discrete operationalization of the legal clause in the event log. If the candidate AST faithfully operationalizes the requirement defined in the Bank Operational Policy and is consistent with the cited Directive clause, it MUST be classified as EQUIVALENT. Do NOT classify as SEMANTIC_MISMATCH simply because the statutory text contains additional collateral legal clauses that cannot be expressed in a single atomic DECLARE rule.
 
 3. Semantic Discrepancy (Classify as SEMANTIC_MISMATCH or REVERSED_ORDER):
    - SEMANTIC_MISMATCH: The candidate AST selects an activity or attribute that does not correspond to the required workflow lifecycle stage, or misses key logical conditions of the policy.
    - REVERSED_ORDER: The candidate AST inverts prerequisite/consequence order (e.g. using Response instead of Precedence for a prerequisite duty).
 
 4. Unwarranted / Out-of-Scope Rule (Classify as BASELESS):
-   - The constraint or operational policy invents arbitrary quantitative thresholds, metrics, or requirements that have no statutory basis in the cited directive clause (e.g., inventing an 8-day deadline or a 750 credit score when the clause specifies no such metric).
-   - The constraint or operational policy addresses transactions, products, or workflow stages completely unsupported by or outside the statutory scope of the cited directive clause (e.g., applying to mortgages when the directive explicitly excludes mortgages, or demanding tasks that have zero textual support in the clause).
+   - The constraint or operational policy invents specific arbitrary quantitative thresholds, metrics, or deadlines that have no statutory basis in the cited directive clause.
+   - The constraint or operational policy addresses transactions, products, or workflow stages completely unsupported by or outside the statutory scope of the cited directive clause.
    - The constraint fundamentally contradicts the statutory text.
 
 Provide compiler-style diagnostic feedback explaining any discrepancies WITHOUT revealing specific target answers.

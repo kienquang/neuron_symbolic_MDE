@@ -15,100 +15,19 @@ DEONTIC_PROCESS_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
-# Bản đồ ngữ nghĩa ánh xạ từ khóa trong Luật EU 2008/48/EC sang các phân hệ trong BPI Challenge 2017
-DOMAIN_CONCEPT_ALIGNMENT: Dict[str, Dict[str, List[str]]] = {
-    "creditworthiness": {
-        "keywords": ["creditworthiness", "assess", "database", "consultation", "before the conclusion"],
-        "activities": [
-            "A_Create Application",
-            "A_Submitted",
-            "W_Assess potential fraud",
-            "W_Validate application",
-            "A_Validating",
-            "A_Accepted",
-            "O_Create Offer",
-        ],
-        "attributes": ["CreditScore", "case:RequestedAmount", "OfferedAmount"],
-    },
-    "adequate_explanations": {
-        "keywords": ["adequate explanations", "explain", "assistance", "suitability", "call after"],
-        "activities": [
-            "W_Call after offers",
-            "O_Sent (mail and online)",
-            "A_Validating",
-            "W_Validate application",
-            "A_Accepted",
-        ],
-        "attributes": ["CreditScore", "OfferedAmount", "MonthlyCost"],
-    },
-    "pre_contractual_offer": {
-        "keywords": ["pre-contractual", "offer", "bound", "draft credit agreement", "supplied", "information"],
-        "activities": [
-            "A_Accepted",
-            "O_Create Offer",
-            "O_Created",
-            "O_Sent (mail and online)",
-            "O_Sent (online only)",
-            "W_Call after offers",
-            "O_Returned",
-            "O_Accepted",
-        ],
-        "attributes": ["OfferedAmount", "MonthlyCost", "NumberOfTerms", "case:RequestedAmount"],
-    },
-    "withdrawal_right": {
-        "keywords": ["withdraw", "withdrawal", "14 calendar days", "30 calendar days", "cancelled"],
-        "activities": [
-            "O_Sent (mail and online)",
-            "O_Sent (online only)",
-            "O_Returned",
-            "O_Accepted",
-            "A_Cancelled",
-            "O_Cancelled",
-        ],
-        "attributes": ["Accepted", "Selected", "FirstWithdrawalAmount", "OfferedAmount"],
-    },
-    "rejection_notification": {
-        "keywords": ["rejected", "reject", "refused", "denied", "inform the consumer immediately"],
-        "activities": [
-            "W_Validate application",
-            "A_Validating",
-            "A_Denied",
-            "O_Refused",
-            "O_Cancelled",
-        ],
-        "attributes": ["Accepted", "CreditScore", "case:RequestedAmount"],
-    },
-    "scope_credit_amount": {
-        "keywords": ["EUR 200", "EUR 75 000", "total amount of credit", "scope"],
-        "activities": [
-            "A_Create Application",
-            "A_Submitted",
-            "A_Accepted",
-            "O_Create Offer",
-            "A_Complete",
-        ],
-        "attributes": ["case:RequestedAmount", "OfferedAmount", "case:LoanGoal", "case:ApplicationType"],
-    },
-    "early_repayment": {
-        "keywords": ["early repayment", "discharge", "compensation", "reduction in the total cost"],
-        "activities": ["O_Returned", "A_Pending", "A_Complete"],
-        "attributes": ["case:RequestedAmount", "OfferedAmount"],
-    },
-    "database_access": {
-        "keywords": ["database", "cross-border", "consult", "non-discriminatory access"],
-        "activities": ["W_Assess potential fraud", "W_Validate application", "A_Validating"],
-        "attributes": ["CreditScore"],
-    },
-    "overdraft_facility": {
-        "keywords": ["overdraft", "overrunning", "current account", "three months"],
-        "activities": ["A_Create Application", "A_Complete"],
-        "attributes": ["case:RequestedAmount", "OfferedAmount"],
-    },
-}
+# Hand-crafted domain alignment hints removed to prevent benchmark/rule leakage;
+# schema relevance is derived purely from neutral process schema symbols and descriptions.
+DOMAIN_CONCEPT_ALIGNMENT: Dict[str, Dict[str, List[str]]] = {}
 
 
 def _tokenize(text: str) -> List[str]:
     return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _split_identifier_tokens(name: str) -> List[str]:
+    cleaned = re.sub(r"^(?:[AOW]_|case:)", "", name)
+    spaced = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned)
+    return [t for t in _tokenize(spaced) if len(t) > 2]
 
 
 class DirectiveRAGRetriever:
@@ -168,57 +87,38 @@ class DirectiveRAGRetriever:
         process_schema: Dict[str, Any],
     ) -> Dict[str, Any]:
         """
-        Lọc các phần tử Schema gợi ý (Candidate Activities & Attributes) liên quan trực tiếp
-        đến nội dung điều khoản, đồng thời giữ nguyên danh mục đầy đủ của Γ để kiểm tra tĩnh.
-        Bảo đảm candidate_attrs được kiểm tra tồn tại chặt chẽ trong schema như candidate_acts.
+        Rank candidate schema activities and attributes using purely lexical overlap
+        against the neutral process schema descriptions and identifier tokens, while
+        retaining full valid schema metadata for closed-world type checking.
         """
         text_lower = f"{chunk.get('article_title', '')} {chunk.get('text', '')}".lower()
-        candidate_acts: List[str] = []
-        candidate_attrs: List[str] = []
+        clause_tokens = {t for t in _tokenize(text_lower) if len(t) > 2}
 
-        valid_schema_acts = set(process_schema.get("valid_activities", []))
-        valid_schema_attrs = set(process_schema.get("case_attributes", {}).keys()) | set(
-            process_schema.get("event_attributes", {}).keys()
+        valid_schema_acts = list(process_schema.get("valid_activities", []))
+        act_descs = process_schema.get("activity_descriptions", {})
+        act_scores = []
+        for act in valid_schema_acts:
+            desc_tokens = set(_split_identifier_tokens(act)) | {
+                t for t in _tokenize(act_descs.get(act, "")) if len(t) > 3
+            }
+            overlap = len(clause_tokens & desc_tokens)
+            if overlap > 0:
+                act_scores.append((overlap, act))
+        act_scores.sort(key=lambda x: (-x[0], x[1]))
+        candidate_acts = [act for _, act in act_scores] if act_scores else list(valid_schema_acts)
+
+        valid_schema_attrs = (
+            list(process_schema.get("case_attributes", {}).keys())
+            + list(process_schema.get("event_attributes", {}).keys())
         )
-        valid_schema_attrs |= {
-            k.replace("case:", "", 1)
-            for k in process_schema.get("case_attributes", {}).keys()
-        }
-
-        for concept_meta in DOMAIN_CONCEPT_ALIGNMENT.values():
-            if any(kw.lower() in text_lower for kw in concept_meta["keywords"]):
-                for act in concept_meta["activities"]:
-                    if act in valid_schema_acts and act not in candidate_acts:
-                        candidate_acts.append(act)
-                for attr in concept_meta["attributes"]:
-                    # Kiểm tra tồn tại trong schema thực tế trước khi thêm vào candidate_attrs
-                    if (
-                        attr in valid_schema_attrs
-                        or attr in process_schema.get("case_attributes", {})
-                        or attr in process_schema.get("event_attributes", {})
-                    ) and attr not in candidate_attrs:
-                        candidate_attrs.append(attr)
-
-        if not candidate_acts:
-            tokens = set(_tokenize(text_lower))
-            matched_acts = [
-                act for act in valid_schema_acts
-                if any(t in tokens for t in _tokenize(act) if len(t) > 3)
-            ]
-            candidate_acts = matched_acts if matched_acts else list(process_schema.get("valid_activities", []))
-
-        if not candidate_attrs:
-            tokens = set(_tokenize(text_lower))
-            matched_attrs = [
-                attr for attr in valid_schema_attrs
-                if any(t in tokens for t in _tokenize(attr) if len(t) > 3)
-            ]
-            candidate_attrs = (
-                matched_attrs
-                if matched_attrs
-                else list(process_schema.get("case_attributes", {}).keys())
-                + list(process_schema.get("event_attributes", {}).keys())
-            )
+        attr_scores = []
+        for attr in valid_schema_attrs:
+            attr_tokens = set(_split_identifier_tokens(attr))
+            overlap = len(clause_tokens & attr_tokens)
+            if overlap > 0:
+                attr_scores.append((overlap, attr))
+        attr_scores.sort(key=lambda x: (-x[0], x[1]))
+        candidate_attrs = [attr for _, attr in attr_scores] if attr_scores else valid_schema_attrs
 
         return {
             "recommended_activities": candidate_acts,

@@ -9,6 +9,10 @@ from .verbalizer_roundtrip import (
     check_roundtrip_fidelity,
     verbalize_declare_ast,
 )
+from .counterfactual_prober import (
+    generate_counterfactual_trace_mutant,
+    verify_via_counterfactual_probing,
+)
 from .declare4py_verifier import (
     Declare4Py,
     RuleCheckResult,
@@ -19,6 +23,8 @@ from .declare4py_verifier import (
 __all__ = [
     "verbalize_declare_ast",
     "check_roundtrip_fidelity",
+    "generate_counterfactual_trace_mutant",
+    "verify_via_counterfactual_probing",
     "Declare4Py",
     "RuleCheckResult",
     "extract_concrete_trace_snapshots",

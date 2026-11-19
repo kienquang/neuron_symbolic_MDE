@@ -13,8 +13,13 @@ import re
 from typing import Any, Dict, List, Optional, Protocol, Tuple
 import pandas as pd
 from src.mde.constraint_ast import DeclareConstraintAST
+from src.mde.deontic_mde_compiler import (
+    format_behavioral_profile_for_prompt,
+    validate_and_compile_deontic_or_ast,
+)
 from src.mde.typing_environment import check_layer1_and_layer2
 from src.neural.rag_retriever import DirectiveRAGRetriever
+from src.symbolic.counterfactual_prober import verify_via_counterfactual_probing
 from src.symbolic.declare4py_verifier import Declare4Py, run_layer3_declare4py_verifier
 from src.symbolic.verbalizer_roundtrip import check_roundtrip_fidelity, verbalize_declare_ast
 
@@ -191,12 +196,29 @@ def generate_with_three_layer_defense_loop(
     for attempt in range(1, max_retry + 1):
         raw_response = llm_client.chat(messages=messages, temperature=0.0)
 
-        # --- TẦNG 1 & TẦNG 2: Kiểm tra cú pháp JSON Schema & Kiểu dữ liệu tĩnh trên Γ ---
-        is_l12_valid, l12_res = check_layer1_and_layer2(
+        # --- GIAI ĐOẠN 1 (Deontic MDE Compiler + CFG/Typing Γ + Behavioral Profile Grounding) ---
+        is_l12_valid, l12_res = validate_and_compile_deontic_or_ast(
             raw_response, process_schema, retrieved_chunk
         )
         if not is_l12_valid:
             feedback_msg = str(l12_res)
+            if "BASELESS" in feedback_msg:
+                verification_trace.append(
+                    {
+                        "attempt": attempt,
+                        "failed_layer": "Stage 1 (Deontic MDE Scope/Exemption Filter)",
+                        "is_valid": False,
+                        "feedback": feedback_msg,
+                    }
+                )
+                return {
+                    "status": "BASELESS",
+                    "article_id": retrieved_chunk["article_id"],
+                    "article_title": retrieved_chunk.get("article_title", ""),
+                    "attempts_used": attempt,
+                    "diagnostic_feedback": feedback_msg,
+                    "verification_trace": verification_trace,
+                }
             verification_trace.append(
                 {
                     "attempt": attempt,
@@ -216,12 +238,16 @@ def generate_with_three_layer_defense_loop(
             )
             continue
 
-        ast_obj = l12_res
-        assert isinstance(ast_obj, DeclareConstraintAST)
+        assert isinstance(l12_res, dict)
+        ast_obj = DeclareConstraintAST(
+            **{k: v for k, v in l12_res.items() if k in DeclareConstraintAST.model_fields}
+        )
         ast_dict = ast_obj.model_dump()
 
-        # --- TẦNG 3.1: Kiểm tra Dịch ngược & Đối chiếu Ngữ nghĩa (Roundtrip Check) ---
-        rt_ok, rt_feedback = check_roundtrip_fidelity(ast_dict, retrieved_chunk, llm_client)
+        # --- GIAI ĐOẠN 2 (TẦNG 3.1): Kiểm chứng Ngữ nghĩa bằng Đột biến Vết Đối chứng (Counterfactual Trace Probing) ---
+        rt_ok, rt_feedback = verify_via_counterfactual_probing(
+            ast_dict, retrieved_chunk, llm_client, process_schema=process_schema
+        )
         if not rt_ok:
             verification_trace.append(
                 {

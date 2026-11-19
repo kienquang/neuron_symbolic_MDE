@@ -221,6 +221,42 @@ class TestPhase4AccountableAudit(unittest.TestCase):
         self.assertFalse(guard_res["is_citation_verified"])
         self.assertTrue(len(guard_res["missing_anchors"]) >= 2)
 
+    def test_step4_4_posthoc_grounding_normalizes_unicode_whitespace(self) -> None:
+        """Verify verify_posthoc_grounding accepts Unicode spaces (\\u202f, \\u00a0) while catching hallucinated articles."""
+        j_tree = {
+            "audit_status": "CONTRADICTED",
+            "reason_category": "PROCESS_COMPLIANCE_VIOLATION",
+            "normative_node": {
+                "directive": "Directive 2008/48/EC",
+                "article_id": "Article 14(1)",
+                "verbatim_quote": "14 calendar days...",
+            },
+            "symbolic_rule_node": {
+                "declare_formula": "Response[O_Sent (mail and online), O_Returned] | A.OfferedAmount > 0 | | 0,14,d",
+                "template": "Response",
+            },
+            "trace_evidence_node": {
+                "case_id": "Application_654321",
+                "proof_or_counterexample": {
+                    "actual_duration_days": 19.19,
+                    "allowed_max_days": 14,
+                    "excess_days": 5.19,
+                },
+            },
+        }
+        unicode_good = (
+            "Case Application_654321 is\u00a0CONTRADICTED under Article\u202f14(1): "
+            "actual duration 19.19\u202fdays exceeded 14\u00a0days by 5.19\u202fdays."
+        )
+        res_ok = verify_posthoc_grounding(j_tree, unicode_good)
+        self.assertTrue(res_ok["is_citation_verified"], res_ok)
+        self.assertEqual(res_ok["missing_anchors"], [])
+
+        unicode_hallucinated = unicode_good + " See also Article\u202f99."
+        res_bad = verify_posthoc_grounding(j_tree, unicode_hallucinated)
+        self.assertFalse(res_bad["is_citation_verified"])
+        self.assertTrue(any("Article 99" in m for m in res_bad["missing_anchors"]))
+
 
 if __name__ == "__main__":
     unittest.main()

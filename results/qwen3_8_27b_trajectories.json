@@ -1,0 +1,926 @@
+{
+  "R01": {
+    "rule_id": "R01",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "A_Create Application",
+      "target_activity": "W_Validate application",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly maps the operational policy requirement that a loan request must be registered (A_Create Application) before the initial risk assessment/validation (W_Validate application) is conducted. Article 8(1) of Directive 2008/48/EC mandates that the creditor assesses creditworthiness before concluding the agreement. The operational policy specializes this by requiring the system registration (creation of the application record) to precede the validation task. Case A shows the prerequisite occurring before the dependent task, which is compliant. Case B shows the dependent task occurring without the prerequisite, which is a violation. Case C (A without B) is allowed because the constraint is a precedence relation (A must happen before B if B happens), not a response relation (B must happen if A happens). The mapping is semantically consistent with the legal mandate to ensure proper intake and assessment procedures are followed in the correct order.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Create Application\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"W_Validate application\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R02": {
+    "rule_id": "R02",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Not Response",
+      "activation_activity": "A_Denied",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (FORBIDDEN_SUBSEQUENT_RESPONSE_MUTATION): The Candidate Constraint 'Whenever A_Denied occurs, A_Pending must NOT occur after it' correctly implements the operational policy prohibiting final active funding approval (A_Pending) after a formal denial (A_Denied). This aligns with the logical implication of Article 5(1) and the specific operational rule that a declined request cannot subsequently result in funding. Case A (Compliant) shows A_Denied without subsequent A_Pending, which is valid. Case B (Mutant) shows A_Denied followed by A_Pending, which violates the constraint and the policy. Case C (Directionality) confirms the asymmetry: A_Pending before A_Denied is allowed because the constraint only forbids A_Pending *after* A_Denied. The activities A_Denied and A_Pending are correctly mapped to the lifecycle milestones of denial and final approval/disbursement readiness, respectively. There are no quantitative bounds to verify, and the clause is a valid operational specialization of the legal framework regarding the conclusion of credit agreements.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Denied\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R03": {
+    "rule_id": "R03",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 10(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(1)",
+      "decomposition": null,
+      "template_name": "Chain Response",
+      "activation_activity": "O_Accepted",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (CHAIN_RESPONSE_MUTATION): The Candidate Constraint 'Immediately after O_Accepted occurs, A_Pending must occur' faithfully operationalizes the Bank Policy Requirement which mandates that the 'very next workflow step' after formal acceptance ('O_Accepted') must move the case into 'final active agreement status' ('A_Pending'). The legal basis (Article 10(1)) supports the requirement for a durable medium agreement, and the operational policy specializes this into the workflow transition. Case A complies by showing immediate adjacency. Case B violates by introducing intervening steps or omitting the transition. Case C confirms the directionality is correct (A_Pending without O_Accepted is allowed, as it might be a different path, but O_Accepted without immediate A_Pending is a violation). There are no threshold mismatches, reversed orders, or semantic mismatches regarding the specific activities chosen (O_Accepted is the correct trigger for acceptance, A_Pending is the correct state for final approval/readiness as per the dictionary). The clause is a valid operational specialization of the directive's requirement for a concluded agreement.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Accepted\", \"article_id\": \"Article 10(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R04": {
+    "rule_id": "R04",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Chain Response",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Created",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (CHAIN_RESPONSE_MUTATION): The Operational Policy Requirement mandates that 'As soon as a credit proposal is drafted, the immediately following step must be system registration of the finalized offer record.' This maps directly to the event log activities: 'O_Create Offer' (drafting) and 'O_Created' (persistence/registration). The Candidate Constraint 'Immediately after O_Create Offer occurs, O_Created must occur' correctly captures the immediacy ('immediately following step') and the specific lifecycle stages (drafting to persistence) defined in the Data Dictionary. Case A shows the compliant sequence with no intervening steps. Case B shows a violation where the step is missing or delayed. Case C confirms the directionality: the constraint is a response/precedence rule triggered by the draft, not a requirement that persistence can only happen after drafting in all contexts (though logically it must, the constraint focuses on the mandatory follow-up to the draft). The legal basis in Article 5(1) requires providing information 'in good time before the consumer is bound', which supports the operational need to finalize and register the offer record promptly after drafting to ensure the correct information is available for the consumer. There are no quantitative bounds (like specific days) in the policy to check for mismatch, and the activity mapping is precise.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Created\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R05": {
+    "rule_id": "R05",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Created",
+      "target_activity": "O_Sent (mail and online)",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly maps the operational policy requirement to the event log activities. Article 5(1) of Directive 2008/48/EC mandates that creditors provide pre-contractual information (via the Standard European Consumer Credit Information form) to the consumer before they are bound by an agreement. The operational policy specifies that whenever a formalized credit offer record is persisted ('O_Created'), the terms must be transmitted to the borrower. The constraint 'Whenever O_Created occurs, O_Sent (mail and online) must eventually occur AFTER it' accurately captures this causal and temporal dependency. Case A shows the compliant sequence (Creation followed by Dispatch). Case B shows the violation (Creation without subsequent Dispatch). Case C confirms the correct directionality: Dispatch without prior Creation is allowed (e.g., re-sending or correcting an offer, or a system artifact where creation is implicit or logged differently, but crucially, the policy does not forbid dispatching offers that weren't explicitly logged as 'O_Created' in this specific trace context, whereas failing to dispatch after creation is the core violation). The activities 'O_Created' (persistence of finalized offer) and 'O_Sent (mail and online)' (transmission) align with the legal requirement to provide information on a durable medium. There are no quantitative bounds in the constraint to mismatch, and the mapping is a valid operational specialization of the legal duty.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Created\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Sent (mail and online)\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R06": {
+    "rule_id": "R06",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Not Precedence",
+      "activation_activity": "O_Refused",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (FORBIDDEN_PRECEDING_ANTECEDENT_MUTATION): The Candidate Constraint 'Whenever A_Pending occurs, O_Refused must NOT have occurred before it' correctly implements the operational policy prohibiting the approval of a previously refused offer. Article 8(1) mandates a creditworthiness assessment before concluding the agreement. The operational policy specializes this by preventing the final activation (A_Pending) if the offer was previously refused (O_Refused), as a refusal implies a negative assessment or withdrawal that precludes immediate re-approval without new assessment. Case A (A_Pending without prior O_Refused) complies with the constraint and the policy. Case B (O_Refused before A_Pending) violates the constraint and the policy. Case C (A_Pending before O_Refused) is allowed by the constraint (since O_Refused did not precede A_Pending), which is consistent with the policy's focus on preventing approval *after* a refusal. The constraint is a faithful operationalization of the policy requirement derived from the legal mandate.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Refused\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R07": {
+    "rule_id": "R07",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Accepted",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly maps the legal requirement of Article 5(1) of Directive 2008/48/EC, which mandates that pre-contractual information (via the Standard European Consumer Credit Information form) be provided 'in good time before the consumer is bound' by the agreement. The operational policy translates this into a workflow prerequisite: the offer must be sent ('O_Sent (mail and online)') before it can be accepted ('O_Accepted'). \n\n1. **Case A (Compliant)**: The offer was sent on Day 1 and accepted on Day 3. This satisfies the 'before' condition. The constraint does not require immediate adjacency, only precedence, which aligns with the legal 'in good time before' standard (which implies a temporal gap for review, not necessarily immediate sequence). Thus, Case A complies.\n2. **Case B (Violating)**: The offer was accepted on Day 1 without being sent beforehand (sent later on Day 5). This violates the prerequisite that the consumer must receive the information before being bound/accepting. Thus, Case B violates the constraint.\n3. **Case C (Directionality)**: The constraint is a Precedence rule (If B happens, A must have happened before). It does not mandate that B must happen if A happens. Therefore, sending an offer (A) without it ever being accepted (B) is a valid, compliant state (e.g., consumer ignores offer). The constraint correctly allows this asymmetry.\n4. **Legal Grounding**: The mapping of 'providing information' to 'O_Sent' and 'consumer bound/accepting' to 'O_Accepted' is a valid operational specialization of the abstract legal duty. There are no numeric thresholds in the legal clause that are misstated or omitted in the constraint (the constraint is purely temporal/sequential). Therefore, the constraint is equivalent to the policy requirement.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Accepted\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R08": {
+    "rule_id": "R08",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Accepted",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly maps the operational policy requirement that a tailored financing offer must be structured after formal intake acceptance. Article 5(1) of Directive 2008/48/EC mandates that the creditor provide the consumer with information needed to compare offers (via the Standard European Consumer Credit Information form) in good time before the consumer is bound. The operational policy specifies that this offer formulation occurs upon 'A_Accepted' (formal intake acceptance). The constraint 'Whenever A_Accepted occurs, O_Create Offer must eventually occur AFTER it' accurately captures this dependency. Case A shows the compliant sequence (Acceptance followed by Offer Creation). Case B shows the violation (Acceptance without subsequent Offer Creation). Case C confirms the correct directionality: creating an offer without prior acceptance is permissible (e.g., pre-qualification or marketing), but acceptance without a subsequent offer is a violation of the duty to provide pre-contractual information. There are no quantitative bounds in the constraint to mismatch, and the activities align with the lifecycle stages defined in the data dictionary.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Accepted\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Create Offer\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R09": {
+    "rule_id": "R09",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 10(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "O_Sent (mail and online)",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly maps the operational policy requirement derived from Article 10(1) of Directive 2008/48/EC. The legal clause mandates that credit agreements be drawn up on a durable medium and that all contracting parties receive a copy. The operational policy specifies that whenever a financing proposal (offer) is drafted, the consumer must receive a copy on paper or another durable medium. The constraint 'Whenever O_Create Offer occurs, O_Sent (mail and online) must eventually occur AFTER it' accurately captures this obligation. 'O_Create Offer' represents the drafting/persistence of the offer, and 'O_Sent (mail and online)' represents the transmission to the consumer via durable media (postal mail and online portal). Case A shows the compliant sequence (creation followed by sending). Case B shows the violation (creation without subsequent sending). Case C confirms the correct directionality: sending without prior creation is allowed (e.g., re-sending or correcting an existing offer), but creation without sending is a violation, which aligns with the mandatory nature of the disclosure obligation. There are no quantitative bounds in the legal clause or policy that are misstated, and the activity endpoints align with the lifecycle stages of drafting and dispatch.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 10(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": \"O_Sent (mail and online)\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R10": {
+    "rule_id": "R10",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 14(4)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(4)",
+      "decomposition": null,
+      "template_name": "Not Co-Existence",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (CO_OCCURRENCE_MUTATION): The Candidate Constraint 'Not Co-Existence(A_Cancelled, A_Pending)' correctly operationalizes the legal requirement that a cancelled credit agreement (withdrawal) cannot coexist with an active/finalized credit release (pending disbursement). Article 14(4) of Directive 2008/48/EC states that if the consumer withdraws, they are no longer bound by the ancillary service contract, implying the main credit agreement is also terminated and cannot proceed to disbursement. The operational policy explicitly states that a cancelled dossier cannot remain active alongside final credit release. Case A (only A_Cancelled) complies with this mutual exclusivity. Case B (both A_Cancelled and A_Pending) violates it, as a cancelled application cannot simultaneously be in a state of final approval/readiness for disbursement. Case C confirms the symmetric nature of the constraint: even if A_Pending occurred before A_Cancelled, the co-occurrence within the same case is forbidden because the final state of the case cannot be both cancelled and pending disbursement. The constraint is a valid operational specialization of the legal withdrawal right.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(4)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MUTUAL_EXCLUSION\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R11": {
+    "rule_id": "R11",
+    "dataset_split": "dev",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 15(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 15(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly implements the operational policy requirement derived from Article 15(1) of Directive 2008/48/EC. The legal clause mandates that if a consumer withdraws from a linked contract, they are no longer bound by the credit agreement. The operational policy translates this into a workflow rule: if the application is cancelled ('A_Cancelled'), the associated offer must also be cancelled ('O_Cancelled'). \n\n1. **Legal Grounding**: The mapping is valid. 'A_Cancelled' represents the consumer's exercise of the right to cancel/withdraw the application, and 'O_Cancelled' represents the bank's revocation of the financing proposal. This aligns with the 'linked offer revocation' policy.\n2. **Temporal Logic**: The constraint specifies that 'O_Cancelled' must occur *after* 'A_Cancelled'. This is a standard response/precedence relationship. Case A shows 'O_Cancelled' occurring on Day 2 after 'A_Cancelled' on Day 1, which complies. Case B shows 'A_Cancelled' occurring without a subsequent 'O_Cancelled', which violates the requirement that the offer must be revoked. \n3. **Directionality (Case C)**: The constraint allows 'O_Cancelled' without 'A_Cancelled' (e.g., cancelling an offer for other reasons like expiration or internal error) but flags 'A_Cancelled' without 'O_Cancelled' as a violation. This asymmetry is correct because the legal trigger is the consumer's withdrawal (A), which *forces* the bank's action (O). The bank can cancel offers independently, but cannot leave an offer active if the application is cancelled due to withdrawal. Thus, the directionality is correct.\n4. **Activity Granularity**: 'A_Cancelled' is the correct state milestone for application closure via cancellation. 'O_Cancelled' is the correct state milestone for offer closure. No semantic mismatch exists between the legal concept and the schema events.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 15(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R12": {
+    "rule_id": "R12",
+    "dataset_split": "heldout_test",
+    "tier": "Tier1_ControlFlow",
+    "article_id": "Article 5(6)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(6)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Validating",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly maps the operational policy requirement that 'Clarifying product terms... must precede formal back-office validation'. The activity 'O_Sent (mail and online)' represents the dispatch of the offer (containing the terms to be clarified), and 'A_Validating' represents the formal back-office validation. The constraint enforces that the offer dispatch (prerequisite for clarification) occurs before validation. Case A shows the correct order (Offer Sent Day 1 -> Validating Day 3), complying with the constraint. Case B shows the violation (Validating Day 1 without prior Offer Sent), which contradicts the policy. Case C (Offer Sent without subsequent Validating) is allowed by the Precedence constraint, which is consistent with the policy as the policy mandates the order when validation occurs, but does not mandate that validation must always follow an offer (e.g., if the application is denied or cancelled before validation). The legal clause Article 5(6) mandates adequate explanations to enable assessment, which the operational policy specializes into a workflow sequence ensuring terms are communicated (via offer) before the file is validated. There are no numeric thresholds to mismatch, and the directionality is correct.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(6)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Validating\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R13": {
+    "rule_id": "R13",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 8(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Create Application",
+      "target_activity": "A_Accepted",
+      "activation_attr": "case:ApplicationType",
+      "activation_op": "==",
+      "activation_val": "Limit raise",
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly maps the operational policy requirement to the event log. The policy mandates that for 'Limit raise' applications, 'updated creditworthiness intake acceptance' must occur. In the Event Log Data Dictionary, 'A_Accepted' is defined as 'formal intake acceptance into active credit processing', which aligns with the policy's requirement for intake acceptance. The constraint uses a 'Response' relationship (A_Create Application -> A_Accepted), which is appropriate because the creation of the application is the trigger, and the acceptance is the required subsequent state. Case A shows the compliant sequence (Create then Accept). Case B shows the violation (Create without subsequent Accept). Case C confirms the asymmetry: 'A_Accepted' without 'A_Create Application' is allowed (as acceptance implies a prior creation in a valid workflow, but logically the constraint only restricts the forward path from Create), while 'A_Create Application' (Limit raise) without 'A_Accepted' is flagged, which matches the policy's mandate that acceptance must follow creation. There are no quantitative bounds in the legal clause or policy that are misstated. The mapping is faithful.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 8(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Create Application\", \"consequent_activity\": \"A_Accepted\", \"attribute_guard\": \"case:ApplicationType\", \"guard_operator\": \"==\", \"guard_threshold\": \"Limit raise\", \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R14": {
+    "rule_id": "R14",
+    "dataset_split": "heldout_test",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 10(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(2)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly maps the operational policy requirement to the event log schema. Article 10(2)(d) of Directive 2008/48/EC mandates that the credit agreement specify the total amount of credit. The operational policy requires that a loan offer with a valid non-zero credit sum (> 0) be drafted before final funding sign-off. The constraint enforces that 'O_Create Offer' (the drafting event where 'OfferedAmount' is logged, per the Data Dictionary) with 'OfferedAmount > 0.0' must precede 'A_Pending' (final approval/readiness for disbursement). Case A shows the offer created on Day 1 and pending status on Day 3, satisfying the precedence. Case B shows pending status on Day 1 without a prior valid offer, violating the constraint. Case C confirms the directionality is correct: the offer can exist without the application reaching pending status (e.g., if the application is later denied or cancelled), which is a valid state in the workflow. The constraint faithfully preserves the logical prerequisite without inventing temporal bounds or misattributing legal duties.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 10(2)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R15": {
+    "rule_id": "R15",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 4,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 2,
+        "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"PROHIBITION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"O_Cancelled\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (FORBIDDEN_SUBSEQUENT_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred first, and subsequently conflicting event 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) WAS executed afterwards in the exact same loan application.' is a violation, but under Article 14(1), Judge determined: No explanation provided. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 14 calendar days.)"
+      },
+      {
+        "round": 3,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 4,
+        "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"PERMISSION_RIGHT\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"O_Cancelled\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+      },
+      {
+        "round": 5,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "FAILED_L3_ROUNDTRIP",
+        "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+      }
+    ]
+  },
+  "R16": {
+    "rule_id": "R16",
+    "dataset_split": "heldout_test",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 13(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 13(1)",
+      "decomposition": null,
+      "template_name": "Not Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 13(1) of Directive 2008/48/EC) governs the termination of an existing 'open-end credit agreement' (a contract that has already been concluded and is active). It grants the consumer the right to terminate the agreement free of charge at any time, subject to a notice period not exceeding one month. The Bank Operational Policy, however, applies this 'one month' window to the period after a 'loan offer' is communicated, restricting the consumer's ability to cancel the *offer* (pre-contractual stage) within 30 days. This is a fundamental legal mismatch: Article 13(1) does not regulate the validity period of a credit offer or the right to withdraw from an offer (which is typically governed by Article 9 regarding the right of withdrawal after conclusion, or general offer validity rules). Applying a post-contractual termination notice period to a pre-contractual offer cancellation window is a misattribution of the legal mechanism and subject matter. Therefore, the operational policy is not a valid specialization of the cited clause but a fabrication of a constraint not supported by the text. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 30 calendar days.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 13(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 13(1) of Directive 2008/48/EC) governs the termination of an existing 'open-end credit agreement' (a contract that has already been concluded and is active). It grants the consumer the right to terminate the agreement free of charge at any time, subject to a notice period not exceeding one month. The Bank Operational Policy, however, applies this 'one month' window to the period after a 'loan offer' is communicated, restricting the consumer's ability to cancel the *offer* (pre-contractual stage) within 30 days. This is a fundamental legal mismatch: Article 13(1) does not regulate the validity period of a credit offer or the right to withdraw from an offer (which is typically governed by Article 9 regarding the right of withdrawal after conclusion, or general offer validity rules). Applying a post-contractual termination notice period to a pre-contractual offer cancellation window is a misattribution of the legal mechanism and subject matter. Therefore, the operational policy is not a valid specialization of the cited clause but a fabrication of a constraint not supported by the text. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 30 calendar days.)"
+      }
+    ]
+  },
+  "R17": {
+    "rule_id": "R17",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "CreditScore",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly operationalizes Article 8(1) of Directive 2008/48/EC. The legal clause mandates that the creditor assesses creditworthiness before concluding the agreement. The operational policy specifies this as a prerequisite: a loan proposal (mapped to 'O_Create Offer') with a positive credit rating (CreditScore > 0.0) must exist before final funding sign-off (mapped to 'A_Pending'). \n\n1. Quantitative/Temporal Grounding: The constraint enforces a strict temporal precedence ('O_Create Offer' with CreditScore > 0.0 BEFORE 'A_Pending'). Case A respects this order (Day 1 vs Day 3), so it complies. Case B violates this order by executing 'A_Pending' on Day 1 without the prerequisite offer/assessment, so it violates. \n2. Directionality: Case C checks if 'O_Create Offer' can occur without 'A_Pending'. The constraint is a prerequisite (Precedence), meaning if the final approval ('A_Pending') happens, the assessment must have happened. It does not forbid the assessment from happening without a final approval (e.g., if the application is later denied or cancelled). Thus, Case C is allowed, which is consistent with the semantics of a prerequisite gate. \n3. Activity Alignment: 'O_Create Offer' is the correct lifecycle stage for generating the loan proposal/offer where the CreditScore attribute is logged (per Attribute Domain Ownership). 'A_Pending' is the correct milestone for final approval/readiness for disbursement. The mapping is faithful to the data dictionary and the legal requirement to assess before concluding.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": \"CreditScore\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R18": {
+    "rule_id": "R18",
+    "dataset_split": "heldout_test",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "NumberOfTerms",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (ATTRIBUTE_BOUNDARY_MUTATION): The operational policy requires that a loan offer be created with a positive count of repayment installments (> 0) prior to delivery. The Candidate Constraint enforces the existence of the 'O_Create Offer' activity with the attribute 'NumberOfTerms > 0.0'. \n\n1. **Legal Grounding**: Article 5(1) of Directive 2008/48/EC mandates that creditors provide information needed to compare offers, including the 'amount, number and frequency of payments' (point (h)). A credit agreement with zero terms is not a valid credit offer under this directive as it lacks the essential repayment structure required for informed decision-making. Therefore, requiring 'NumberOfTerms > 0' is a valid operational specialization of the legal requirement to provide complete credit terms.\n\n2. **Activity Alignment**: The Data Dictionary specifies that 'NumberOfTerms' is ONLY logged on 'O_Create Offer'. The policy refers to 'creating an offer', which maps directly to 'O_Create Offer' (drafting with financial terms) rather than 'O_Created' (persistence) or 'O_Sent' (dispatch). The constraint correctly targets the activity where the attribute is defined.\n\n3. **Case Evaluation**: \n   - Case A (τ+): 'O_Create Offer' occurs with 'NumberOfTerms > 0.0'. This satisfies the constraint and the policy.\n   - Case B (τ-): 'O_Create Offer' occurs but 'NumberOfTerms > 0.0' is FALSE (i.e., <= 0). This violates the constraint and the policy requirement for a positive count.\n   - Case C: The constraint is a unary existence check. The policy states 'Prior to delivering... the lender must create an offer...'. It does not explicitly mandate a specific subsequent event in the constraint logic provided, but rather the state of the offer at creation. The constraint captures the necessary condition for the offer's validity at the creation stage. There is no reversed order or semantic mismatch regarding the activity choice or the attribute bound.\n\nThus, the constraint is equivalent to the policy requirement.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"NumberOfTerms\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R19": {
+    "rule_id": "R19",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Precedence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": "A_Pending",
+      "activation_attr": "Selected",
+      "activation_op": "==",
+      "activation_val": "True",
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (PREREQUISITE_INVERSION_AND_OMISSION): The Candidate Constraint correctly maps the operational policy requirement that a loan proposal marked as selected (Selected == True) must exist before final funding sign-off (A_Pending). Article 5(1) of Directive 2008/48/EC mandates that creditors provide information on the Standard European Consumer Credit Information form (SECCI) in good time before the consumer is bound, allowing for an informed decision. The operational policy specializes this by requiring the creation of a specific offer record (O_Create Offer) with the 'Selected' attribute set to True, which represents the consumer's choice or the bank's formalization of the offer based on consumer preferences, prior to the application reaching the 'Pending' state (final approval/readiness for disbursement). Case A shows the prerequisite event occurring before the dependent event, complying with the precedence constraint. Case B shows the dependent event occurring without the prerequisite, violating the constraint. Case C confirms the directionality: the existence of the selected offer does not mandate that the application must proceed to 'Pending' (it could be denied or cancelled), so the absence of 'A_Pending' after 'O_Create Offer' is compliant. The constraint is a faithful operationalization of the legal requirement for pre-contractual information and offer selection before binding the consumer.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"Selected\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"==\", \"guard_threshold\": \"True\", \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R20": {
+    "rule_id": "R20",
+    "dataset_split": "dev",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 8(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 8(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "W_Complete application",
+      "target_activity": null,
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (ATTRIBUTE_BOUNDARY_MUTATION): The Candidate Constraint correctly maps the operational policy requirement to the specific activity 'W_Complete application' with the attribute condition 'RequestedAmount > 0.0'. Article 8(1) of Directive 2008/48/EC mandates that creditors assess creditworthiness based on sufficient information. The operational policy specifies that this intake data must include a positive requested loan size. The constraint enforces the existence of the intake completion activity ('W_Complete application') only when the requested amount is positive, which aligns with the policy's requirement to capture sufficient consumer preference data specifying a positive loan size. Case A complies as the activity occurs with the valid attribute. Case B violates as the attribute condition is false (RequestedAmount <= 0), failing the policy requirement for a positive loan size. Case C is a boundary check for the unary existence constraint; since the policy does not mandate a specific subsequent milestone in this specific constraint context (it focuses on the intake data capture), the existence of the compliant activity is sufficient for this specific rule. There is no threshold mismatch, reversed order, or semantic mismatch regarding the activity lifecycle or legal basis.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"note\": \"The policy requirement specifies a data constraint on the intake process ('capture sufficient consumer preference data specifying a positive requested loan size (> 0)'). This is a UNARY_CONDITION on the intake activity. The most appropriate anchor activity for 'opening a credit application' and capturing initial data is 'A_Create Application' or 'W_Complete application'. Given the phrasing 'When opening a credit application', 'A_Create Application' is the state milestone for creation. However, the data capture happens during the completion of the application fields. Let's look at the allowed activities. 'W_Complete application' is the human work-item for filling in intake fields. The constraint is on the data captured. The attribute is 'case:RequestedAmount'. The condition is > 0. This is a UNARY_CONDITION on the activity where the data is set/validated. 'W_Complete application' is the activity where intake fields are filled. Let's use 'W_Complete application' as the anchor. The modality is OBLIGATION (must capture). The temporal relation is UNARY_CONDITION. The attribute_guard is 'case:RequestedAmount'. The guard_operator is '>'. The guard_threshold is 0.0. The consequent_activity is null.\", \"article_id\": \"Article 8(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"W_Complete application\", \"consequent_activity\": null, \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R21": {
+    "rule_id": "R21",
+    "dataset_split": "heldout_test",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 5(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(1)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "MonthlyCost",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (ATTRIBUTE_BOUNDARY_MUTATION): The operational policy requires that pre-contractual installment disclosure (Article 5(1)(h)) specifies a positive periodic monthly installment amount (> 0). The Candidate Constraint enforces that the activity 'O_Create Offer' occurs with 'MonthlyCost > 0.0'. According to the Data Dictionary, 'MonthlyCost' is exclusively logged on 'O_Create Offer', which corresponds to the drafting of the loan offer record with financial terms. This aligns with the legal requirement to provide information needed for comparison before the consumer is bound. Case A satisfies the condition (MonthlyCost > 0.0), thus complying. Case B violates the condition (MonthlyCost <= 0.0), thus violating the policy. Case C confirms that the existence of the offer with the correct attribute is sufficient for this specific disclosure requirement, as the constraint is unary regarding the attribute check on the offer creation event. There is no threshold mismatch, reversed order, or semantic mismatch regarding the activity or attribute ownership.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 5(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"MonthlyCost\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R22": {
+    "rule_id": "R22",
+    "dataset_split": "heldout_test",
+    "tier": "Tier2_TemporalData",
+    "article_id": "Article 14(3)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(3)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Cancelled",
+      "target_activity": "O_Cancelled",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 30d)): The Candidate Constraint correctly maps the operational policy requirement to the event log activities. The policy mandates that upon borrower cancellation ('A_Cancelled'), the credit proposal/offer must be cancelled ('O_Cancelled') within 30 calendar days. This aligns with Article 14(3)(b) of Directive 2008/48/EC, which requires the consumer to repay capital and interest within 30 days of notification, implying the creditor must process the closure (cancel the offer/credit line) within that timeframe to settle the account. The quantitative bound of 30 days is preserved. Case A shows compliance (Day 1 to Day 30). Case B shows violation (Day 36 or never). Case C confirms the directionality: 'A_Cancelled' triggers the obligation for 'O_Cancelled', so 'A' without 'B' is a violation, while 'B' without 'A' (e.g., cancelling an offer before the application is formally cancelled or for other reasons) is not prohibited by this specific constraint. The mapping is semantically sound and legally grounded.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(3)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R23": {
+    "rule_id": "R23",
+    "dataset_split": "dev",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 14(1)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 14(1)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Accepted",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 14,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 14(1) of Directive 2008/48/EC) establishes a consumer's right of withdrawal (cooling-off period) of 14 calendar days. It grants the consumer the right to cancel the agreement within this period. The Bank Operational Policy Requirement, however, mandates that the creditor must transition the loan into 'active disbursement approval' (mapped to 'A_Pending') within 14 calendar days of acceptance ('O_Accepted'). This is a fundamental legal conflict: the 14-day period in the Directive is a window for the consumer to withdraw, not a deadline for the bank to approve/disburse. In fact, disbursing funds before the withdrawal period expires could violate the consumer's right to withdraw. The operational policy misattributes the temporal bound of a consumer right to a creditor obligation, creating a 'Duty-Holder or Numeric Misattribution' and a 'Non-Sequitur Action Fabrication'. Therefore, the clause is unsupported by the cited legal text. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Accepted\", \"consequent_activity\": \"A_Pending\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 14(1) of Directive 2008/48/EC) establishes a consumer's right of withdrawal (cooling-off period) of 14 calendar days. It grants the consumer the right to cancel the agreement within this period. The Bank Operational Policy Requirement, however, mandates that the creditor must transition the loan into 'active disbursement approval' (mapped to 'A_Pending') within 14 calendar days of acceptance ('O_Accepted'). This is a fundamental legal conflict: the 14-day period in the Directive is a window for the consumer to withdraw, not a deadline for the bank to approve/disburse. In fact, disbursing funds before the withdrawal period expires could violate the consumer's right to withdraw. The operational policy misattributes the temporal bound of a consumer right to a creditor obligation, creating a 'Duty-Holder or Numeric Misattribution' and a 'Non-Sequitur Action Fabrication'. Therefore, the clause is unsupported by the cited legal text. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+      }
+    ]
+  },
+  "R24": {
+    "rule_id": "R24",
+    "dataset_split": "heldout_test",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 16(4)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 16(4)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "OfferedAmount",
+      "activation_op": ">",
+      "activation_val": 10000.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement is legally baseless and misattributes the statutory threshold. Article 16(4)(a) of Directive 2008/48/EC allows Member States to set a threshold (not exceeding EUR 10,000) for when a creditor can claim compensation for early repayment. This is a post-contractual mechanism regarding the calculation of compensation for early termination. The operational policy, however, uses this EUR 10,000 figure as a pre-contractual eligibility filter, requiring that the offered principal must exceed EUR 10,000 to grant funding. This is a non-sequitur: the Directive does not prohibit loans under EUR 10,000, nor does it mandate that only loans above this amount are valid or fundable. The policy fabricates a substantive business action (eligibility filter) from an optional Member State discretion regarding compensation thresholds, constituting a duty-holder and numeric misattribution. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 10000.0 must occur at least once in the credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(4)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 10000.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement is legally baseless and misattributes the statutory threshold. Article 16(4)(a) of Directive 2008/48/EC allows Member States to set a threshold (not exceeding EUR 10,000) for when a creditor can claim compensation for early repayment. This is a post-contractual mechanism regarding the calculation of compensation for early termination. The operational policy, however, uses this EUR 10,000 figure as a pre-contractual eligibility filter, requiring that the offered principal must exceed EUR 10,000 to grant funding. This is a non-sequitur: the Directive does not prohibit loans under EUR 10,000, nor does it mandate that only loans above this amount are valid or fundable. The policy fabricates a substantive business action (eligibility filter) from an optional Member State discretion regarding compensation thresholds, constituting a duty-holder and numeric misattribution. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 10000.0 must occur at least once in the credit case.)"
+      }
+    ]
+  },
+  "R25": {
+    "rule_id": "R25",
+    "dataset_split": "dev",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 18(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 18(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Validating",
+      "target_activity": "W_Call incomplete files",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 30,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 30d)): The Candidate Constraint correctly maps the operational policy requirement to the event log activities. The trigger 'A_Validating' aligns with the policy's 'formal back-office validation' state. The mandatory follow-up 'W_Call incomplete files' aligns with the policy's 'staff outreach regarding incomplete borrower files'. The temporal bound of 30 calendar days is faithfully preserved from the policy's 'within 30 calendar days (one month)'. Case A demonstrates compliance by occurring within the window, and Case B demonstrates violation by exceeding it or omitting the event. Case C confirms the 'Response' semantics (A requires B), which matches the policy's 'must take place' mandate. There is no legal conflict; the operational policy is a valid internal specialization of the creditor's duty to inform/manage the process, and the constraint accurately reflects the stated operational rule.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 18(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Validating\", \"consequent_activity\": \"W_Call incomplete files\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 30, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R26": {
+    "rule_id": "R26",
+    "dataset_split": "heldout_test",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 9(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 9(2)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "A_Denied",
+      "target_activity": "O_Create Offer",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement mandates that a creditor must generate a revised credit offer ('O_Create Offer') whenever an application is rejected ('A_Denied'). This directly contradicts the legal logic of Article 9(2) of Directive 2008/48/EC. The Directive states that if an application is rejected based on a database consultation, the creditor must inform the consumer of the result and the database particulars. It does not mandate, nor does it imply, that a new credit offer must be generated after a rejection. In fact, generating a new offer after a rejection is a distinct business action not prescribed by the cited clause. The policy fabricates a substantive business action (creating a new offer) that is not supported by the legal text, which only requires notification of the rejection and the source of the creditworthiness assessment. Therefore, the clause is unsupported and the constraint is baseless. (Back-translation: Whenever 'A_Denied' occurs, 'O_Create Offer' must eventually occur AFTER it.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 9(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Denied\", \"consequent_activity\": \"O_Create Offer\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement mandates that a creditor must generate a revised credit offer ('O_Create Offer') whenever an application is rejected ('A_Denied'). This directly contradicts the legal logic of Article 9(2) of Directive 2008/48/EC. The Directive states that if an application is rejected based on a database consultation, the creditor must inform the consumer of the result and the database particulars. It does not mandate, nor does it imply, that a new credit offer must be generated after a rejection. In fact, generating a new offer after a rejection is a distinct business action not prescribed by the cited clause. The policy fabricates a substantive business action (creating a new offer) that is not supported by the legal text, which only requires notification of the rejection and the source of the creditworthiness assessment. Therefore, the clause is unsupported and the constraint is baseless. (Back-translation: Whenever 'A_Denied' occurs, 'O_Create Offer' must eventually occur AFTER it.)"
+      }
+    ]
+  },
+  "R27": {
+    "rule_id": "R27",
+    "dataset_split": "dev",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 16(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 16(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "UNMAPPED_MISSING_IN_LOG",
+      "activation_op": "<=",
+      "activation_val": 1.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": false,
+    "roundtrip_msg": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(2)\", \"attribute_guard\": \"UNMAPPED_MISSING_IN_LOG\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"<=\", \"guard_threshold\": 1.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+        "status": "DETECTED_BASELESS_TRAP",
+        "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
+      }
+    ]
+  },
+  "R28": {
+    "rule_id": "R28",
+    "dataset_split": "heldout_test",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 2(3)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 2(3)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "A_Pending",
+      "activation_attr": null,
+      "activation_op": null,
+      "activation_val": null,
+      "time_min": 0,
+      "time_max": 90,
+      "time_unit": "d"
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 90d)): The Candidate Constraint correctly maps the operational policy requirement that final active credit approval ('A_Pending') must occur within 90 calendar days of the pre-contractual offer dispatch ('O_Sent (mail and online)'). The legal clause Article 2(3) establishes the applicability of the directive to credit agreements repayable on demand or within three months, which aligns with the 90-day (three-month) temporal bound specified in the operational policy. Case A demonstrates compliance by having 'A_Pending' occur on Day 90, which is within the 90-day window. Case B demonstrates a violation by having 'A_Pending' occur on Day 96 (exceeding the window) or never occurring. Case C confirms the 'Response' semantics: the constraint requires 'A_Pending' to follow 'O_Sent', and allows 'A_Pending' without 'O_Sent' (which is permissible as the constraint is conditional on the trigger). The activities 'O_Sent (mail and online)' and 'A_Pending' are correctly identified from the data dictionary as the dispatch event and the final approval milestone, respectively. There is no threshold mismatch, reversed order, or semantic mismatch.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 2(3)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": 90, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R29": {
+    "rule_id": "R29",
+    "dataset_split": "dev",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 5(6)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 5(6)",
+      "decomposition": null,
+      "template_name": "Response",
+      "activation_activity": "O_Sent (mail and online)",
+      "target_activity": "W_Call after offers",
+      "activation_attr": "case:RequestedAmount",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (MISSING_RESPONSE_MUTATION): The Candidate Constraint correctly maps the operational policy requirement to the event log activities. The trigger event 'O_Sent (mail and online)' corresponds to the dispatch of the credit proposal, and the condition 'RequestedAmount > 0.0' aligns with the policy's 'positive borrowing request'. The required response 'W_Call after offers' is the specific staff follow-up activity mandated by the operational policy to provide 'adequate explanations' under Article 5(6). Case A shows the required follow-up occurring after the trigger, thus complying. Case B shows the trigger occurring without the required follow-up, thus violating the constraint. Case C confirms the correct directionality: the follow-up is only mandatory if the offer was sent (Response relationship), and sending an offer without follow-up is a violation, while follow-up without a prior offer is allowed (as it might relate to other contexts or be a standalone task, but the constraint only enforces the forward implication). There are no threshold mismatches, reversed orders, or semantic mismatches regarding the lifecycle stages or legal basis.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 5(6)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"W_Call after offers\", \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  },
+  "R30": {
+    "rule_id": "R30",
+    "dataset_split": "heldout_test",
+    "tier": "Tier3_BaselessTrap",
+    "article_id": "Article 10(2)",
+    "rounds_needed": 0,
+    "final_ast": {
+      "article_id": "Article 10(2)",
+      "decomposition": null,
+      "template_name": "Existence",
+      "activation_activity": "O_Create Offer",
+      "target_activity": null,
+      "activation_attr": "NumberOfTerms",
+      "activation_op": ">",
+      "activation_val": 0.0,
+      "time_min": null,
+      "time_max": null,
+      "time_unit": null
+    },
+    "roundtrip_ok": true,
+    "roundtrip_msg": "Counterfactual Probe Passed (ATTRIBUTE_BOUNDARY_MUTATION): The operational policy requires that any credit proposal specifies a positive repayment schedule duration (> 0 installments). Article 10(2)(c) of Directive 2008/48/EC mandates that the credit agreement specifies the duration of the credit agreement. A duration of zero or negative installments would render the agreement invalid or non-compliant with the requirement to specify a valid duration. The Candidate Constraint enforces 'O_Create Offer' with 'NumberOfTerms > 0.0'. The Data Dictionary confirms that 'NumberOfTerms' is only logged on 'O_Create Offer', which is the correct lifecycle stage for drafting the financial terms of the offer. Case A satisfies the condition (compliant). Case B violates the condition (non-compliant). Case C checks if the existence of the offer with valid terms is sufficient; since the policy is a unary constraint on the offer's attributes (duration > 0) and does not mandate a specific subsequent workflow event for compliance with this specific disclosure rule, the trace is considered compliant. The constraint faithfully maps the legal requirement for a valid duration to the operational attribute.",
+    "trajectory": [
+      {
+        "round": 1,
+        "output": "{\"article_id\": \"Article 10(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"NumberOfTerms\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+        "status": "PASSED",
+        "error": null
+      }
+    ]
+  }
+}

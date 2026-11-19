@@ -1,36 +1,33 @@
 {
   "dataset": "BPI Challenge 2017 (Consumer Loan Process)",
-  "activity_aliases": {
-    "A_Validated": "A_Validating",
-    "A_Validating": "A_Validated"
-  },
+  "activity_aliases": {},
   "activity_descriptions": {
-    "A_Create Application": "Initial creation and receipt of the credit/loan application.",
-    "A_Concept": "Preliminary assessment and evaluation of the loan application concept.",
-    "A_Accepted": "Preliminary approval / acceptance of the credit application by the bank.",
-    "A_Complete": "Completion of loan application processing after offer returned.",
-    "A_Validating": "Validation and verification stage of customer documentation and creditworthiness.",
-    "A_Pending": "Loan finalized, awaiting disbursement / payout.",
-    "A_Denied": "Credit application denied or rejected by the creditor.",
-    "A_Cancelled": "Credit application cancelled by customer withdrawal or bank.",
-    "A_Incomplete": "Application marked as incomplete pending missing documentation.",
-    "A_Submitted": "Loan application submitted by applicant or broker.",
-    "O_Create Offer": "Creation of a formal loan offer for the applicant.",
-    "O_Created": "Loan offer document officially created and registered in the bank system.",
-    "O_Sent (mail and online)": "Loan offer and pre-contractual information sent to the customer via mail and online portal.",
-    "O_Sent (online only)": "Loan offer sent to the customer via online banking portal only.",
-    "O_Returned": "Signed loan offer contract returned by the customer.",
-    "O_Accepted": "Loan offer officially accepted and confirmed.",
-    "O_Refused": "Loan offer refused or rejected.",
-    "O_Cancelled": "Loan offer cancelled.",
-    "W_Validate application": "Workflow task for bank clerk to manually validate application documents.",
-    "W_Complete application": "Workflow task to complete application details.",
-    "W_Call after offers": "Workflow task to make consultation/explanation call to applicant after offer creation.",
-    "W_Call incomplete files": "Workflow task to contact applicant regarding missing files.",
-    "W_Handle leads": "Workflow task to handle incoming credit leads.",
-    "W_Assess potential fraud": "Workflow task to investigate potential fraud indicators.",
-    "W_Personal Loan collection": "Workflow task for debt collection on personal loans.",
-    "W_Shortened completion ": "Workflow task for expedited application completion."
+    "A_Create Application": "Application state milestone logged when a new loan application record is first created.",
+    "A_Concept": "Application state milestone recorded during initial concept and draft intake.",
+    "A_Accepted": "Application state milestone indicating formal intake acceptance into active credit processing.",
+    "A_Complete": "Application state milestone recorded when application workflow submission reaches completion.",
+    "A_Validating": "Application state milestone indicating formal back-office application validation status.",
+    "A_Pending": "Application state milestone indicating final approval and readiness for disbursement.",
+    "A_Denied": "Application state milestone recorded when the loan application is declined.",
+    "A_Cancelled": "Application state milestone recorded when the loan application is closed as cancelled.",
+    "A_Incomplete": "Application state milestone indicating missing items or incomplete verification files.",
+    "A_Submitted": "Application state milestone logged when an online application is submitted into workflow.",
+    "O_Create Offer": "Offer lifecycle event logged when a loan offer record is drafted with financial terms.",
+    "O_Created": "Offer lifecycle event logged when the finalized offer document is persisted in the system.",
+    "O_Sent (mail and online)": "Offer dispatch event logged when an offer is sent via postal mail and online portal.",
+    "O_Sent (online only)": "Offer dispatch event logged when an offer is sent via the online portal only.",
+    "O_Returned": "Offer lifecycle event logged when a signed/returned offer response arrives from the customer.",
+    "O_Accepted": "Offer lifecycle event logged when the loan offer is marked accepted.",
+    "O_Refused": "Offer lifecycle event logged when the loan offer is marked declined.",
+    "O_Cancelled": "Offer lifecycle event logged when the loan offer is marked cancelled.",
+    "W_Validate application": "Human officer work-item task (repeatable staff activity) for reviewing files/documents during post-offer verification.",
+    "W_Complete application": "Human officer work-item task (repeatable staff activity) for filling in application intake fields.",
+    "W_Call after offers": "Human officer work-item task for outbound follow-up calls after offers are sent.",
+    "W_Call incomplete files": "Human officer work-item task for calling applicants regarding missing documents.",
+    "W_Handle leads": "Human officer work-item task for processing incoming leads.",
+    "W_Assess potential fraud": "Human officer work-item task for reviewing flagged anomaly or fraud alerts.",
+    "W_Personal Loan collection": "Human officer work-item task for personal loan collection follow-up.",
+    "W_Shortened completion ": "Human officer work-item task for shortened completion processing."
   },
   "valid_activities": [
     "A_Accepted",
@@ -134,6 +131,34 @@
         "Created",
         "statechange",
         "Deleted"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "EventID": {
@@ -142,6 +167,34 @@
         "Application_652823628",
         "ApplState_1582051990",
         "Workitem_1298499574"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "EventOrigin": {
@@ -150,6 +203,34 @@
         "Application",
         "Workflow",
         "Offer"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "Accepted": {
@@ -157,6 +238,9 @@
       "samples": [
         "True",
         "False"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "lifecycle:transition": {
@@ -165,6 +249,34 @@
         "complete",
         "schedule",
         "withdraw"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "time:timestamp": {
@@ -173,6 +285,34 @@
         "2016-01-01 09:51:15.304000+00:00",
         "2016-01-01 09:51:15.352000+00:00",
         "2016-01-01 09:51:15.774000+00:00"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "OfferedAmount": {
@@ -181,6 +321,9 @@
         "20000.0",
         "6000.0",
         "15000.0"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "MonthlyCost": {
@@ -189,6 +332,9 @@
         "498.29",
         "200.0",
         "158.98"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "FirstWithdrawalAmount": {
@@ -197,6 +343,9 @@
         "20000.0",
         "500.0",
         "15000.0"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "CreditScore": {
@@ -205,6 +354,9 @@
         "979.0",
         "0.0",
         "1059.0"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "Selected": {
@@ -212,6 +364,9 @@
       "samples": [
         "True",
         "False"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "OfferID": {
@@ -220,6 +375,15 @@
         "Offer_148581083",
         "Offer_1669071500",
         "Offer_1209840642"
+      ],
+      "applicable_activities": [
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)"
       ]
     },
     "NumberOfTerms": {
@@ -228,6 +392,9 @@
         "44.0",
         "33.0",
         "120.0"
+      ],
+      "applicable_activities": [
+        "O_Create Offer"
       ]
     },
     "concept:name": {
@@ -236,6 +403,34 @@
         "A_Create Application",
         "A_Submitted",
         "W_Handle leads"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     },
     "org:resource": {
@@ -244,6 +439,34 @@
         "User_1",
         "User_17",
         "User_52"
+      ],
+      "applicable_activities": [
+        "A_Accepted",
+        "A_Cancelled",
+        "A_Complete",
+        "A_Concept",
+        "A_Create Application",
+        "A_Denied",
+        "A_Incomplete",
+        "A_Pending",
+        "A_Submitted",
+        "A_Validating",
+        "O_Accepted",
+        "O_Cancelled",
+        "O_Create Offer",
+        "O_Created",
+        "O_Refused",
+        "O_Returned",
+        "O_Sent (mail and online)",
+        "O_Sent (online only)",
+        "W_Assess potential fraud",
+        "W_Call after offers",
+        "W_Call incomplete files",
+        "W_Complete application",
+        "W_Handle leads",
+        "W_Personal Loan collection",
+        "W_Shortened completion ",
+        "W_Validate application"
       ]
     }
   },
@@ -415,5 +638,1056 @@
       "to": "W_Complete application",
       "count": 7697
     }
-  ]
+  ],
+  "behavioral_profile": {
+    "total_cases": 31509,
+    "strict_causal_pairs": [
+      {
+        "from": "O_Create Offer",
+        "to": "O_Created",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 42995,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Validate application",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 38816,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Created",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 35604,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Complete application",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 31362,
+        "median_days": 0.91
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 31362,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Accepted",
+        "to": "O_Create Offer",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 29966,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Call incomplete files",
+        "to": "A_Incomplete",
+        "co_occurrence_cases": 15003,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 23055,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Validate application",
+        "to": "W_Call incomplete files",
+        "co_occurrence_cases": 15003,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.686,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 23052,
+        "median_days": 1.03
+      },
+      {
+        "from": "W_Complete application",
+        "to": "A_Accepted",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 22249,
+        "median_days": 0.86
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6973,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 21880,
+        "median_days": 7.78
+      },
+      {
+        "from": "A_Validating",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 20673,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Create Application",
+        "to": "A_Submitted",
+        "co_occurrence_cases": 20423,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6482,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 20423,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Submitted",
+        "to": "W_Handle leads",
+        "co_occurrence_cases": 20423,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 20423,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Handle leads",
+        "to": "W_Complete application",
+        "co_occurrence_cases": 20423,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 0.6482,
+        "direct_dfg_count": 20423,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Accepted",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 17228,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Validate application",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7877,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 11738,
+        "median_days": 4.96
+      },
+      {
+        "from": "A_Cancelled",
+        "to": "O_Cancelled",
+        "co_occurrence_cases": 10431,
+        "order_ratio": 0.9448,
+        "prob_to_given_from": 0.9448,
+        "prob_from_given_to": 0.6284,
+        "direct_dfg_count": 10270,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Concept",
+        "to": "A_Accepted",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 9231,
+        "median_days": 0.86
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "A_Cancelled",
+        "co_occurrence_cases": 10321,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.3291,
+        "prob_from_given_to": 0.9895,
+        "direct_dfg_count": 8539,
+        "median_days": 30.7
+      },
+      {
+        "from": "A_Create Application",
+        "to": "W_Complete application",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 7697,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Call incomplete files",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 12647,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.843,
+        "prob_from_given_to": 0.7341,
+        "direct_dfg_count": 4783,
+        "median_days": 3.97
+      },
+      {
+        "from": "A_Denied",
+        "to": "O_Refused",
+        "co_occurrence_cases": 3720,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9915,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 3720,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 0.9956,
+        "prob_to_given_from": 0.9956,
+        "prob_from_given_to": 0.9857,
+        "direct_dfg_count": 3451,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Create Application",
+        "to": "A_Concept",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 3389,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Validate application",
+        "to": "A_Denied",
+        "co_occurrence_cases": 3583,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.1638,
+        "prob_from_given_to": 0.955,
+        "direct_dfg_count": 3254,
+        "median_days": 3.97
+      },
+      {
+        "from": "O_Created",
+        "to": "O_Sent (online only)",
+        "co_occurrence_cases": 1800,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.0571,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 1895,
+        "median_days": 9.96
+      },
+      {
+        "from": "W_Complete application",
+        "to": "O_Create Offer",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 1575,
+        "median_days": 0.91
+      },
+      {
+        "from": "O_Returned",
+        "to": "W_Call incomplete files",
+        "co_occurrence_cases": 14928,
+        "order_ratio": 0.913,
+        "prob_to_given_from": 0.6261,
+        "prob_from_given_to": 0.9084,
+        "direct_dfg_count": 1536,
+        "median_days": 1.11
+      },
+      {
+        "from": "W_Validate application",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 923,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Call incomplete files",
+        "to": "A_Cancelled",
+        "co_occurrence_cases": 955,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.0637,
+        "prob_from_given_to": 0.0916,
+        "direct_dfg_count": 871,
+        "median_days": 10.89
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "W_Call incomplete files",
+        "co_occurrence_cases": 14830,
+        "order_ratio": 0.9986,
+        "prob_to_given_from": 0.4769,
+        "prob_from_given_to": 0.9871,
+        "direct_dfg_count": 748,
+        "median_days": 10.0
+      },
+      {
+        "from": "O_Created",
+        "to": "O_Cancelled",
+        "co_occurrence_cases": 15682,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.4977,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 704,
+        "median_days": 30.55
+      },
+      {
+        "from": "W_Complete application",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 596,
+        "median_days": 0.92
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "A_Cancelled",
+        "co_occurrence_cases": 10222,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.3292,
+        "prob_from_given_to": 0.98,
+        "direct_dfg_count": 546,
+        "median_days": 30.7
+      },
+      {
+        "from": "O_Returned",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7914,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 483,
+        "median_days": 4.91
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "O_Cancelled",
+        "co_occurrence_cases": 15446,
+        "order_ratio": 0.9652,
+        "prob_to_given_from": 0.4801,
+        "prob_from_given_to": 0.9506,
+        "direct_dfg_count": 363,
+        "median_days": 30.59
+      },
+      {
+        "from": "A_Complete",
+        "to": "O_Cancelled",
+        "co_occurrence_cases": 15559,
+        "order_ratio": 0.9674,
+        "prob_to_given_from": 0.4799,
+        "prob_from_given_to": 0.9598,
+        "direct_dfg_count": 287,
+        "median_days": 30.59
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "O_Cancelled",
+        "co_occurrence_cases": 15559,
+        "order_ratio": 0.9674,
+        "prob_to_given_from": 0.4799,
+        "prob_from_given_to": 0.9598,
+        "direct_dfg_count": 208,
+        "median_days": 30.59
+      },
+      {
+        "from": "A_Validating",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7877,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 198,
+        "median_days": 4.96
+      },
+      {
+        "from": "W_Call incomplete files",
+        "to": "A_Denied",
+        "co_occurrence_cases": 1356,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.0904,
+        "prob_from_given_to": 0.3614,
+        "direct_dfg_count": 186,
+        "median_days": 4.94
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21553,
+        "order_ratio": 0.9994,
+        "prob_to_given_from": 0.6937,
+        "prob_from_given_to": 0.9895,
+        "direct_dfg_count": 100,
+        "median_days": 7.85
+      },
+      {
+        "from": "O_Created",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 46,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21641,
+        "order_ratio": 0.999,
+        "prob_to_given_from": 0.6963,
+        "prob_from_given_to": 0.9885,
+        "direct_dfg_count": 45,
+        "median_days": 7.8
+      },
+      {
+        "from": "O_Created",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 9,
+        "median_days": 7.79
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.5493,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 2,
+        "median_days": 13.75
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 1,
+        "median_days": 7.83
+      },
+      {
+        "from": "A_Accepted",
+        "to": "O_Created",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Create Application",
+        "to": "A_Accepted",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.88
+      },
+      {
+        "from": "W_Complete application",
+        "to": "O_Created",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Concept",
+        "to": "O_Create Offer",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Concept",
+        "to": "O_Created",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Create Application",
+        "to": "O_Create Offer",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.92
+      },
+      {
+        "from": "A_Create Application",
+        "to": "O_Created",
+        "co_occurrence_cases": 31509,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 1.0,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.92
+      },
+      {
+        "from": "A_Accepted",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Accepted",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Created",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Complete application",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Concept",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Concept",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.91
+      },
+      {
+        "from": "A_Create Application",
+        "to": "W_Call after offers",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.93
+      },
+      {
+        "from": "A_Create Application",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31362,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9953,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.93
+      },
+      {
+        "from": "A_Accepted",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "A_Concept",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.92
+      },
+      {
+        "from": "A_Create Application",
+        "to": "O_Sent (mail and online)",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.9854,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.94
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "A_Complete",
+        "co_occurrence_cases": 31050,
+        "order_ratio": 0.9956,
+        "prob_to_given_from": 0.9956,
+        "prob_from_given_to": 0.9857,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6973,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.78
+      },
+      {
+        "from": "A_Complete",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6973,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.78
+      },
+      {
+        "from": "A_Complete",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6973,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.78
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.79
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.79
+      },
+      {
+        "from": "O_Created",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.79
+      },
+      {
+        "from": "A_Accepted",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.84
+      },
+      {
+        "from": "A_Accepted",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.84
+      },
+      {
+        "from": "W_Complete application",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 8.98
+      },
+      {
+        "from": "W_Complete application",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 8.98
+      },
+      {
+        "from": "A_Concept",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 8.98
+      },
+      {
+        "from": "A_Concept",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 8.98
+      },
+      {
+        "from": "A_Create Application",
+        "to": "W_Validate application",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 9.0
+      },
+      {
+        "from": "A_Create Application",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21870,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 9.0
+      },
+      {
+        "from": "A_Complete",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6941,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.83
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.84
+      },
+      {
+        "from": "O_Created",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.84
+      },
+      {
+        "from": "A_Accepted",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 7.89
+      },
+      {
+        "from": "W_Complete application",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 9.03
+      },
+      {
+        "from": "A_Concept",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 9.03
+      },
+      {
+        "from": "A_Create Application",
+        "to": "O_Returned",
+        "co_occurrence_cases": 21768,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6909,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 9.06
+      },
+      {
+        "from": "O_Sent (mail and online)",
+        "to": "A_Validating",
+        "co_occurrence_cases": 21641,
+        "order_ratio": 0.999,
+        "prob_to_given_from": 0.6963,
+        "prob_from_given_to": 0.9885,
+        "direct_dfg_count": 0,
+        "median_days": 7.8
+      },
+      {
+        "from": "A_Create Application",
+        "to": "W_Handle leads",
+        "co_occurrence_cases": 20423,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.6482,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 0.0
+      },
+      {
+        "from": "O_Returned",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7914,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 4.91
+      },
+      {
+        "from": "W_Validate application",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7877,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 4.96
+      },
+      {
+        "from": "A_Validating",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.7877,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 4.96
+      },
+      {
+        "from": "W_Call after offers",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.5493,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 13.75
+      },
+      {
+        "from": "A_Complete",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.5493,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 13.75
+      },
+      {
+        "from": "A_Complete",
+        "to": "A_Pending",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.5493,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 13.75
+      },
+      {
+        "from": "O_Create Offer",
+        "to": "O_Accepted",
+        "co_occurrence_cases": 17228,
+        "order_ratio": 1.0,
+        "prob_to_given_from": 0.5468,
+        "prob_from_given_to": 1.0,
+        "direct_dfg_count": 0,
+        "median_days": 13.76
+      }
+    ],
+    "mutually_exclusive_pairs": [
+      {
+        "act_a": "O_Accepted",
+        "act_b": "A_Cancelled",
+        "cases_a": 17228,
+        "cases_b": 10431,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "A_Pending",
+        "act_b": "A_Cancelled",
+        "cases_a": 17228,
+        "cases_b": 10431,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "O_Accepted",
+        "act_b": "A_Denied",
+        "cases_a": 17228,
+        "cases_b": 3752,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "A_Pending",
+        "act_b": "A_Denied",
+        "cases_a": 17228,
+        "cases_b": 3752,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "O_Accepted",
+        "act_b": "O_Refused",
+        "cases_a": 17228,
+        "cases_b": 3720,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "A_Pending",
+        "act_b": "O_Refused",
+        "cases_a": 17228,
+        "cases_b": 3720,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "A_Denied",
+        "act_b": "A_Cancelled",
+        "cases_a": 3752,
+        "cases_b": 10431,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      },
+      {
+        "act_a": "O_Refused",
+        "act_b": "A_Cancelled",
+        "cases_a": 3720,
+        "cases_b": 10431,
+        "co_occurrence_cases": 0,
+        "co_occurrence_rate": 0.0
+      }
+    ]
+  }
 }

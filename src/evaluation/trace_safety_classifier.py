@@ -99,8 +99,29 @@ def evaluate_trace_safety_and_status(
         if getattr(ast_obj, "target_activity", None)
         else pd.DataFrame()
     )
+    tpl_name = getattr(ast_obj, "template_name", "")
+    is_precedence_tpl = tpl_name in {"Precedence", "Alternate Precedence", "Chain Precedence"}
+    is_forward_activation_tpl = tpl_name in {
+        "Response",
+        "Alternate Response",
+        "Chain Response",
+        "Responded Existence",
+        "Not Response",
+        "Not Responded Existence",
+    }
 
-    if getattr(ast_obj, "activation_attr", None) and act_events.empty:
+    # Phán quyết phạm vi áp dụng theo đúng ngữ nghĩa Declare4Py:
+    # - Với Precedence(A, B): sự kiện kích hoạt là target B (`tgt_events`). Nếu B xảy ra mà thiếu A -> CONTRADICTED;
+    #   ngược lại nếu B không xảy ra và có `target_attr`, không thể kích hoạt kiểm tra thuộc tính đích -> BASELESS.
+    # - Với các ràng buộc kích hoạt xuôi (Response / Responded Existence / Not Response): nếu activation A không xảy ra
+    #   khi có `activation_attr`, điều kiện kích hoạt dữ liệu không bao giờ phát sinh trong trace -> BASELESS (INAPPLICABLE_TRACE_NO_ACTIVATION).
+    # - Với ràng buộc đơn ngôi (Existence / Absence / Init / Exactly1): sự vắng mặt của A là bằng chứng vi phạm (Violated -> CONTRADICTED)
+    #   hoặc thỏa mãn (Satisfied -> ENTAILED) trực tiếp theo Declare4Py, KHÔNG được đánh dấu là inapplicable.
+    if (
+        getattr(ast_obj, "activation_attr", None)
+        and act_events.empty
+        and is_forward_activation_tpl
+    ):
         return {
             "case_id": case_id,
             "label": "BASELESS",
@@ -110,7 +131,11 @@ def evaluate_trace_safety_and_status(
                 f"để kiểm tra thuộc tính '{ast_obj.activation_attr}'."
             ),
         }
-    if getattr(ast_obj, "target_attr", None) and tgt_events.empty:
+    if (
+        getattr(ast_obj, "target_attr", None)
+        and tgt_events.empty
+        and is_precedence_tpl
+    ):
         return {
             "case_id": case_id,
             "label": "BASELESS",
@@ -123,7 +148,7 @@ def evaluate_trace_safety_and_status(
 
     # 4. Kiểm tra Tập điều kiện an toàn Φ đối với thuộc tính dữ liệu và thời gian (Null-dereference guard - VD: R30)
     attrs_to_check = []
-    if getattr(ast_obj, "activation_attr", None):
+    if getattr(ast_obj, "activation_attr", None) and not (is_precedence_tpl and tgt_events.empty):
         attrs_to_check.append((ast_obj.activation_attr, act_events))
     if getattr(ast_obj, "target_attr", None):
         attrs_to_check.append((ast_obj.target_attr, tgt_events))
@@ -143,7 +168,8 @@ def evaluate_trace_safety_and_status(
                 )
                 break
 
-    events_to_check_ts = act_events if not act_events.empty else tgt_events
+    ts_frames = [df for df in (act_events, tgt_events) if not df.empty]
+    events_to_check_ts = pd.concat(ts_frames, ignore_index=True) if ts_frames else pd.DataFrame()
     for _, row in events_to_check_ts.iterrows():
         if pd.isna(row.get("time:timestamp")):
             safety_conditions_phi.append(

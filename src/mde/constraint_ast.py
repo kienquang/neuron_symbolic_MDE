@@ -79,22 +79,22 @@ class SemanticDecomposition(BaseModel):
         "Unary (Existence / Absence / Init / Exactly1 of Activity A)",
         "Negative / Mutual Exclusion (Not Response / Not Precedence / Not Co-Existence)",
     ] = Field(
-        description="Xác định chiều thời gian chuẩn trước khi chọn template Declare4Py"
+        description="Identify canonical temporal direction before selecting a Declare4Py template"
     )
     activation_semantics: str = Field(
-        description="Mô tả sự kiện kích hoạt (Activation) trong câu luật"
+        description="Description of the activation/prerequisite event in the legal clause"
     )
     target_semantics: Optional[str] = Field(
         default=None,
-        description="Mô tả sự kiện mục tiêu/điều kiện tiên quyết (Target) trong câu luật",
+        description="Description of the target/consequent event in the legal clause",
     )
     data_guard_semantics: Optional[str] = Field(
         default=None,
-        description="Ràng buộc dữ liệu định lượng (nếu có, VD: số tiền EUR, điểm tín dụng)",
+        description="Quantitative data guard condition (if any, e.g., EUR amount, credit score)",
     )
     temporal_bound_semantics: Optional[str] = Field(
         default=None,
-        description="Ràng buộc thời hạn (nếu có, VD: within 14 calendar days, 30 days)",
+        description="Temporal deadline bound (if any, e.g., within 14 calendar days, 30 days)",
     )
 
 
@@ -105,11 +105,11 @@ class DeclareConstraintAST(BaseModel):
     """
 
     article_id: str = Field(
-        description="Điều khoản tham chiếu từ Directive 2008/48/EC (VD: Article 8(1), Article 14(1))"
+        description="Referenced clause from Directive 2008/48/EC (e.g., Article 8(1), Article 14(1))"
     )
     decomposition: Optional[SemanticDecomposition] = Field(
         default=None,
-        description="Phân rã ngữ nghĩa theo Req2LTL trước khi ánh xạ sang mẫu Declare",
+        description="Req2LTL semantic decomposition prior to Declare template mapping",
     )
 
     # Khóa cứng vào đúng tên các Template trong class Templatable của repo Declare4Py
@@ -217,8 +217,8 @@ class DeclareConstraintAST(BaseModel):
 
 
 def extract_json_payload(raw_text: str) -> str:
-    """Bóc tách chuỗi JSON từ phản hồi của LLM (loại bỏ markdown code block nếu có)."""
-    text = raw_text.strip()
+    """Bóc tách chuỗi JSON từ phản hồi của LLM (loại bỏ thẻ <think> và markdown code block nếu có)."""
+    text = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL).strip()
     fence_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
     if fence_match:
         return fence_match.group(1).strip()

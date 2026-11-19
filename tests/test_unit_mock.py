@@ -161,7 +161,7 @@ class TestUnitMock(unittest.TestCase):
         ast_obj = DeclareConstraintAST(
             article_id="Article 14(1)",
             template_name="Response",
-            activation_activity="O_Sent (mail and online)",
+            activation_activity="O_Create Offer",
             target_activity="O_Returned",
             activation_attr="A.OfferedAmount",
             activation_op=">=",

@@ -1,0 +1,1248 @@
+{
+  "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)": {
+    "Executable_Rate (%)": 100.0,
+    "Raw_Log_Executable_Rate (%)": 100.0,
+    "Crash_Rate (%)": 0.0,
+    "Strict_Accuracy (%)": 61.0,
+    "Normative_Accuracy (%)": 91.5,
+    "Normative_Macro_F1": 0.9147,
+    "Rule_Schema_Trap_Accuracy (%)": 0.0,
+    "Trace_Safety_Trap_Accuracy (%)": 0.0,
+    "Eq_Rate (%)": 56.0,
+    "Normative_Eq_Rate (%)": 72.0,
+    "Trap_Detection_Rate (%)": 24.0,
+    "Macro_Precision": 0.4076,
+    "Macro_Recall": 0.61,
+    "Macro_F1": 0.4878,
+    "Unpenalized_3Class_Macro_Precision": 0.4076,
+    "Unpenalized_3Class_Macro_F1": 0.4878,
+    "Avg_Retry_Rounds": 0.0,
+    "Avg_Verification_Time (s)": 0.0041,
+    "Citation_Fidelity (%)": null,
+    "Per_Class_Metrics": {
+      "ENTAILED": {
+        "Precision": 0.5951,
+        "Recall": 0.97,
+        "F1-Score": 0.7376,
+        "Unpenalized_Precision": 0.5951,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.005,
+        "Citation_Fidelity (%)": null
+      },
+      "CONTRADICTED": {
+        "Precision": 0.6277,
+        "Recall": 0.86,
+        "F1-Score": 0.7257,
+        "Unpenalized_Precision": 0.6277,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.004,
+        "Citation_Fidelity (%)": null
+      },
+      "BASELESS": {
+        "Precision": 0.0,
+        "Recall": 0.0,
+        "F1-Score": 0.0,
+        "Unpenalized_Precision": 0.0,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.0033,
+        "Citation_Fidelity (%)": null
+      }
+    },
+    "Trajectories": {
+      "R15": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R07": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R17": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"CreditScore\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R19": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"Selected\",\n  \"activation_op\": \"==\",\n  \"activation_val\": true,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R02": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Not Response\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R13": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": \"A_Accepted\",\n  \"activation_attr\": \"case:ApplicationType\",\n  \"activation_op\": \"==\",\n  \"activation_val\": \"Limit raise\",\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R11": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 15(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R20": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": null,\n  \"activation_attr\": \"case:RequestedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R01": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": \"W_Validate application\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R04": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Created\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R09": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R16": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 13(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R12": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(6)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Call after offers\",\n  \"target_activity\": \"W_Validate application\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R14": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(2)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R18": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": \"NumberOfTerms\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R10": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(4)\",\n  \"template_name\": \"Not Co-Existence\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R06": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Not Precedence\",\n  \"activation_activity\": \"O_Refused\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R03": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R22": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(3)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R21": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"MonthlyCost\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R05": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Created\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R08": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Accepted\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R23": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R25": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 18(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Validating\",\n  \"target_activity\": \"W_Call incomplete files\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R27": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 16(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"MonthlyCost\",\n  \"activation_op\": \"<=\",\n  \"activation_val\": 0.01,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R29": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(6)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"W_Call after offers\",\n  \"activation_attr\": \"case:RequestedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R24": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 16(4)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 10000.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R26": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 9(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R28": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 2(3)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 90,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R30": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"NumberOfTerms\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ]
+    }
+  },
+  "- Pre-Verification (Tắt Tầng 1 & Tầng 2)": {
+    "Executable_Rate (%)": 100.0,
+    "Raw_Log_Executable_Rate (%)": 100.0,
+    "Crash_Rate (%)": 0.0,
+    "Strict_Accuracy (%)": 83.0,
+    "Normative_Accuracy (%)": 81.0,
+    "Normative_Macro_F1": 0.8658,
+    "Rule_Schema_Trap_Accuracy (%)": 82.89,
+    "Trace_Safety_Trap_Accuracy (%)": 100.0,
+    "Eq_Rate (%)": 73.0,
+    "Normative_Eq_Rate (%)": 72.0,
+    "Trap_Detection_Rate (%)": 75.0,
+    "Macro_Precision": 0.8367,
+    "Macro_Recall": 0.83,
+    "Macro_F1": 0.8298,
+    "Unpenalized_3Class_Macro_Precision": 0.8367,
+    "Unpenalized_3Class_Macro_F1": 0.8298,
+    "Avg_Retry_Rounds": 0.23,
+    "Avg_Verification_Time (s)": 0.0048,
+    "Citation_Fidelity (%)": null,
+    "Per_Class_Metrics": {
+      "ENTAILED": {
+        "Precision": 0.8365,
+        "Recall": 0.87,
+        "F1-Score": 0.8529,
+        "Unpenalized_Precision": 0.8365,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.23,
+        "Avg_Verification_Time (s)": 0.0075,
+        "Citation_Fidelity (%)": null
+      },
+      "CONTRADICTED": {
+        "Precision": 0.9036,
+        "Recall": 0.75,
+        "F1-Score": 0.8197,
+        "Unpenalized_Precision": 0.9036,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.23,
+        "Avg_Verification_Time (s)": 0.0051,
+        "Citation_Fidelity (%)": null
+      },
+      "BASELESS": {
+        "Precision": 0.7699,
+        "Recall": 0.87,
+        "F1-Score": 0.8169,
+        "Unpenalized_Precision": 0.7699,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.24,
+        "Avg_Verification_Time (s)": 0.0017,
+        "Citation_Fidelity (%)": null
+      }
+    },
+    "Trajectories": {
+      "R15": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        },
+        {
+          "round": 2,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Not Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (FORBIDDEN_SUBSEQUENT_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred first, and subsequently conflicting event 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) WAS executed afterwards in the exact same loan application.' is a violation, but under Article 14(1), Judge determined: No explanation provided. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 14 calendar days.)"
+        },
+        {
+          "round": 3,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": true\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "BASELESS (Model Abstained -> UNSUPPORTED_BY_DIRECTIVE_TEXT): Model marked clause 'Article 14(1)' as unsupported or out-of-scope."
+        }
+      ],
+      "R07": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R17": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"CreditScore\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R19": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"Selected\",\n  \"activation_op\": \"==\",\n  \"activation_val\": true,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R02": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Not Response\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R13": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": \"A_Accepted\",\n  \"activation_attr\": \"case:ApplicationType\",\n  \"activation_op\": \"==\",\n  \"activation_val\": \"Limit raise\",\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R11": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 15(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R20": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": null,\n  \"activation_attr\": \"case:RequestedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R01": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"A_Create Application\",\n  \"target_activity\": \"W_Validate application\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R04": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Created\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R09": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R16": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 13(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Candidate Constraint is legally baseless and misattributes the subject of the legal clause. Article 13(1) of Directive 2008/48/EC governs the termination of an existing 'open-end credit agreement' (a contract already in force). It grants the consumer the right to terminate free of charge and allows the creditor to terminate with notice. It does not regulate the validity period or cancellation window of a pre-contractual 'loan offer'. The Operational Policy Requirement incorrectly applies this termination notice window to the 'issued loan offer' stage, conflating the termination of an active credit facility with the expiration of a pre-contractual offer. Furthermore, the constraint mandates that 'O_Cancelled' must occur after 'O_Sent', which fabricates a mandatory cancellation obligation for offers that are not cancelled (e.g., accepted or expired naturally), which is not supported by the legal text regarding termination of agreements. Therefore, the clause is unsupported and misattributed. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+        }
+      ],
+      "R12": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(6)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"W_Call after offers\",\n  \"target_activity\": \"W_Validate application\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R14": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(2)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R18": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Precedence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": \"NumberOfTerms\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R10": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(4)\",\n  \"template_name\": \"Not Co-Existence\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R06": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 8(1)\",\n  \"template_name\": \"Not Precedence\",\n  \"activation_activity\": \"O_Refused\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R03": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Pending' (Application state milestone indicating final approval and readiness for disbursement.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The Operational Policy Requirement explicitly mandates 'immediate agreement transition' and states that the 'very next workflow step' must move the case into final active agreement status. This imposes a strict adjacency constraint (no intervening events allowed). The Candidate Constraint, however, uses a standard 'Response' or 'Eventually' logic ('must eventually occur AFTER it'), which permits intermediate events between 'O_Accepted' and 'A_Pending'. Case A (Day 1 to Day 2) complies with the loose 'eventually' constraint but violates the strict 'immediate/next step' requirement of the policy. Therefore, the candidate constraint is too weak to capture the operational mandate, resulting in a Semantic Mismatch regarding temporal granularity/immediacy. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it.)"
+        },
+        {
+          "round": 2,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": 0,\n  \"time_max\": 0,\n  \"time_unit\": \"s\",\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Pending' (Application state milestone indicating final approval and readiness for disbursement.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The Candidate Constraint imposes a strict temporal bound of '0 seconds' between 'O_Accepted' and 'A_Pending'. The Operational Policy Requirement states that the transition must happen in the 'very next workflow step', which implies immediate adjacency in the logical workflow sequence, but does not mandate a physical time duration of zero seconds (which is physically impossible for distinct system events and contradicts the nature of workflow steps). More critically, the constraint uses a 'Response' logic (A implies B) which is directionally correct, but the specific quantitative bound of '0 seconds' is a fabrication not supported by the legal clause or the operational policy text, which focuses on workflow step adjacency rather than millisecond-level latency. Furthermore, the legal clause (Article 10(1)) concerns the form of the agreement (paper/durable medium) and does not prescribe internal workflow timing or state transitions between offer acceptance and pending status. The operational policy is a valid specialization of workflow management, but the candidate constraint's specific '0 seconds' bound is a semantic mismatch with the 'next workflow step' requirement, as 'next step' is a logical ordering constraint, not a zero-latency temporal constraint. Additionally, the legal clause does not mandate the specific internal state 'A_Pending' immediately after 'O_Accepted'; it mandates the existence of the agreement on a durable medium. The operational policy links these, but the constraint's rigid 0-second bound is an overreach/misinterpretation of 'immediate' in a workflow context. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 0 seconds.)"
+        },
+        {
+          "round": 3,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Pending' (Application state milestone indicating final approval and readiness for disbursement.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The Operational Policy Requirement explicitly mandates 'immediate agreement transition' and states that the 'very next workflow step' must move the case into final active agreement status. This imposes a strict adjacency constraint (no intervening events allowed). The Candidate Constraint, however, uses a standard 'Response' or 'Eventually' logic ('must eventually occur AFTER it'), which permits intermediate events between 'O_Accepted' and 'A_Pending'. Case A (Day 1 to Day 2) complies with the loose 'eventually' constraint but violates the strict 'immediate/next step' requirement of the policy. Therefore, the candidate constraint is too weak to capture the operational mandate, resulting in a Semantic Mismatch regarding temporal granularity/immediacy. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it.)"
+        },
+        {
+          "round": 4,
+          "output": "{\n  \"article_id\": \"Article 10(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": true\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "BASELESS (Model Abstained -> UNSUPPORTED_BY_DIRECTIVE_TEXT): Model marked clause 'Article 10(1)' as unsupported or out-of-scope."
+        }
+      ],
+      "R22": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(3)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Cancelled\",\n  \"target_activity\": \"O_Cancelled\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R21": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"MonthlyCost\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R05": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Created\",\n  \"target_activity\": \"O_Sent (mail and online)\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R08": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Accepted\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R23": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 14(1)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Accepted\",\n  \"target_activity\": \"A_Pending\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 14,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 14(1) of Directive 2008/48/EC) establishes a consumer's right of withdrawal (cooling-off period) of 14 calendar days. It grants the consumer the right to cancel the agreement within this period. The Bank Operational Policy Requirement, however, mandates that the creditor must transition the loan into 'active disbursement approval' (mapped to 'A_Pending') within 14 calendar days of acceptance ('O_Accepted'). This is a fundamental legal conflict: the 14-day period in the Directive is a window for the consumer to withdraw, not a deadline for the bank to approve/disburse. In fact, disbursing funds before the withdrawal period expires could violate the consumer's right to withdraw. The operational policy misattributes the temporal bound of a consumer right to a creditor obligation, creating a 'Duty-Holder or Numeric Misattribution' and a 'Non-Sequitur Action Fabrication'. Therefore, the clause is unsupported by the cited legal text. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+        }
+      ],
+      "R25": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 18(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Validating\",\n  \"target_activity\": \"W_Call incomplete files\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 30,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R27": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 16(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"MonthlyCost\",\n  \"activation_op\": \"<=\",\n  \"activation_val\": 0.01,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic THRESHOLD_MISMATCH]: [Diagnostic Mismatch]: The selected activation_val=0.01 does not appear in the legal clause of this article. Allowed entities mentioned in the text: [365, 'days'], [1, 'years']. Please review the text and adjust accordingly. (Back-translation: Activity 'O_Create Offer' when MonthlyCost <= 0.01 must occur at least once in the credit case.)"
+        },
+        {
+          "round": 2,
+          "output": "{\n  \"article_id\": \"Article 16(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"MonthlyCost\",\n  \"activation_op\": \"<=\",\n  \"activation_val\": 1.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (ATTRIBUTE_BOUNDARY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred, but attribute MonthlyCost violated the required condition (MonthlyCost <= 1.0 was FALSE).' is a violation, but under Article 16(2), Judge determined: The Candidate Constraint enforces a condition on the attribute 'MonthlyCost' (MonthlyCost <= 1.0) for the activity 'O_Create Offer'. However, the Original Legal Clause (Article 16(2)) and the Operational Policy Requirement concern the 'early repayment compensation fee', which is a percentage of the repaid amount (capped at 1.0% or 0.5%), not the 'MonthlyCost' (monthly installment amount). The attribute 'MonthlyCost' is semantically distinct from the 'early repayment compensation fee'. Furthermore, the legal clause applies to the event of early repayment, which occurs after the credit agreement is active, whereas 'O_Create Offer' is a pre-contractual drafting stage. Enforcing a repayment compensation limit on the monthly cost during the offer drafting phase is a semantic mismatch between the legal requirement (repayment compensation) and the operational constraint (monthly cost attribute). Therefore, the constraint does not faithfully map the legal clause. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Activity 'O_Create Offer' when MonthlyCost <= 1.0 must occur at least once in the credit case.)"
+        },
+        {
+          "round": 3,
+          "output": "{\n  \"article_id\": \"Article 16(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": true\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "BASELESS (Model Abstained -> UNSUPPORTED_BY_DIRECTIVE_TEXT): Model marked clause 'Article 16(2)' as unsupported or out-of-scope."
+        }
+      ],
+      "R29": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 5(6)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"W_Call after offers\",\n  \"activation_attr\": \"case:RequestedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R24": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 16(4)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"OfferedAmount\",\n  \"activation_op\": \">\",\n  \"activation_val\": 10000.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement is legally baseless and misattributes the statutory threshold. Article 16(4)(a) of Directive 2008/48/EC allows Member States to set a threshold (not exceeding EUR 10,000) for when a creditor can claim compensation for early repayment. This is a post-contractual mechanism regarding the calculation of compensation for early termination. The operational policy, however, uses this EUR 10,000 figure as a pre-contractual eligibility filter, requiring that the offered principal must exceed EUR 10,000 to grant funding. This is a non-sequitur: the Directive does not prohibit loans under EUR 10,000, nor does it mandate that only loans above this amount are valid or fundable. The policy fabricates a substantive business action (eligibility filter) from an optional Member State discretion regarding compensation thresholds, constituting a duty-holder and numeric misattribution. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 10000.0 must occur at least once in the credit case.)"
+        }
+      ],
+      "R26": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 9(2)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"A_Denied\",\n  \"target_activity\": \"O_Create Offer\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement mandates that a creditor must generate a revised credit offer ('O_Create Offer') whenever an application is rejected ('A_Denied'). This directly contradicts the legal logic of Article 9(2) of Directive 2008/48/EC. The Directive states that if an application is rejected based on a database consultation, the creditor must inform the consumer of the result and the database particulars. It does not mandate, nor does it imply, that a new credit offer must be generated after a rejection. In fact, generating a new offer after a rejection is a distinct business action not prescribed by the cited clause. The policy fabricates a substantive business action (creating a new offer) that is not supported by the legal text, which only requires notification of the rejection and the source of the creditworthiness assessment. Therefore, the clause is unsupported and the constraint is baseless. (Back-translation: Whenever 'A_Denied' occurs, 'O_Create Offer' must eventually occur AFTER it.)"
+        }
+      ],
+      "R28": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 2(3)\",\n  \"template_name\": \"Response\",\n  \"activation_activity\": \"O_Sent (mail and online)\",\n  \"target_activity\": \"O_Accepted\",\n  \"activation_attr\": null,\n  \"activation_op\": null,\n  \"activation_val\": null,\n  \"time_min\": null,\n  \"time_max\": 90,\n  \"time_unit\": \"d\",\n  \"unsupported_by_text\": false\n}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Candidate Constraint imposes a mandatory obligation that 'O_Accepted' must occur within 90 days of 'O_Sent'. This is legally unsupported by Article 2(3) of Directive 2008/48/EC. Article 2(3) defines the scope of application for specific articles regarding short-term credit (overdrafts repayable on demand or within 3 months); it does not mandate that a credit offer must be accepted by the consumer within 90 days. The consumer has the right to refuse or ignore an offer. Furthermore, the operational policy conflates the statutory definition of the credit term (repayment within 3 months) with a procedural deadline for offer acceptance, which is a non-sequitur action fabrication. The legal clause does not prescribe a business action requiring acceptance within that timeframe, making the constraint baseless. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Accepted' must eventually occur AFTER it within 90 calendar days.)"
+        }
+      ],
+      "R30": [
+        {
+          "round": 1,
+          "output": "{\n  \"article_id\": \"Article 10(2)\",\n  \"template_name\": \"Existence\",\n  \"activation_activity\": \"O_Create Offer\",\n  \"target_activity\": null,\n  \"activation_attr\": \"NumberOfTerms\",\n  \"activation_op\": \">\",\n  \"activation_val\": 0.0,\n  \"time_min\": null,\n  \"time_max\": null,\n  \"time_unit\": null,\n  \"unsupported_by_text\": false\n}",
+          "status": "PASSED",
+          "error": null
+        }
+      ]
+    }
+  },
+  "- Self-Correction Loop (Tắt Vòng lặp Tự sửa)": {
+    "Executable_Rate (%)": 100.0,
+    "Raw_Log_Executable_Rate (%)": 96.0,
+    "Crash_Rate (%)": 0.0,
+    "Strict_Accuracy (%)": 83.33,
+    "Normative_Accuracy (%)": 87.5,
+    "Normative_Macro_F1": 0.9113,
+    "Rule_Schema_Trap_Accuracy (%)": 67.11,
+    "Trace_Safety_Trap_Accuracy (%)": 100.0,
+    "Eq_Rate (%)": 68.33,
+    "Normative_Eq_Rate (%)": 65.0,
+    "Trap_Detection_Rate (%)": 75.0,
+    "Macro_Precision": 0.8343,
+    "Macro_Recall": 0.8333,
+    "Macro_F1": 0.832,
+    "Unpenalized_3Class_Macro_Precision": 0.8343,
+    "Unpenalized_3Class_Macro_F1": 0.832,
+    "Avg_Retry_Rounds": 0.0,
+    "Avg_Verification_Time (s)": 0.0052,
+    "Citation_Fidelity (%)": null,
+    "Per_Class_Metrics": {
+      "ENTAILED": {
+        "Precision": 0.8142,
+        "Recall": 0.92,
+        "F1-Score": 0.8638,
+        "Unpenalized_Precision": 0.8142,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.0078,
+        "Citation_Fidelity (%)": null
+      },
+      "CONTRADICTED": {
+        "Precision": 0.8646,
+        "Recall": 0.83,
+        "F1-Score": 0.8469,
+        "Unpenalized_Precision": 0.8646,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.0053,
+        "Citation_Fidelity (%)": null
+      },
+      "BASELESS": {
+        "Precision": 0.8242,
+        "Recall": 0.75,
+        "F1-Score": 0.7853,
+        "Unpenalized_Precision": 0.8242,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.0023,
+        "Citation_Fidelity (%)": null
+      }
+    },
+    "Trajectories": {
+      "R15": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        }
+      ],
+      "R07": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Accepted\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R17": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": \"CreditScore\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R19": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"Selected\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"==\", \"guard_threshold\": \"True\", \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R02": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Denied\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R13": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 8(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Create Application\", \"consequent_activity\": \"A_Accepted\", \"attribute_guard\": \"case:ApplicationType\", \"guard_operator\": \"==\", \"guard_threshold\": \"Limit raise\", \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R11": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 15(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R20": [
+        {
+          "round": 1,
+          "output": "{\"note\": \"The policy requirement specifies a data constraint on the intake process ('capture sufficient consumer preference data specifying a positive requested loan size (> 0)'). This is a UNARY_CONDITION on the intake activity. The most appropriate anchor activity for 'opening a credit application' and capturing initial data is 'A_Create Application' or 'W_Complete application'. Given the phrasing 'When opening a credit application', 'A_Create Application' is the state milestone for creation. However, the data capture happens during the completion of the application fields. Let's look at the allowed activities. 'W_Complete application' is the human work-item for filling in intake fields. The constraint is on the data captured. The attribute is 'case:RequestedAmount'. The condition is > 0. This is a UNARY_CONDITION on the activity where the data is set/validated. 'W_Complete application' is the activity where intake fields are filled. Let's use 'W_Complete application' as the anchor. The modality is OBLIGATION (must capture). The temporal relation is UNARY_CONDITION. The attribute_guard is 'case:RequestedAmount'. The guard_operator is '>'. The guard_threshold is 0.0. The consequent_activity is null.\", \"article_id\": \"Article 8(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"W_Complete application\", \"consequent_activity\": null, \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R01": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Create Application\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"W_Validate application\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R04": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Created\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R09": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 10(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": \"O_Sent (mail and online)\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R16": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 13(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 13(1) of Directive 2008/48/EC) governs the termination of an existing 'open-end credit agreement' (a contract that has already been concluded and is active). It grants the consumer the right to terminate the agreement free of charge at any time, subject to a notice period not exceeding one month. The Bank Operational Policy, however, applies this 'one month' window to the period after a 'loan offer' is communicated, restricting the consumer's ability to cancel the *offer* (pre-contractual stage) within 30 days. This is a fundamental legal mismatch: Article 13(1) does not regulate the validity period of a credit offer or the right to withdraw from an offer (which is typically governed by Article 9 regarding the right of withdrawal after conclusion, or general offer validity rules). Applying a post-contractual termination notice period to a pre-contractual offer cancellation window is a misattribution of the legal mechanism and subject matter. Therefore, the operational policy is not a valid specialization of the cited clause but a fabrication of a constraint not supported by the text. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 30 calendar days.)"
+        }
+      ],
+      "R12": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(6)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Validating\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R14": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 10(2)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R18": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"NumberOfTerms\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R10": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(4)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MUTUAL_EXCLUSION\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R06": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Refused\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R03": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Accepted\", \"article_id\": \"Article 10(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R22": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(3)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R21": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 5(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"MonthlyCost\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R05": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Created\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Sent (mail and online)\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R08": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Accepted\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Create Offer\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R23": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Accepted\", \"consequent_activity\": \"A_Pending\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 14(1) of Directive 2008/48/EC) establishes a consumer's right of withdrawal (cooling-off period) of 14 calendar days. It grants the consumer the right to cancel the agreement within this period. The Bank Operational Policy Requirement, however, mandates that the creditor must transition the loan into 'active disbursement approval' (mapped to 'A_Pending') within 14 calendar days of acceptance ('O_Accepted'). This is a fundamental legal conflict: the 14-day period in the Directive is a window for the consumer to withdraw, not a deadline for the bank to approve/disburse. In fact, disbursing funds before the withdrawal period expires could violate the consumer's right to withdraw. The operational policy misattributes the temporal bound of a consumer right to a creditor obligation, creating a 'Duty-Holder or Numeric Misattribution' and a 'Non-Sequitur Action Fabrication'. Therefore, the clause is unsupported by the cited legal text. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+        }
+      ],
+      "R25": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 18(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Validating\", \"consequent_activity\": \"W_Call incomplete files\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 30, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R27": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(2)\", \"attribute_guard\": \"UNMAPPED_MISSING_IN_LOG\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"<=\", \"guard_threshold\": 1.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
+        }
+      ],
+      "R29": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 5(6)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"W_Call after offers\", \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R24": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(4)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 10000.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement is legally baseless and misattributes the statutory threshold. Article 16(4)(a) of Directive 2008/48/EC allows Member States to set a threshold (not exceeding EUR 10,000) for when a creditor can claim compensation for early repayment. This is a post-contractual mechanism regarding the calculation of compensation for early termination. The operational policy, however, uses this EUR 10,000 figure as a pre-contractual eligibility filter, requiring that the offered principal must exceed EUR 10,000 to grant funding. This is a non-sequitur: the Directive does not prohibit loans under EUR 10,000, nor does it mandate that only loans above this amount are valid or fundable. The policy fabricates a substantive business action (eligibility filter) from an optional Member State discretion regarding compensation thresholds, constituting a duty-holder and numeric misattribution. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 10000.0 must occur at least once in the credit case.)"
+        }
+      ],
+      "R26": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 9(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Denied\", \"consequent_activity\": \"O_Create Offer\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement mandates that a creditor must generate a revised credit offer ('O_Create Offer') whenever an application is rejected ('A_Denied'). This directly contradicts the legal logic of Article 9(2) of Directive 2008/48/EC. The Directive states that if an application is rejected based on a database consultation, the creditor must inform the consumer of the result and the database particulars. It does not mandate, nor does it imply, that a new credit offer must be generated after a rejection. In fact, generating a new offer after a rejection is a distinct business action not prescribed by the cited clause. The policy fabricates a substantive business action (creating a new offer) that is not supported by the legal text, which only requires notification of the rejection and the source of the creditworthiness assessment. Therefore, the clause is unsupported and the constraint is baseless. (Back-translation: Whenever 'A_Denied' occurs, 'O_Create Offer' must eventually occur AFTER it.)"
+        }
+      ],
+      "R28": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 2(3)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": 90, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R30": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 10(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"NumberOfTerms\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ]
+    }
+  },
+  "Full Neuro-Symbolic Pipeline (Đề xuất)": {
+    "Executable_Rate (%)": 100.0,
+    "Raw_Log_Executable_Rate (%)": 96.0,
+    "Crash_Rate (%)": 0.0,
+    "Strict_Accuracy (%)": 83.33,
+    "Normative_Accuracy (%)": 87.5,
+    "Normative_Macro_F1": 0.9113,
+    "Rule_Schema_Trap_Accuracy (%)": 67.11,
+    "Trace_Safety_Trap_Accuracy (%)": 100.0,
+    "Eq_Rate (%)": 68.33,
+    "Normative_Eq_Rate (%)": 65.0,
+    "Trap_Detection_Rate (%)": 75.0,
+    "Macro_Precision": 0.8343,
+    "Macro_Recall": 0.8333,
+    "Macro_F1": 0.832,
+    "Unpenalized_3Class_Macro_Precision": 0.8343,
+    "Unpenalized_3Class_Macro_F1": 0.832,
+    "Avg_Retry_Rounds": 0.11,
+    "Avg_Verification_Time (s)": 0.0051,
+    "Citation_Fidelity (%)": null,
+    "Per_Class_Metrics": {
+      "ENTAILED": {
+        "Precision": 0.8142,
+        "Recall": 0.92,
+        "F1-Score": 0.8638,
+        "Unpenalized_Precision": 0.8142,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.16,
+        "Avg_Verification_Time (s)": 0.0079,
+        "Citation_Fidelity (%)": null
+      },
+      "CONTRADICTED": {
+        "Precision": 0.8646,
+        "Recall": 0.83,
+        "F1-Score": 0.8469,
+        "Unpenalized_Precision": 0.8646,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.16,
+        "Avg_Verification_Time (s)": 0.0052,
+        "Citation_Fidelity (%)": null
+      },
+      "BASELESS": {
+        "Precision": 0.8242,
+        "Recall": 0.75,
+        "F1-Score": 0.7853,
+        "Unpenalized_Precision": 0.8242,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.0,
+        "Avg_Verification_Time (s)": 0.0023,
+        "Citation_Fidelity (%)": null
+      }
+    },
+    "Trajectories": {
+      "R15": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        },
+        {
+          "round": 2,
+          "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"PROHIBITION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"O_Cancelled\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (FORBIDDEN_SUBSEQUENT_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred first, and subsequently conflicting event 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) WAS executed afterwards in the exact same loan application.' is a violation, but under Article 14(1), Judge determined: No explanation provided. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 14 calendar days.)"
+        },
+        {
+          "round": 3,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        },
+        {
+          "round": 4,
+          "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"PERMISSION_RIGHT\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"O_Cancelled\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        },
+        {
+          "round": 5,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 14(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 14, \"deontic_modality\": \"PERMISSION_RIGHT\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The Candidate Constraint uses a 'Response' logic (whenever A occurs, B must eventually occur), which mandates that 'O_Cancelled' must happen after 'O_Sent (mail and online)'. However, the legal clause (Article 14(1)) grants the consumer a *right* to withdraw, not an obligation. The consumer may choose to accept the credit agreement, in which case 'O_Cancelled' would never occur. Case C explicitly demonstrates this asymmetry: if 'O_Cancelled' never happens (e.g., consumer accepts), the trace is flagged as a violation by the Candidate Constraint. This is semantically incorrect because the absence of cancellation is a valid, compliant outcome (the consumer exercised their right to stay in the contract). The constraint reverses the nature of the rule by treating an optional consumer action as a mandatory system response to the offer dispatch. Therefore, the constraint is a REVERSED_ORDER error. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+        }
+      ],
+      "R07": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Accepted\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R17": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": \"CreditScore\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R19": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"Selected\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"==\", \"guard_threshold\": \"True\", \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R02": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Denied\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R13": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 8(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Create Application\", \"consequent_activity\": \"A_Accepted\", \"attribute_guard\": \"case:ApplicationType\", \"guard_operator\": \"==\", \"guard_threshold\": \"Limit raise\", \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R11": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 15(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R20": [
+        {
+          "round": 1,
+          "output": "{\"note\": \"The policy requirement specifies a data constraint on the intake process ('capture sufficient consumer preference data specifying a positive requested loan size (> 0)'). This is a UNARY_CONDITION on the intake activity. The most appropriate anchor activity for 'opening a credit application' and capturing initial data is 'A_Create Application' or 'W_Complete application'. Given the phrasing 'When opening a credit application', 'A_Create Application' is the state milestone for creation. However, the data capture happens during the completion of the application fields. Let's look at the allowed activities. 'W_Complete application' is the human work-item for filling in intake fields. The constraint is on the data captured. The attribute is 'case:RequestedAmount'. The condition is > 0. This is a UNARY_CONDITION on the activity where the data is set/validated. 'W_Complete application' is the activity where intake fields are filled. Let's use 'W_Complete application' as the anchor. The modality is OBLIGATION (must capture). The temporal relation is UNARY_CONDITION. The attribute_guard is 'case:RequestedAmount'. The guard_operator is '>'. The guard_threshold is 0.0. The consequent_activity is null.\", \"article_id\": \"Article 8(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"W_Complete application\", \"consequent_activity\": null, \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R01": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Create Application\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"W_Validate application\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R04": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Created\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R09": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 10(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": \"O_Sent (mail and online)\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R16": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 13(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 13(1) of Directive 2008/48/EC) governs the termination of an existing 'open-end credit agreement' (a contract that has already been concluded and is active). It grants the consumer the right to terminate the agreement free of charge at any time, subject to a notice period not exceeding one month. The Bank Operational Policy, however, applies this 'one month' window to the period after a 'loan offer' is communicated, restricting the consumer's ability to cancel the *offer* (pre-contractual stage) within 30 days. This is a fundamental legal mismatch: Article 13(1) does not regulate the validity period of a credit offer or the right to withdraw from an offer (which is typically governed by Article 9 regarding the right of withdrawal after conclusion, or general offer validity rules). Applying a post-contractual termination notice period to a pre-contractual offer cancellation window is a misattribution of the legal mechanism and subject matter. Therefore, the operational policy is not a valid specialization of the cited clause but a fabrication of a constraint not supported by the text. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'O_Cancelled' must NOT occur after it within 30 calendar days.)"
+        }
+      ],
+      "R12": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 5(6)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Validating\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R14": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 10(2)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R18": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": \"NumberOfTerms\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R10": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(4)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MUTUAL_EXCLUSION\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R06": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Refused\", \"article_id\": \"Article 8(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"PROHIBITION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"PREREQUISITE_BEFORE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R03": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Accepted\", \"article_id\": \"Article 10(1)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"IMMEDIATE_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R22": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Cancelled\", \"article_id\": \"Article 14(3)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Cancelled\", \"deadline_days\": 30, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R21": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 5(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"MonthlyCost\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R05": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Created\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Sent (mail and online)\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R08": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"A_Accepted\", \"article_id\": \"Article 5(1)\", \"attribute_guard\": null, \"consequent_activity\": \"O_Create Offer\", \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R23": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 14(1)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Accepted\", \"consequent_activity\": \"A_Pending\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 14, \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The Original Legal Clause (Article 14(1) of Directive 2008/48/EC) establishes a consumer's right of withdrawal (cooling-off period) of 14 calendar days. It grants the consumer the right to cancel the agreement within this period. The Bank Operational Policy Requirement, however, mandates that the creditor must transition the loan into 'active disbursement approval' (mapped to 'A_Pending') within 14 calendar days of acceptance ('O_Accepted'). This is a fundamental legal conflict: the 14-day period in the Directive is a window for the consumer to withdraw, not a deadline for the bank to approve/disburse. In fact, disbursing funds before the withdrawal period expires could violate the consumer's right to withdraw. The operational policy misattributes the temporal bound of a consumer right to a creditor obligation, creating a 'Duty-Holder or Numeric Misattribution' and a 'Non-Sequitur Action Fabrication'. Therefore, the clause is unsupported by the cited legal text. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+        }
+      ],
+      "R25": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 18(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Validating\", \"consequent_activity\": \"W_Call incomplete files\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": 30, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R27": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(2)\", \"attribute_guard\": \"UNMAPPED_MISSING_IN_LOG\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \"<=\", \"guard_threshold\": 1.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
+        }
+      ],
+      "R29": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 5(6)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"O_Sent (mail and online)\", \"consequent_activity\": \"W_Call after offers\", \"attribute_guard\": \"case:RequestedAmount\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R24": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Create Offer\", \"article_id\": \"Article 16(4)\", \"attribute_guard\": \"OfferedAmount\", \"consequent_activity\": null, \"deadline_days\": null, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": \">\", \"guard_threshold\": 10000.0, \"temporal_relation\": \"UNARY_CONDITION\", \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement is legally baseless and misattributes the statutory threshold. Article 16(4)(a) of Directive 2008/48/EC allows Member States to set a threshold (not exceeding EUR 10,000) for when a creditor can claim compensation for early repayment. This is a post-contractual mechanism regarding the calculation of compensation for early termination. The operational policy, however, uses this EUR 10,000 figure as a pre-contractual eligibility filter, requiring that the offered principal must exceed EUR 10,000 to grant funding. This is a non-sequitur: the Directive does not prohibit loans under EUR 10,000, nor does it mandate that only loans above this amount are valid or fundable. The policy fabricates a substantive business action (eligibility filter) from an optional Member State discretion regarding compensation thresholds, constituting a duty-holder and numeric misattribution. (Back-translation: Activity 'O_Create Offer' when OfferedAmount > 10000.0 must occur at least once in the credit case.)"
+        }
+      ],
+      "R26": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 9(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"MANDATORY_RESPONSE\", \"anchor_activity\": \"A_Denied\", \"consequent_activity\": \"O_Create Offer\", \"attribute_guard\": null, \"guard_operator\": null, \"guard_threshold\": null, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "DETECTED_BASELESS_TRAP",
+          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The operational policy requirement mandates that a creditor must generate a revised credit offer ('O_Create Offer') whenever an application is rejected ('A_Denied'). This directly contradicts the legal logic of Article 9(2) of Directive 2008/48/EC. The Directive states that if an application is rejected based on a database consultation, the creditor must inform the consumer of the result and the database particulars. It does not mandate, nor does it imply, that a new credit offer must be generated after a rejection. In fact, generating a new offer after a rejection is a distinct business action not prescribed by the cited clause. The policy fabricates a substantive business action (creating a new offer) that is not supported by the legal text, which only requires notification of the rejection and the source of the creditworthiness assessment. Therefore, the clause is unsupported and the constraint is baseless. (Back-translation: Whenever 'A_Denied' occurs, 'O_Create Offer' must eventually occur AFTER it.)"
+        }
+      ],
+      "R28": [
+        {
+          "round": 1,
+          "output": "{\"anchor_activity\": \"O_Sent (mail and online)\", \"article_id\": \"Article 2(3)\", \"attribute_guard\": null, \"consequent_activity\": \"A_Pending\", \"deadline_days\": 90, \"deontic_modality\": \"OBLIGATION\", \"guard_operator\": null, \"guard_threshold\": null, \"temporal_relation\": \"MANDATORY_RESPONSE\", \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ],
+      "R30": [
+        {
+          "round": 1,
+          "output": "{\"article_id\": \"Article 10(2)\", \"deontic_modality\": \"OBLIGATION\", \"temporal_relation\": \"UNARY_CONDITION\", \"anchor_activity\": \"O_Create Offer\", \"consequent_activity\": null, \"attribute_guard\": \"NumberOfTerms\", \"guard_operator\": \">\", \"guard_threshold\": 0.0, \"deadline_days\": null, \"unsupported_by_text\": false}",
+          "status": "PASSED",
+          "error": null
+        }
+      ]
+    }
+  }
+}

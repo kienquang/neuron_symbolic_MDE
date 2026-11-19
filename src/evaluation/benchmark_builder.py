@@ -17,7 +17,7 @@ from src.evaluation.justification_tree import check_single_trace_semantics
 
 # Định nghĩa bộ 30 quy tắc chuẩn (Ground-Truth Benchmark Rules R01-R30)
 BENCHMARK_RULES: List[Dict[str, Any]] = [
-    # --- TIER 1: CONTROL-FLOW CONSTRAINTS (12 QUY TẮC: R01 - R12) ---
+    # --- TIER 1: CONTROL-FLOW CONSTRAINTS (12 RULES: R01 - R12) ---
     {
         "rule_id": "R01",
         "tier": "Tier1_ControlFlow",
@@ -31,37 +31,37 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Để thu thập đầy đủ thông tin từ người vay phục vụ việc đánh giá khả năng trả nợ theo Điều 8(1), quy trình ngân hàng bắt buộc phải tiếp nhận hồ sơ vay của khách hàng trước khi tiến hành bước đánh giá sơ bộ hồ sơ.",
+        "description": "Creditworthiness intake under Article 8(1): Prior to conducting an initial risk assessment on a borrowing file, the institution must register the customer's loan request in its system.",
     },
     {
         "rule_id": "R02",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 8(1)",
-        "template": "Precedence",
-        "act_a": "A_Concept",
-        "act_b": "A_Accepted",
+        "article_id": "Article 5(1)",
+        "template": "Not Response",
+        "act_a": "A_Denied",
+        "act_b": "A_Pending",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Bước đánh giá sơ bộ hồ sơ bắt buộc phải hoàn thành trước khi hồ sơ vay được ngân hàng phê duyệt sơ bộ.",
+        "description": "Prohibition on concluding a declined request under Article 5(1): Where the creditor formally denies the loan request and is unwilling to proceed to conclude the credit agreement, final active funding approval must not subsequently follow.",
     },
     {
         "rule_id": "R03",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 8(1)",
-        "template": "Precedence",
-        "act_a": "A_Accepted",
-        "act_b": "O_Create Offer",
+        "article_id": "Article 10(1)",
+        "template": "Chain Response",
+        "act_a": "O_Accepted",
+        "act_b": "A_Pending",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Hồ sơ vay bắt buộc phải được phê duyệt sơ bộ trước khi ngân hàng tạo lập đề nghị vay chính thức cho khách hàng.",
+        "description": "Immediate agreement transition under Article 10(1): Once the consumer formally accepts the finalized credit offer drawn up on a durable medium, the very next workflow step must move the case directly into final active agreement status.",
     },
     {
         "rule_id": "R04",
@@ -76,14 +76,14 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Ngay trước khi văn bản đề nghị vay được ghi nhận chính thức vào hệ thống, ngân hàng bắt buộc phải thực hiện bước tạo lập đề nghị vay.",
+        "description": "Offer issuance sequencing under Article 5(1): As soon as a credit proposal is drafted, the immediately following step must be system registration of the finalized offer record.",
     },
     {
         "rule_id": "R05",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
         "article_id": "Article 5(1)",
-        "template": "Precedence",
+        "template": "Response",
         "act_a": "O_Created",
         "act_b": "O_Sent (mail and online)",
         "attr": None,
@@ -91,88 +91,88 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Văn bản đề nghị vay phải được tạo lập trên hệ thống trước khi gửi thông tin tiền hợp đồng cho khách hàng qua thư hoặc trực tuyến.",
+        "description": "Mandatory dispatch of created offer under Article 5(1): Whenever a formalized credit offer record is persisted in the system, pre-contractual terms must subsequently be transmitted to the prospective borrower.",
     },
     {
         "rule_id": "R06",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 5(1)",
-        "template": "Precedence",
-        "act_a": "O_Sent (mail and online)",
-        "act_b": "A_Complete",
+        "article_id": "Article 8(1)",
+        "template": "Not Precedence",
+        "act_a": "O_Refused",
+        "act_b": "A_Pending",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ cung cấp thông tin tiền hợp đồng theo Điều 5(1): Thông tin tiền hợp đồng bắt buộc phải được gửi tới người tiêu dùng qua thư hoặc trực tuyến trước khi hồ sơ chuyển sang trạng thái hoàn tất thủ tục.",
+        "description": "Prohibition on approving a refused offer under Article 8(1): Prior to granting final credit agreement activation on an application, a previously refused loan offer must not precede final funding approval.",
     },
     {
         "rule_id": "R07",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 10(1)",
+        "article_id": "Article 5(1)",
         "template": "Precedence",
-        "act_a": "O_Accepted",
-        "act_b": "A_Pending",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "O_Accepted",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy định về hình thức hợp đồng theo Điều 10(1): Khách hàng bắt buộc phải chấp thuận đề nghị vay trước khi ngân hàng chuyển hồ sơ sang bước chờ giải ngân tiền vay.",
+        "description": "Pre-contractual binding safeguard under Article 5(1): In good time before the consumer signs and accepts the financing offer, pre-contractual information must be provided to them.",
     },
     {
         "rule_id": "R08",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 8(1)",
-        "template": "Precedence",
-        "act_a": "W_Validate application",
-        "act_b": "A_Validating",
+        "article_id": "Article 5(1)",
+        "template": "Response",
+        "act_a": "A_Accepted",
+        "act_b": "O_Create Offer",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ thẩm định khả năng trả nợ theo Điều 8(1): Tác vụ thẩm định chi tiết hồ sơ của nhân viên ngân hàng phải diễn ra trước khi hồ sơ chuyển sang trạng thái xác thực trên hệ thống.",
+        "description": "Offer formulation upon acceptance under Article 5(1): Whenever a credit application completes formal intake acceptance for processing, a tailored financing offer must subsequently be structured for comparison.",
     },
     {
         "rule_id": "R09",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 9(2)",
+        "article_id": "Article 10(1)",
         "template": "Response",
-        "act_a": "A_Denied",
-        "act_b": "O_Refused",
+        "act_a": "O_Create Offer",
+        "act_b": "O_Sent (mail and online)",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn thông báo khi từ chối theo Điều 9(2): Khi hồ sơ bị từ chối do kết quả tra cứu cơ sở dữ liệu, đề nghị vay tương ứng bắt buộc phải chuyển sang trạng thái từ chối.",
+        "description": "Durable-medium contract copy under Article 10(1): Whenever a financing proposal is drafted, all contracting consumers must subsequently receive a copy on paper or another durable medium.",
     },
     {
         "rule_id": "R10",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 13(2)",
+        "article_id": "Article 14(4)",
         "template": "Not Co-Existence",
-        "act_a": "A_Denied",
+        "act_a": "A_Cancelled",
         "act_b": "A_Pending",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn quản lý rủi ro và chấm dứt theo Điều 13(2): Một hồ sơ vay một khi đã bị từ chối thì tuyệt đối không được phép tiến hành giải ngân tiền vay.",
+        "description": "Post-withdrawal non-binding safeguard under Article 14(4): If an applicant withdraws and cancels the credit application, that cancelled dossier cannot remain active alongside final credit release.",
     },
     {
         "rule_id": "R11",
         "tier": "Tier1_ControlFlow",
         "complexity_tier": "Tier 1: Control-Flow Only",
-        "article_id": "Article 14(1)",
+        "article_id": "Article 15(1)",
         "template": "Response",
         "act_a": "A_Cancelled",
         "act_b": "O_Cancelled",
@@ -181,7 +181,7 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn vận hành quyền rút lui hợp đồng theo Điều 14(1): Khi người tiêu dùng thông báo hủy hoặc rút lui hồ sơ vay, đề nghị vay liên kết bắt buộc phải được hủy bỏ.",
+        "description": "Linked offer revocation under Article 15(1): Whenever a consumer withdraws and cancels a credit application, any associated financing proposal must also be revoked.",
     },
     {
         "rule_id": "R12",
@@ -196,45 +196,45 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ giải thích thỏa đáng theo Điều 5(6): Ngân hàng bắt buộc phải thực hiện cuộc gọi tư vấn giải thích thỏa đáng cho khách hàng sau khi tạo đề nghị trước khi hồ sơ chuyển sang trạng thái xác thực.",
+        "description": "Adequate explanations under Article 5(6): Clarifying product terms with the applicant after an offer is issued must precede formal back-office validation of the file.",
     },
-    # --- TIER 2: TEMPORAL & DATA-AWARE CONSTRAINTS (10 QUY TẮC: R13 - R22) ---
+    # --- TIER 2: TEMPORAL & DATA-AWARE CONSTRAINTS (10 RULES: R13 - R22) ---
     {
         "rule_id": "R13",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 2(2)",
-        "template": "Existence",
-        "act_a": "O_Create Offer",
-        "act_b": None,
-        "attr": "OfferedAmount",
-        "op": ">=",
-        "val": 200.0,
+        "article_id": "Article 8(2)",
+        "template": "Response",
+        "act_a": "A_Create Application",
+        "act_b": "A_Accepted",
+        "attr": "case:ApplicationType",
+        "op": "==",
+        "val": "Limit raise",
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn mức sàn hạn mức tín dụng theo Điều 2(2)(c): Đề nghị vay do ngân hàng tạo lập phải có số tiền đề nghị không được thấp hơn mức sàn luật định là 200 EUR.",
+        "description": "Re-assessment on credit limit increase under Article 8(2): Whenever a loan application is opened to increase the existing total credit amount (ApplicationType == 'Limit raise'), updated creditworthiness intake acceptance must subsequently take place.",
     },
     {
         "rule_id": "R14",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 2(2)",
-        "template": "Existence",
+        "article_id": "Article 10(2)",
+        "template": "Precedence",
         "act_a": "O_Create Offer",
-        "act_b": None,
+        "act_b": "A_Pending",
         "attr": "OfferedAmount",
-        "op": "<=",
-        "val": 75000.0,
+        "op": ">",
+        "val": 0.0,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn mức trần hạn mức tín dụng theo Điều 2(2)(c): Đề nghị vay do ngân hàng tạo lập phải có số tiền đề nghị không được vượt quá mức trần luật định là 75.000 EUR.",
+        "description": "Contractual principal specification under Article 10(2)(d): Before an application receives final funding sign-off, a loan offer stating a valid non-zero credit sum (> 0) must have been drafted.",
     },
     {
         "rule_id": "R15",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
         "article_id": "Article 14(1)",
-        "template": "Response",
+        "template": "Precedence",
         "act_a": "O_Sent (mail and online)",
         "act_b": "A_Cancelled",
         "attr": None,
@@ -242,22 +242,22 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": 14,
         "is_trap": False,
-        "description": "Quy chuẩn thời hạn rút lui hợp đồng theo Điều 14(1): Khách hàng có quyền thông báo hủy hồ sơ vay trong vòng 14 ngày lịch sau khi ngân hàng gửi thông tin đề nghị qua thư hoặc trực tuyến.",
+        "description": "Right of withdrawal window under Article 14(1): A consumer may cancel the credit application only within 14 calendar days after receiving the transmitted offer terms.",
     },
     {
         "rule_id": "R16",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 14(3)",
+        "article_id": "Article 13(1)",
         "template": "Precedence",
         "act_a": "O_Sent (mail and online)",
-        "act_b": "A_Cancelled",
+        "act_b": "O_Cancelled",
         "attr": None,
         "op": None,
         "val": None,
         "time_max": 30,
         "is_trap": False,
-        "description": "Quy chuẩn giới hạn thời gian thông báo theo Điều 14(3): Khách hàng chỉ có thể thực hiện quyền hủy hồ sơ vay trong thời hạn tối đa 30 ngày lịch sau khi ngân hàng gửi văn bản đề nghị.",
+        "description": "Open-end termination notice window under Article 13(1): Standard termination of an issued loan offer by the consumer may occur only up to one month (30 calendar days) after the offer was communicated.",
     },
     {
         "rule_id": "R17",
@@ -272,67 +272,67 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": 0,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ thẩm định điểm tín dụng theo Điều 8(1): Trước khi ngân hàng giải ngân khoản vay, đề nghị vay tương ứng bắt buộc phải có điểm tín dụng hợp lệ lớn hơn 0.",
+        "description": "Creditworthiness scoring prerequisite under Article 8(1): Prior to granting final funding sign-off on an application, the lender must have generated a loan proposal recording a positive applicant credit rating (> 0).",
     },
     {
         "rule_id": "R18",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 8(1)",
+        "article_id": "Article 5(1)",
         "template": "Precedence",
-        "act_a": "W_Validate application",
-        "act_b": "O_Accepted",
-        "attr": None,
-        "op": None,
-        "val": None,
+        "act_a": "O_Create Offer",
+        "act_b": "O_Sent (mail and online)",
+        "attr": "NumberOfTerms",
+        "op": ">",
+        "val": 0,
         "time_max": None,
         "is_trap": False,
-        "description": "Nghĩa vụ đánh giá khả năng trả nợ theo Điều 8(1): Trước khi ngân hàng chấp thuận đề nghị vay, hồ sơ bắt buộc phải hoàn thành tác vụ thẩm định chi tiết của nhân viên tín dụng.",
+        "description": "Pre-contractual repayment count under Article 5(1): Prior to delivering a loan proposal to the borrower, the lender must create an offer setting out a positive count of repayment installments (> 0).",
     },
     {
         "rule_id": "R19",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 13(1)",
-        "template": "Response",
-        "act_a": "A_Cancelled",
-        "act_b": "O_Cancelled",
-        "attr": None,
-        "op": None,
-        "val": None,
+        "article_id": "Article 5(1)",
+        "template": "Precedence",
+        "act_a": "O_Create Offer",
+        "act_b": "A_Pending",
+        "attr": "Selected",
+        "op": "==",
+        "val": True,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn chấm dứt hợp đồng mở theo Điều 13(1): Khi người tiêu dùng thực hiện quyền chấm dứt thỏa thuận vay, việc hủy bỏ đề nghị tín dụng tương ứng bắt buộc phải được thực hiện.",
+        "description": "Consumer-selected offer prerequisite under Article 5(1): Prior to granting final funding sign-off on an application, the lender must have created a loan proposal marked as selected in line with the borrower's expressed preferences (Selected == True).",
     },
     {
         "rule_id": "R20",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 2(2)",
+        "article_id": "Article 8(1)",
         "template": "Existence",
         "act_a": "A_Create Application",
         "act_b": None,
         "attr": "case:RequestedAmount",
-        "op": ">=",
-        "val": 200.0,
+        "op": ">",
+        "val": 0.0,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn hạn mức số tiền vay theo Điều 2(2)(c): Số tiền vay do khách hàng yêu cầu tại bước nộp đơn ban đầu không được thấp hơn mức sàn luật định là 200 EUR.",
+        "description": "Creditworthiness intake data under Article 8(1): When opening a credit application, the lender must capture sufficient consumer preference data specifying a positive requested loan size (> 0).",
     },
     {
         "rule_id": "R21",
         "tier": "Tier2_TemporalData",
         "complexity_tier": "Tier 2: Temporal & Data-Aware",
-        "article_id": "Article 2(2)",
+        "article_id": "Article 5(1)",
         "template": "Existence",
-        "act_a": "A_Create Application",
+        "act_a": "O_Create Offer",
         "act_b": None,
-        "attr": "case:RequestedAmount",
-        "op": "<=",
-        "val": 75000.0,
+        "attr": "MonthlyCost",
+        "op": ">",
+        "val": 0.0,
         "time_max": None,
         "is_trap": False,
-        "description": "Quy chuẩn hạn mức số tiền vay theo Điều 2(2)(c): Số tiền vay do khách hàng yêu cầu tại bước nộp đơn ban đầu không được vượt quá mức trần luật định là 75.000 EUR.",
+        "description": "Pre-contractual installment disclosure under Article 5(1)(h): Every credit proposal drafted for consumer comparison must specify a positive periodic monthly installment amount (> 0).",
     },
     {
         "rule_id": "R22",
@@ -347,72 +347,76 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": None,
         "time_max": 30,
         "is_trap": False,
-        "description": "Quy chuẩn thời hạn xử lý sau khi rút lui theo Điều 14(3): Khi khách hàng thông báo rút lui hoặc hủy hồ sơ, đề nghị vay tương ứng bắt buộc phải được hủy bỏ trong vòng 30 ngày lịch.",
+        "description": "Post-withdrawal settlement deadline under Article 14(3): Whenever the borrower cancels a credit application, the related credit proposal must subsequently be cancelled within 30 calendar days.",
     },
-    # --- TIER 3: HALLUCINATION & MISSING EVIDENCE TRAPS (8 QUY TẮC BẪY BASELESS: R23 - R30) ---
+    # --- TIER 3: ADVERSARIAL SEMANTIC, SCHEMA & TRACE-SAFETY TRAPS (8 BASELESS RULES: R23 - R30) ---
     {
         "rule_id": "R23",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 7",
+        "article_id": "Article 14(1)",
         "template": "Response",
-        "act_a": "A_Incomplete",
-        "act_b": "A_Validating",
+        "act_a": "O_Accepted",
+        "act_b": "A_Pending",
         "attr": None,
         "op": None,
         "val": None,
-        "time_max": 8,
+        "time_max": 14,
         "is_trap": True,
+        "trap_scope": "rule",
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Quy chuẩn thời hạn xử lý hồ sơ theo Điều 7: Khi hồ sơ vay ở trạng thái chưa hoàn tất, quy trình bắt buộc phải chuyển sang bước xác thực hồ sơ trong thời hạn tối đa 8 ngày lịch.",
+        "description": "Post-acceptance funding SLA under Article 14(1): Whenever a consumer accepts a finalized credit offer, the creditor must transition the loan into active disbursement approval within 14 calendar days.",
     },
     {
         "rule_id": "R24",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 7",
-        "template": "Response",
-        "act_a": "A_Incomplete",
-        "act_b": "W_Call incomplete files",
-        "attr": None,
-        "op": None,
-        "val": None,
+        "article_id": "Article 16(4)",
+        "template": "Precedence",
+        "act_a": "O_Create Offer",
+        "act_b": "A_Pending",
+        "attr": "OfferedAmount",
+        "op": ">",
+        "val": 10000.0,
         "time_max": None,
         "is_trap": True,
+        "trap_scope": "rule",
         "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
-        "description": "Nghĩa vụ hỗ trợ hoàn thiện hồ sơ theo Điều 7: Khi hồ sơ vay ở trạng thái chưa hoàn tất, nhân viên tín dụng bắt buộc phải tiến hành cuộc gọi hướng dẫn khách hàng bổ sung hồ sơ thiếu.",
+        "description": "Minimum financed principal threshold under Article 16(4): Prior to granting final funding approval on any credit agreement, the lender must have drafted a loan offer specifying a principal exceeding EUR 10,000 (OfferedAmount > 10000).",
     },
     {
         "rule_id": "R25",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 2(2)",
-        "template": "Existence",
-        "act_a": "A_Create Application",
-        "act_b": None,
-        "attr": "case:LoanGoal",
-        "op": "==",
-        "val": "Mortgage_RealEstate",
-        "time_max": None,
+        "article_id": "Article 18(2)",
+        "template": "Response",
+        "act_a": "A_Validating",
+        "act_b": "W_Call incomplete files",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 30,
         "is_trap": True,
-        "trap_type": "OUT_OF_DIRECTIVE_SCOPE",
-        "description": "Quy chuẩn đối tượng áp dụng Chỉ thị theo Điều 2(2): Toàn bộ các yêu cầu của Chỉ thị bắt buộc phải áp dụng đối với các khoản tín dụng vay mua nhà thế chấp bằng bất động sản.",
+        "trap_scope": "rule",
+        "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "description": "Post-validation outreach window under Article 18(2): Whenever a credit application enters formal back-office validation, staff outreach regarding incomplete borrower files must take place within 30 calendar days (one month).",
     },
     {
         "rule_id": "R26",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 8(1)",
-        "template": "Existence",
-        "act_a": "O_Create Offer",
-        "act_b": None,
-        "attr": "CreditScore",
-        "op": ">=",
-        "val": 750,
+        "article_id": "Article 9(2)",
+        "template": "Response",
+        "act_a": "A_Denied",
+        "act_b": "O_Create Offer",
+        "attr": None,
+        "op": None,
+        "val": None,
         "time_max": None,
         "is_trap": True,
-        "trap_type": "UNSUPPORTED_NUMERIC_HALLUCINATION",
-        "description": "Quy chuẩn hạn mức điểm tín dụng theo Điều 8(1): Khách hàng bắt buộc phải đạt điểm tín dụng định lượng từ 750 điểm trở lên khi ngân hàng tạo lập đề nghị vay chính thức.",
+        "trap_scope": "rule",
+        "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "description": "Post-rejection offer remediation under Article 9(2): Whenever a credit application is formally rejected, the creditor must subsequently generate a revised credit offer with updated terms for the applicant.",
     },
     {
         "rule_id": "R27",
@@ -427,56 +431,60 @@ BENCHMARK_RULES: List[Dict[str, Any]] = [
         "val": 1.0,
         "time_max": None,
         "is_trap": True,
+        "trap_scope": "schema",
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Nghĩa vụ giới hạn phí trả nợ trước hạn theo Điều 16(2): Mức phí bồi thường trả nợ trước hạn của người tiêu dùng không được vượt quá mức trần 1.0% khi ngân hàng tạo lập đề nghị vay.",
+        "description": "Early repayment compensation limit under Article 16(2): Every generated loan proposal must record an early repayment compensation fee not exceeding 1.0% of the repaid amount.",
     },
     {
         "rule_id": "R28",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 19(1)",
-        "template": "Existence",
-        "act_a": "O_Create Offer",
-        "act_b": None,
-        "attr": "AnnualPercentageRateAPR",
-        "op": "<=",
-        "val": 20.0,
-        "time_max": None,
+        "article_id": "Article 2(3)",
+        "template": "Response",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "A_Pending",
+        "attr": None,
+        "op": None,
+        "val": None,
+        "time_max": 90,
         "is_trap": True,
-        "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Quy chuẩn tỷ lệ phần trăm chi phí hàng năm theo Điều 19(1): Tỷ lệ phần trăm chi phí hàng năm của khoản vay không được vượt quá 20.0% khi ngân hàng phát hành đề nghị tín dụng.",
+        "trap_scope": "rule",
+        "trap_type": "UNSUPPORTED_BY_DIRECTIVE_TEXT",
+        "description": "Short-term credit activation window under Article 2(3): Whenever pre-contractual offer terms have been sent out to the borrower, final active credit approval must follow within 90 calendar days (three months).",
     },
     {
         "rule_id": "R29",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 2(2)",
-        "template": "Existence",
-        "act_a": "O_Create Offer",
-        "act_b": None,
-        "attr": "OfferedAmount",
-        "op": ">=",
-        "val": 200.0,
+        "article_id": "Article 5(6)",
+        "template": "Response",
+        "act_a": "O_Sent (mail and online)",
+        "act_b": "W_Call after offers",
+        "attr": "case:RequestedAmount",
+        "op": ">",
+        "val": 0,
         "time_max": None,
         "is_trap": True,
+        "trap_scope": "trace",
         "trap_type": "INAPPLICABLE_TRACE_NO_ACTIVATION",
-        "description": "Quy chuẩn mức sàn hạn mức tín dụng theo Điều 2(2)(c): Đề nghị tín dụng do ngân hàng phát hành phải có số tiền đề nghị tối thiểu từ 200 EUR trở lên.",
+        "description": "Adequate explanations duty under Article 5(6): Whenever a credit proposal involving a positive borrowing request (> 0) has been sent out to the consumer, staff follow-up to provide adequate explanations must subsequently take place.",
     },
     {
         "rule_id": "R30",
         "tier": "Tier3_BaselessTrap",
         "complexity_tier": "Tier 3: Baseless / Hallucination Traps",
-        "article_id": "Article 8(1)",
+        "article_id": "Article 10(2)",
         "template": "Existence",
         "act_a": "O_Create Offer",
         "act_b": None,
-        "attr": "CreditScore",
+        "attr": "NumberOfTerms",
         "op": ">",
         "val": 0,
         "time_max": None,
         "is_trap": True,
+        "trap_scope": "trace",
         "trap_type": "MISSING_LOG_EVIDENCE_PHI_VIOLATION",
-        "description": "Nghĩa vụ lưu trữ dữ liệu thẩm định theo Điều 8(1): Đề nghị vay chính thức do ngân hàng tạo lập bắt buộc phải có thông tin điểm tín dụng hợp lệ lớn hơn 0 được ghi nhận đầy đủ.",
+        "description": "Contractual duration disclosure under Article 10(2): Any credit proposal generated for a borrower must specify a positive repayment schedule duration (> 0 installments).",
     },
 ]
 
@@ -504,11 +512,19 @@ def _rule_to_ast_dict(r: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# Phân tách độc lập 30 quy tắc chuẩn chống Overfitting on Benchmark:
-# - Tập Development (15 quy tắc: R01–R15): Dùng để thử nghiệm, thiết kế prompt và tinh chỉnh hệ thống.
-# - Tập Held-out Test (15 quy tắc: R16–R30): Khóa kín, chỉ bấm chạy 1 lần duy nhất khi đánh giá cuối cùng.
-DEV_RULE_IDS = {f"R{i:02d}" for i in range(1, 16)}
-HELDOUT_TEST_RULE_IDS = {f"R{i:02d}" for i in range(16, 31)}
+# Stratified Development vs Held-Out Test Split across all 3 complexity tiers (15 rules each):
+# - Development (15 rules): 6 Tier 1 + 5 Tier 2 + 4 Tier 3
+# - Held-out Test (15 rules): 6 Tier 1 + 5 Tier 2 + 4 Tier 3
+DEV_RULE_IDS = {
+    "R01", "R02", "R04", "R07", "R09", "R11",
+    "R13", "R15", "R17", "R19", "R20",
+    "R23", "R25", "R27", "R29",
+}
+HELDOUT_TEST_RULE_IDS = {
+    "R03", "R05", "R06", "R08", "R10", "R12",
+    "R14", "R16", "R18", "R21", "R22",
+    "R24", "R26", "R28", "R30",
+}
 
 
 def split_benchmark_rules(
@@ -516,10 +532,10 @@ def split_benchmark_rules(
     split: str = "all",
 ) -> List[Dict[str, Any]]:
     """
-    Lọc danh sách quy tắc theo tập dữ liệu:
-    - split='dev': Chỉ trả về 15 quy tắc R01–R15 (Development Set).
-    - split='heldout_test': Chỉ trả về 15 quy tắc R16–R30 (Held-out Blind Test Set).
-    - split='all': Trả về toàn bộ 30 quy tắc R01–R30.
+    Filter rule list by split:
+    - split='dev': 15 stratified Development rules (6 Tier 1, 5 Tier 2, 4 Tier 3).
+    - split='heldout_test': 15 stratified Held-out Blind Test rules (6 Tier 1, 5 Tier 2, 4 Tier 3).
+    - split='all': all 30 rules R01-R30.
     """
     norm_split = split.lower().strip()
     if norm_split == "dev":
@@ -535,7 +551,8 @@ def build_normative_rule_benchmark(
 ) -> List[Dict[str, Any]]:
     """
     Khởi tạo bộ quy tắc chuẩn gắn kèm đoạn văn bản gốc từ directive_chunks.json
-    và nhãn phân tập `dataset_split` ('dev' cho R01–R15, 'heldout_test' cho R16–R30).
+    và nhãn phân tập `dataset_split` theo phân tầng `DEV_RULE_IDS` (R01–R05, R08–R13, R23–R26)
+    và `HELDOUT_TEST_RULE_IDS` (15 quy tắc còn lại across all tiers).
     """
     enriched_chunks = dict(chunks_by_id)
     if "Annex I(II)" not in enriched_chunks:
@@ -575,13 +592,13 @@ def build_normative_rule_benchmark(
             "time_unit": "d",
         },
         "R13": {
-            "article_id": "Article 2(2)",
-            "template_name": "Existence",
+            "article_id": "Article 4(2)",
+            "template_name": "Precedence",
             "activation_activity": "O_Create Offer",
-            "target_activity": None,
-            "activation_attr": "LoanOfferedEUR",
-            "activation_op": ">=",
-            "activation_val": 200.0,
+            "target_activity": "O_Sent (mail and online)",
+            "activation_attr": "TotalCreditEUR",
+            "activation_op": ">",
+            "activation_val": 0.0,
             "time_min": 0,
             "time_max": None,
             "time_unit": "d",
@@ -636,7 +653,7 @@ def load_annotated_trace_benchmark(
       - `rule_id` (`R01`..`R30`)
       - `ground_truth_label` (`ENTAILED` | `CONTRADICTED` | `BASELESS`)
       - `annotator_notes` / `trace_origin` (tùy chọn)
-    Hàm tự động lọc theo `split` ('dev': R01–R15, 'heldout_test': R16–R30, hoặc 'all').
+    Hàm tự động lọc theo `split` ('dev': 15 quy tắc `DEV_RULE_IDS`, 'heldout_test': 15 quy tắc `HELDOUT_TEST_RULE_IDS`, hoặc 'all').
     """
     ann_file = Path(annotations_path)
     if not ann_file.exists():
@@ -704,7 +721,7 @@ def build_stratified_trace_benchmark(
 ) -> List[Dict[str, Any]]:
     """
     Xây dựng hoặc nạp Bộ Hồ sơ Kiểm thử Phân tầng (Stratified Trace Benchmark) hỗ trợ tách tập
-    `split` ('dev': R01–R15, 'heldout_test': R16–R30, hoặc 'all'):
+    `split` ('dev': 15 quy tắc `DEV_RULE_IDS`, 'heldout_test': 15 quy tắc `HELDOUT_TEST_RULE_IDS`, hoặc 'all'):
     - Nếu `annotations_path` được cung cấp (hoặc tệp `data/processed/bpic2017_annotated_traces.json` tồn tại),
       ưu tiên nạp trực tiếp nhãn thực tế từ file gán nhãn độc lập (`load_annotated_trace_benchmark`).
     - Nếu chưa có file gán nhãn thủ công (ví dụ khi chạy unit test), trích xuất phân tầng từ `df_propagated`
@@ -719,6 +736,39 @@ def build_stratified_trace_benchmark(
             normative_rules=normative_rules,
             split=split,
         )
+
+    norm_split = split.lower().strip()
+    if norm_split == "all":
+        total_per_class = target_total_items // 3
+        dev_per_class = total_per_class // 2
+        test_per_class = total_per_class - dev_per_class
+        if dev_per_class > 0 and test_per_class > 0:
+            dev_items = build_stratified_trace_benchmark(
+                df_propagated=df_propagated,
+                df_raw=df_raw,
+                normative_rules=normative_rules,
+                target_total_items=dev_per_class * 3,
+                split="dev",
+                annotations_path=annotations_path,
+            )
+            test_items = build_stratified_trace_benchmark(
+                df_propagated=df_propagated,
+                df_raw=df_raw,
+                normative_rules=normative_rules,
+                target_total_items=test_per_class * 3,
+                split="heldout_test",
+                annotations_path=annotations_path,
+            )
+            combined_ent = [x for x in dev_items + test_items if x["ground_truth_label"] == "ENTAILED"]
+            combined_con = [x for x in dev_items + test_items if x["ground_truth_label"] == "CONTRADICTED"]
+            combined_bas = [x for x in dev_items + test_items if x["ground_truth_label"] == "BASELESS"]
+            for i, it in enumerate(combined_ent, 1):
+                it["benchmark_id"] = f"ENT-{i:04d}"
+            for i, it in enumerate(combined_con, 1):
+                it["benchmark_id"] = f"CON-{i:04d}"
+            for i, it in enumerate(combined_bas, 1):
+                it["benchmark_id"] = f"BAS-{i:04d}"
+            return combined_ent + combined_con + combined_bas
 
     per_class_quota = target_total_items // 3
     active_rules = split_benchmark_rules(normative_rules, split=split)
@@ -747,7 +797,7 @@ def build_stratified_trace_benchmark(
                         "has_numeric_bound": r.get("time_max") is not None or r.get("val") is not None,
                     },
                 )
-                r["dataset_split"] = "heldout_test"
+                r["dataset_split"] = "dev" if r["rule_id"] in DEV_RULE_IDS else "heldout_test"
                 r["retrieved_chunk"] = chunk
                 r["is_baseless_trap"] = True
                 r["gold_ast"] = None
@@ -762,14 +812,19 @@ def build_stratified_trace_benchmark(
         for r in active_norm
     }
 
-    # Đảm bảo phân rã và lập chỉ mục nhanh danh sách case, ưu tiên các case trễ hạn thực tế của R22
-    REAL_LATE_PENDING_CASES = [
-        "Application_1108271369", "Application_1171453988", "Application_130761111",
-        "Application_1499090661", "Application_157155173", "Application_1677498057",
-        "Application_1741752833", "Application_1838182698", "Application_1875888758",
-        "Application_2037628374",
-    ]
-    unique_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_propagated["case:concept:name"].drop_duplicates().iloc[:600].tolist()))
+    # Index cases across df_propagated; keep DEV and HELDOUT_TEST case-disjoint on full datasets (>= 200 cases)
+    all_cids = df_propagated["case:concept:name"].drop_duplicates().tolist()
+    norm_s = split.lower().strip()
+    if len(all_cids) >= 200:
+        half = len(all_cids) // 2
+        if norm_s == "dev":
+            unique_cids = all_cids[:half]
+        elif norm_s in ("heldout_test", "test", "heldout"):
+            unique_cids = all_cids[half:]
+        else:
+            unique_cids = all_cids[:5000]
+    else:
+        unique_cids = all_cids[:5000]
     sub_prop = df_propagated[df_propagated["case:concept:name"].isin(unique_cids)]
     grouped_prop = {
         cid: grp.sort_values("time:timestamp").reset_index(drop=True)
@@ -780,62 +835,184 @@ def build_stratified_trace_benchmark(
     contradicted_items: List[Dict[str, Any]] = []
     baseless_items: List[Dict[str, Any]] = []
 
-    max_per_rule = max(per_class_quota // max(len(active_norm), 1) + 2, 2)
+    strict_unique_cids = len(grouped_prop) >= max(200, per_class_quota * 2)
+    n_norm = max(len(active_norm), 1)
+    base_q, rem_q = divmod(per_class_quota, n_norm)
+    ent_targets = {r["rule_id"]: base_q + (1 if i < rem_q else 0) for i, r in enumerate(active_norm)}
+    con_targets = {r["rule_id"]: base_q + (1 if i < rem_q else 0) for i, r in enumerate(active_norm)}
 
-    for cid, case_df in grouped_prop.items():
-        acts = set(case_df["concept:name"])
-        for r in active_norm:
+    def _scarcity_rank(rule_dict: Dict[str, Any]) -> Tuple[int, str]:
+        tpl = rule_dict.get("template", "")
+        acts_str = f"{rule_dict.get('act_a') or ''} {rule_dict.get('act_b') or ''}"
+        if rule_dict.get("time_max") is not None:
+            return (0, rule_dict["rule_id"])
+        if tpl == "Not Co-Existence":
+            return (1, rule_dict["rule_id"])
+        if any(tok in acts_str for tok in ("A_Cancelled", "O_Accepted", "W_Call after offers", "O_Cancelled")):
+            return (2, rule_dict["rule_id"])
+        if rule_dict.get("attr") is not None:
+            return (3, rule_dict["rule_id"])
+        return (4, rule_dict["rule_id"])
+
+    def _is_non_vacuous_match(case_df: pd.DataFrame, acts: set, gast: DeclareConstraintAST) -> Tuple[bool, Optional[bool]]:
+        tpl = gast.template_name
+        act_a = gast.activation_activity
+        act_b = gast.target_activity
+        if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
+            if act_b not in acts:
+                return False, None
+            if act_a not in acts:
+                is_c, _ = check_single_trace_semantics(case_df, gast)
+                return (not is_c), (False if not is_c else None)
+        elif tpl in ("Response", "Alternate Response", "Chain Response"):
+            if act_a not in acts:
+                return False, None
+        elif tpl == "Not Co-Existence":
+            if act_a not in acts and act_b not in acts:
+                return False, None
+        elif tpl in ("Existence", "Absence"):
+            if act_a not in acts:
+                return False, None
+        is_comp, _ = check_single_trace_semantics(case_df, gast)
+        return True, is_comp
+
+    used_real_cids: set[str] = set()
+    ent_counts = {r["rule_id"]: 0 for r in active_norm}
+    con_counts = {r["rule_id"]: 0 for r in active_norm}
+    rule_ent_dfs: Dict[str, List[pd.DataFrame]] = {r["rule_id"]: [] for r in active_norm}
+    rules_ordered_scarce = sorted(active_norm, key=_scarcity_rank)
+
+    if strict_unique_cids:
+        # Pass 1A: Reserve 1 real BPIC 2017 trace with `act_a in acts and act_b not in acts` per Precedence-family rule
+        # (when target quota >= 4) so wrongly reversing Precedence -> Response cannot score 100% on ENTAILED.
+        for r in rules_ordered_scarce:
             rid = r["rule_id"]
             gast = candidate_gold_asts[rid]
-            tpl = gast.template_name
+            if gast.template_name not in ("Precedence", "Alternate Precedence", "Chain Precedence"):
+                continue
+            if ent_targets[rid] < 4:
+                continue
             act_a = gast.activation_activity
             act_b = gast.target_activity
+            for cid, case_df in grouped_prop.items():
+                if cid in used_real_cids:
+                    continue
+                acts = set(case_df["concept:name"])
+                if act_a in acts and act_b and act_b not in acts:
+                    is_comp, _ = check_single_trace_semantics(case_df, gast)
+                    if is_comp:
+                        used_real_cids.add(cid)
+                        ent_counts[rid] += 1
+                        rule_ent_dfs[rid].append(case_df)
+                        entailed_items.append({
+                            "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+                            "rule_id": rid,
+                            "rule_meta": r,
+                            "retrieved_chunk": r["retrieved_chunk"],
+                            "test_case_df": case_df,
+                            "ground_truth_label": "ENTAILED",
+                            "trace_origin": f"BPIC2017_REAL_COMPLIANT_A_ONLY_{rid}",
+                        })
+                        break
 
-            # Bộ lọc kích hoạt không rỗng (Non-Vacuous Activation Check):
-            # 1. Precedence: Hoạt động đích B bắt buộc phải xảy ra trong hồ sơ
-            if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
+        # Pass 1A-bis: For Not Co-Existence(A, B) rules, reserve up to 2 real A-only traces (A present, B absent)
+        # so ENTAILED covers both A-only and B-only compliant sides rather than collapsing onto only B-side co-occurring events.
+        for r in rules_ordered_scarce:
+            rid = r["rule_id"]
+            gast = candidate_gold_asts[rid]
+            if gast.template_name != "Not Co-Existence" or ent_targets[rid] < 4:
+                continue
+            act_a = gast.activation_activity
+            act_b = gast.target_activity
+            reserved_a_only = 0
+            for cid, case_df in grouped_prop.items():
+                if reserved_a_only >= 2 or ent_counts[rid] >= ent_targets[rid]:
+                    break
+                if cid in used_real_cids:
+                    continue
+                acts = set(case_df["concept:name"])
+                if act_a in acts and act_b and act_b not in acts:
+                    is_comp, _ = check_single_trace_semantics(case_df, gast)
+                    if is_comp:
+                        used_real_cids.add(cid)
+                        ent_counts[rid] += 1
+                        reserved_a_only += 1
+                        rule_ent_dfs[rid].append(case_df)
+                        entailed_items.append({
+                            "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+                            "rule_id": rid,
+                            "rule_meta": r,
+                            "retrieved_chunk": r["retrieved_chunk"],
+                            "test_case_df": case_df,
+                            "ground_truth_label": "ENTAILED",
+                            "trace_origin": f"BPIC2017_REAL_COMPLIANT_A_ONLY_{rid}",
+                        })
+
+        # Pass 1A-ter: For directional prohibitions (Not Response / Not Precedence), inject up to 2 compliant
+        # B-before-A boundary traces (if no real B-before-A case exists) so stricter Not Co-Existence fails on ENTAILED.
+        distinct_prop_list = list(grouped_prop.items())
+        for r in rules_ordered_scarce:
+            rid = r["rule_id"]
+            gast = candidate_gold_asts[rid]
+            if gast.template_name not in ("Not Response", "Not Precedence") or ent_targets[rid] < 4:
+                continue
+            act_a = gast.activation_activity
+            act_b = gast.target_activity
+            if not act_b:
+                continue
+            b_before_a_added = 0
+            for cid, case_df in distinct_prop_list:
+                if b_before_a_added >= 2 or ent_counts[rid] >= ent_targets[rid]:
+                    break
+                acts = set(case_df["concept:name"])
+                if act_a not in acts:
+                    continue
+                cand_df = case_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
                 if act_b not in acts:
-                    continue
-                # R18 now applies to all cases
-                if rid == "R17":
-                    score = case_df["CreditScore"].max()
-                    if pd.isna(score) or score <= 0:
-                        continue
-                if act_a not in acts:
-                    # Vi phạm tiền đề thực tế
-                    is_c, d_info = check_single_trace_semantics(case_df, gast)
-                    if not is_c and len(contradicted_items) < per_class_quota:
-                        if sum(1 for x in contradicted_items if x["rule_id"] == rid) < max_per_rule:
-                            contradicted_items.append({
-                                "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
-                                "rule_id": rid,
-                                "rule_meta": r,
-                                "retrieved_chunk": r["retrieved_chunk"],
-                                "test_case_df": case_df,
-                                "ground_truth_label": "CONTRADICTED",
-                                "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
-                            })
-                    continue
+                    t_min = cand_df["time:timestamp"].min()
+                    new_b = cand_df.iloc[0].copy()
+                    new_b["concept:name"] = act_b
+                    new_b["time:timestamp"] = t_min - pd.Timedelta(hours=1)
+                    cand_df = pd.concat([pd.DataFrame([new_b]), cand_df], ignore_index=True)
+                    cand_df = cand_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+                is_comp, _ = check_single_trace_semantics(cand_df, gast)
+                if is_comp:
+                    t_first_a = cand_df.loc[cand_df["concept:name"] == act_a, "time:timestamp"].min()
+                    has_b_before_a = bool(((cand_df["concept:name"] == act_b) & (cand_df["time:timestamp"] < t_first_a)).any())
+                    if has_b_before_a:
+                        seed_b4a = (abs(hash(f"{cid}_b_before_a_{rid}_{b_before_a_added}")) % 900000000) + 100000000
+                        cand_df["case:concept:name"] = f"Application_{seed_b4a}"
+                        ent_counts[rid] += 1
+                        b_before_a_added += 1
+                        rule_ent_dfs[rid].append(cand_df)
+                        entailed_items.append({
+                            "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+                            "rule_id": rid,
+                            "rule_meta": r,
+                            "retrieved_chunk": r["retrieved_chunk"],
+                            "test_case_df": cand_df,
+                            "ground_truth_label": "ENTAILED",
+                            "trace_origin": f"SYNTHETIC_COMPLIANT_B_BEFORE_A_{rid}",
+                        })
 
-            # 2. Response: Hoạt động kích hoạt A bắt buộc phải xảy ra trong hồ sơ
-            elif tpl in ("Response", "Alternate Response", "Chain Response"):
-                if act_a not in acts:
-                    continue
-                # R22 Response check
-
-            # 3. Not Co-Existence: Ít nhất một trong hai hoạt động phải xảy ra
-            elif tpl == "Not Co-Existence":
-                if act_a not in acts and act_b not in acts:
-                    continue
-
-            # 4. Existence & Absence
-            elif tpl in ("Existence", "Absence"):
-                if act_a not in acts:
-                    continue
-
-            is_comp, details = check_single_trace_semantics(case_df, gast)
-            if is_comp and len(entailed_items) < per_class_quota:
-                if sum(1 for x in entailed_items if x["rule_id"] == rid) < max_per_rule:
+        # Pass 1B: Assign at most ONE ENTAILED item per real trace (scarce rules get priority first)
+        # Guaranteeing balanced coverage across all rules AND 100% unique Case IDs.
+        for cid, case_df in grouped_prop.items():
+            if cid in used_real_cids:
+                continue
+            if len(entailed_items) >= per_class_quota:
+                break
+            needing_ent = [r for r in rules_ordered_scarce if ent_counts[r["rule_id"]] < ent_targets[r["rule_id"]]]
+            if not needing_ent:
+                break
+            acts = set(case_df["concept:name"])
+            for r in needing_ent:
+                rid = r["rule_id"]
+                ok_act, is_comp = _is_non_vacuous_match(case_df, acts, candidate_gold_asts[rid])
+                if ok_act and is_comp is True:
+                    used_real_cids.add(cid)
+                    ent_counts[rid] += 1
+                    rule_ent_dfs[rid].append(case_df)
                     entailed_items.append({
                         "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
                         "rule_id": rid,
@@ -845,8 +1022,29 @@ def build_stratified_trace_benchmark(
                         "ground_truth_label": "ENTAILED",
                         "trace_origin": f"BPIC2017_REAL_COMPLIANT_{rid}",
                     })
-            elif not is_comp and len(contradicted_items) < per_class_quota:
-                if sum(1 for x in contradicted_items if x["rule_id"] == rid) < max_per_rule:
+                    break
+
+        # Pass 2: Scan up to 1,500 UNUSED real traces for natural CONTRADICTED items (scarce rules first)
+        unused_scan_count = 0
+        for cid, case_df in grouped_prop.items():
+            if cid in used_real_cids:
+                continue
+            unused_scan_count += 1
+            if len(contradicted_items) >= per_class_quota or unused_scan_count > 1500:
+                break
+            needing_con = sorted(
+                [r for r in rules_ordered_scarce if con_counts[r["rule_id"]] < con_targets[r["rule_id"]]],
+                key=lambda r: (con_counts[r["rule_id"]], _scarcity_rank(r)),
+            )
+            if not needing_con:
+                break
+            acts = set(case_df["concept:name"])
+            for r in needing_con:
+                rid = r["rule_id"]
+                ok_act, is_comp = _is_non_vacuous_match(case_df, acts, candidate_gold_asts[rid])
+                if ok_act and is_comp is False:
+                    used_real_cids.add(cid)
+                    con_counts[rid] += 1
                     contradicted_items.append({
                         "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
                         "rule_id": rid,
@@ -856,13 +1054,55 @@ def build_stratified_trace_benchmark(
                         "ground_truth_label": "CONTRADICTED",
                         "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
                     })
+                    break
+    else:
+        # Small synthetic logs (e.g. unit tests with 4-10 cases): reuse traces cleanly per rule quota
+        ent_cands_small: Dict[str, List[pd.DataFrame]] = {r["rule_id"]: [] for r in active_norm}
+        con_cands_small: Dict[str, List[pd.DataFrame]] = {r["rule_id"]: [] for r in active_norm}
+        for _, case_df in grouped_prop.items():
+            acts = set(case_df["concept:name"])
+            for r in active_norm:
+                rid = r["rule_id"]
+                ok_act, is_comp = _is_non_vacuous_match(case_df, acts, candidate_gold_asts[rid])
+                if not ok_act:
+                    continue
+                if is_comp is True:
+                    ent_cands_small[rid].append(case_df)
+                elif is_comp is False:
+                    con_cands_small[rid].append(case_df)
+        for r in active_norm:
+            rid = r["rule_id"]
+            if ent_cands_small[rid]:
+                rule_ent_dfs[rid] = list(ent_cands_small[rid])
+                for k in range(ent_targets[rid]):
+                    ent_counts[rid] += 1
+                    entailed_items.append({
+                        "benchmark_id": f"ENT-{len(entailed_items) + 1:04d}",
+                        "rule_id": rid,
+                        "rule_meta": r,
+                        "retrieved_chunk": r["retrieved_chunk"],
+                        "test_case_df": ent_cands_small[rid][k % len(ent_cands_small[rid])],
+                        "ground_truth_label": "ENTAILED",
+                        "trace_origin": f"BPIC2017_REAL_COMPLIANT_{rid}",
+                    })
+            for cdf in con_cands_small[rid][: con_targets[rid]]:
+                con_counts[rid] += 1
+                contradicted_items.append({
+                    "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
+                    "rule_id": rid,
+                    "rule_meta": r,
+                    "retrieved_chunk": r["retrieved_chunk"],
+                    "test_case_df": cdf,
+                    "ground_truth_label": "CONTRADICTED",
+                    "trace_origin": f"BPIC2017_REAL_VIOLATION_{rid}",
+                })
 
-        if len(entailed_items) >= per_class_quota and len(contradicted_items) >= per_class_quota:
-            break
-
-    # Nếu còn thiếu ENTAILED (rất hiếm khi xảy ra), tiếp tục nạp hồ sơ kích hoạt
-    base_compliant_df = entailed_items[0]["test_case_df"] if entailed_items else df_propagated.iloc[:15].copy()
-    base_cases_by_rule = {it["rule_id"]: it["test_case_df"] for it in entailed_items}
+    base_cases_by_rule = {rid: dfs[0] for rid, dfs in rule_ent_dfs.items() if dfs}
+    base_compliant_df = (
+        entailed_items[0]["test_case_df"]
+        if entailed_items
+        else df_propagated.iloc[:15].copy()
+    )
 
     while len(entailed_items) < per_class_quota:
         r_choice = active_norm[len(entailed_items) % len(active_norm)]
@@ -878,99 +1118,315 @@ def build_stratified_trace_benchmark(
             "trace_origin": f"BPIC2017_COMPLIANT_{rid}",
         })
 
-    # Bổ sung CONTRADICTED bằng Tiêm lỗi Ngữ nghĩa Chuẩn mực (Semantic Fault Injection)
+    def _sample_near_boundary_violation_value(
+        op: Optional[str],
+        val: Any,
+        seed_num: int,
+    ) -> Any:
+        if isinstance(val, bool):
+            return not bool(val)
+        if isinstance(val, str):
+            return "__INVALID_STR_VAL__" if op == "==" else val
+        try:
+            num_val = float(val)
+        except (TypeError, ValueError):
+            return 0.0
+        if op == ">":
+            if num_val <= 0.0:
+                return 0.0
+            if num_val < 50.0:
+                step = float(1 + (seed_num % max(1, min(4, int(num_val)))))
+                return max(0.0, num_val - step)
+            if num_val < 1000.0:
+                return max(0.0, num_val - float(10 + (seed_num % 7) * 5))
+            return max(0.0, num_val - float(500 + (seed_num % 7) * 500))
+        if op == ">=":
+            if num_val <= 0.0:
+                return 0.0
+            step = 1.0 if num_val < 50.0 else (float(10 + (seed_num % 5) * 10) if num_val < 1000.0 else float(250 + (seed_num % 5) * 250))
+            return max(0.0, num_val - step)
+        if op in ("<", "<="):
+            step = 1.0 if num_val < 50.0 else (float(10 + (seed_num % 5) * 10) if num_val < 1000.0 else float(500 + (seed_num % 9) * 500))
+            return num_val + step
+        return num_val + 1.0
+
+    def _realistic_offset(seed_num: int, min_minutes: int = 19, span_minutes: int = 135) -> pd.Timedelta:
+        mins = min_minutes + (seed_num % span_minutes)
+        secs = 7 + ((seed_num // 13) % 49)
+        return pd.Timedelta(minutes=mins, seconds=secs)
+
+    # Supplement CONTRADICTED strictly for rules with insufficient natural violations via counterfactual fault injection
+    rules_needing_con: List[Dict[str, Any]] = []
+    for r in active_norm:
+        deficit = con_targets[r["rule_id"]] - con_counts[r["rule_id"]]
+        for _ in range(max(deficit, 0)):
+            rules_needing_con.append(r)
+    if not rules_needing_con:
+        rules_needing_con = list(active_norm)
+    con_fill_idx = 0
     while len(contradicted_items) < per_class_quota:
         idx = len(contradicted_items)
-        inj_rule = active_norm[idx % len(active_norm)]
+        inj_rule = rules_needing_con[con_fill_idx % len(rules_needing_con)]
+        con_fill_idx += 1
         rid = inj_rule["rule_id"]
         gast = candidate_gold_asts[rid]
         tpl = gast.template_name
         act_a = gast.activation_activity
         act_b = gast.target_activity
 
-        base_df = base_cases_by_rule.get(rid, base_compliant_df).copy()
+        rule_cand_list = rule_ent_dfs.get(rid, [])
+        if rule_cand_list:
+            base_df = rule_cand_list[con_fill_idx % len(rule_cand_list)].copy()
+        else:
+            base_df = base_cases_by_rule.get(rid, base_compliant_df).copy()
         injected_df = base_df.copy()
         orig_cid = str(base_df["case:concept:name"].iloc[0])
-        seed_num = (abs(hash(f"{orig_cid}_{idx}")) % 900000000) + 100000000
+        seed_num = (abs(hash(f"{orig_cid}_{idx}_{con_fill_idx}")) % 900000000) + 100000000
         injected_df["case:concept:name"] = f"Application_{seed_num}"
 
         if tpl in ("Precedence", "Alternate Precedence", "Chain Precedence"):
-            # Đảm bảo hoạt động đích B có mặt và xóa A đi trước
+            mode_idx = con_counts[rid]
+            injected_done = False
+
+            # Ensure act_b exists in trace so Precedence can actually trigger
             if act_b not in set(injected_df["concept:name"]):
                 new_row = injected_df.iloc[-1].copy()
                 new_row["concept:name"] = act_b
-                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                new_row["time:timestamp"] = new_row["time:timestamp"] + _realistic_offset(seed_num)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
-            injected_df = injected_df[injected_df["concept:name"] != act_a].reset_index(drop=True)
-            if rid == "R18":
-                injected_df["OfferedAmount"] = 15000.0
-            if rid == "R17":
-                injected_df["CreditScore"] = 750.0
+
+            if gast.activation_attr:
+                attr_col = gast.activation_attr
+                if attr_col in injected_df.columns and injected_df[attr_col].isna().all():
+                    injected_df[attr_col] = 750.0 if attr_col == "CreditScore" else 100.0
+
+            # Mode A (Tier 2 data-aware Precedence, round % 3 == 0): violate attribute guard while preserving A -> B order
+            if (
+                tpl in ("Precedence", "Alternate Precedence")
+                and gast.activation_attr
+                and mode_idx % 3 == 0
+                and act_a in set(injected_df["concept:name"])
+            ):
+                cand_df = injected_df.copy()
+                bad_val = _sample_near_boundary_violation_value(gast.activation_op, gast.activation_val, seed_num)
+                if gast.activation_attr in ("case:RequestedAmount", "RequestedAmount"):
+                    cand_df["case:RequestedAmount"] = bad_val
+                    if "RequestedAmount" in cand_df.columns:
+                        cand_df["RequestedAmount"] = bad_val
+                else:
+                    cand_df[gast.activation_attr] = bad_val
+                is_c_attr, _ = check_single_trace_semantics(cand_df, gast)
+                if not is_c_attr:
+                    injected_df = cand_df
+                    injected_done = True
+
+            # Mode B (Chain Precedence, even rounds): insert an intervening event between A and B
+            # so Precedence(A,B) falsely accepts while Chain Precedence(A,B) detects the direct-adjacency break.
+            if (
+                not injected_done
+                and tpl == "Chain Precedence"
+                and mode_idx % 2 == 0
+                and act_a in set(injected_df["concept:name"])
+            ):
+                cand_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+                non_ab_idxs = cand_df.index[~cand_df["concept:name"].isin([act_a, act_b])].tolist()
+                if non_ab_idxs:
+                    a_idxs = cand_df.index[cand_df["concept:name"] == act_a].tolist()
+                    b_idxs = cand_df.index[cand_df["concept:name"] == act_b].tolist()
+                    # Insert a non-(A,B) filler between every direct A->B pair
+                    new_rows = []
+                    filler_row = cand_df.loc[non_ab_idxs[0]].copy()
+                    for b_i in b_idxs:
+                        prev_rows = [ai for ai in a_idxs if ai < b_i]
+                        if prev_rows:
+                            a_i = prev_rows[-1]
+                            t_a = cand_df.at[a_i, "time:timestamp"]
+                            t_b = cand_df.at[b_i, "time:timestamp"]
+                            if t_b <= t_a:
+                                cand_df.at[b_i, "time:timestamp"] = t_a + pd.Timedelta(seconds=4)
+                                t_b = cand_df.at[b_i, "time:timestamp"]
+                            f_copy = filler_row.copy()
+                            f_copy["time:timestamp"] = t_a + (t_b - t_a) / 2
+                            new_rows.append(f_copy)
+                    if new_rows:
+                        cand_df = (
+                            pd.concat([cand_df, pd.DataFrame(new_rows)], ignore_index=True)
+                            .sort_values("time:timestamp", kind="mergesort")
+                            .reset_index(drop=True)
+                        )
+                        is_c_gap, _ = check_single_trace_semantics(cand_df, gast)
+                        if not is_c_gap:
+                            injected_df = cand_df
+                            injected_done = True
+
+            # Mode C (Precedence / Alternate Precedence):
+            # ORDER_INVERSION — move first act_b BEFORE first act_a while keeping act_a (and valid attrs) intact.
+            # This catches wrong target_activity substitutions and unary Existence collapses on data-aware rules.
+            order_inv_turn = (mode_idx % 3 == 1) if gast.activation_attr else (mode_idx % 2 == 0)
+            if (
+                not injected_done
+                and tpl in ("Precedence", "Alternate Precedence")
+                and order_inv_turn
+                and act_a in set(injected_df["concept:name"])
+            ):
+                cand_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+                t_first_a = cand_df.loc[cand_df["concept:name"] == act_a, "time:timestamp"].min()
+                t_min_trace = cand_df["time:timestamp"].min()
+                early_t = min(t_first_a, t_min_trace) - pd.Timedelta(hours=1)
+                first_b_idx = cand_df.index[cand_df["concept:name"] == act_b].tolist()[0]
+                cand_df.at[first_b_idx, "time:timestamp"] = early_t
+                cand_df = cand_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+                is_c_inv, _ = check_single_trace_semantics(cand_df, gast)
+                if not is_c_inv:
+                    injected_df = cand_df
+                    injected_done = True
+
+            # Fallback / Odd rounds: delete act_a (MISSING_PREREQUISITE)
+            if not injected_done:
+                injected_df = injected_df[injected_df["concept:name"] != act_a].reset_index(drop=True)
         elif tpl in ("Response", "Alternate Response", "Chain Response"):
-            # Đảm bảo hoạt động kích hoạt A có mặt để kích hoạt nghĩa vụ
             if act_a not in set(injected_df["concept:name"]):
                 new_row = injected_df.iloc[-1].copy()
                 new_row["concept:name"] = act_a
-                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                new_row["time:timestamp"] = new_row["time:timestamp"] + _realistic_offset(seed_num)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
-            if gast.time_max is not None:
+            if gast.activation_attr and gast.activation_val is not None:
+                attr_col = gast.activation_attr
+                if attr_col not in injected_df.columns:
+                    injected_df[attr_col] = None
+                if gast.activation_op == "==":
+                    injected_df.loc[injected_df["concept:name"] == act_a, attr_col] = gast.activation_val
+                    if attr_col.startswith("case:"):
+                        injected_df[attr_col] = gast.activation_val
+                elif gast.activation_op in (">", ">="):
+                    try:
+                        injected_df.loc[injected_df["concept:name"] == act_a, attr_col] = float(gast.activation_val) + 100.0
+                    except (ValueError, TypeError):
+                        pass
+            injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+            if tpl == "Chain Response" and gast.time_max is None and (con_counts[rid] % 2 == 1) and act_b in set(injected_df["concept:name"]):
+                idx_a_list = injected_df.index[injected_df["concept:name"] == act_a].tolist()
+                if idx_a_list:
+                    ia = idx_a_list[0]
+                    t_a = injected_df.loc[ia, "time:timestamp"]
+                    other_acts = [c for c in injected_df["concept:name"].tolist() if c not in (act_a, act_b)]
+                    gap_row = injected_df.loc[ia].copy()
+                    gap_row["concept:name"] = other_acts[seed_num % len(other_acts)] if other_acts else "W_Complete application"
+                    gap_row["time:timestamp"] = t_a + pd.Timedelta(seconds=5 + (seed_num % 11))
+                    # Shift any events strictly after t_a forward so gap sits immediately after act_a
+                    after_mask = injected_df.index > ia
+                    if after_mask.any():
+                        injected_df.loc[after_mask, "time:timestamp"] = injected_df.loc[after_mask, "time:timestamp"] + pd.Timedelta(seconds=20 + (seed_num % 15))
+                    injected_df = pd.concat([injected_df, pd.DataFrame([gap_row])], ignore_index=True)
+                    injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+            elif gast.time_max is not None:
                 if act_b in set(injected_df["concept:name"]):
                     mask_b = injected_df["concept:name"] == act_b
-                    t_first = injected_df["time:timestamp"].min()
-                    injected_df.loc[mask_b, "time:timestamp"] = t_first + pd.Timedelta(days=gast.time_max + 30)
+                    a_mask = injected_df["concept:name"] == act_a
+                    t_anchor_a = (
+                        injected_df.loc[a_mask, "time:timestamp"].max()
+                        if a_mask.any()
+                        else injected_df["time:timestamp"].min()
+                    )
+                    u_norm = str(getattr(gast, "time_unit", None) or "d").strip().lower()
+                    u_scale = {"s": 1.0 / 86400.0, "sec": 1.0 / 86400.0, "m": 1.0 / 1440.0, "min": 1.0 / 1440.0, "h": 1.0 / 24.0, "hr": 1.0 / 24.0, "hour": 1.0 / 24.0, "hours": 1.0 / 24.0, "d": 1.0, "day": 1.0, "days": 1.0, "w": 7.0, "wk": 7.0, "week": 7.0, "weeks": 7.0, "month": 30.0, "months": 30.0}.get(u_norm, 1.0)
+                    limit_days = float(gast.time_max) * u_scale
+                    extra_days = float(2 + (seed_num % 5)) if limit_days >= 1.0 else max(0.5, limit_days * 0.5)
+                    target_ts = t_anchor_a + pd.Timedelta(
+                        days=limit_days + extra_days,
+                        hours=1 + (seed_num % 7),
+                        minutes=3 + ((seed_num // 7) % 47),
+                        seconds=1 + ((seed_num // 17) % 53),
+                    )
+                    if target_ts.weekday() >= 5:
+                        target_ts = target_ts + pd.Timedelta(days=7 - target_ts.weekday())
+                    b_indices = injected_df.index[mask_b].tolist()
+                    for k_b, bi in enumerate(b_indices):
+                        injected_df.at[bi, "time:timestamp"] = target_ts + pd.Timedelta(seconds=k_b * 17)
+                    injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
                 else:
                     injected_df = injected_df[injected_df["concept:name"] != act_b].reset_index(drop=True)
             else:
-                # Xóa phản hồi B để nghĩa vụ kích hoạt bởi A bị vi phạm
                 injected_df = injected_df[injected_df["concept:name"] != act_b].reset_index(drop=True)
+        elif tpl in ("Not Response", "Not Precedence"):
+            if act_a not in set(injected_df["concept:name"]):
+                new_a = injected_df.iloc[0].copy()
+                new_a["concept:name"] = act_a
+                new_a["time:timestamp"] = injected_df["time:timestamp"].min() - _realistic_offset(seed_num)
+                injected_df = pd.concat([pd.DataFrame([new_a]), injected_df], ignore_index=True)
+                injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
+            t_first_a = injected_df.loc[injected_df["concept:name"] == act_a, "time:timestamp"].min()
+            has_b_after_a = bool(
+                ((injected_df["concept:name"] == act_b) & (injected_df["time:timestamp"] > t_first_a)).any()
+            )
+            if not has_b_after_a:
+                new_b = injected_df.iloc[-1].copy()
+                new_b["concept:name"] = act_b
+                delta_h = _realistic_offset(seed_num + 31)
+                t_cand = t_first_a + delta_h
+                max_t = injected_df["time:timestamp"].max()
+                if gast.time_max is None and max_t > t_cand:
+                    t_cand = max_t + delta_h
+                new_b["time:timestamp"] = t_cand
+                injected_df = pd.concat([injected_df, pd.DataFrame([new_b])], ignore_index=True)
+                injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
         elif tpl == "Not Co-Existence":
-            # Đảm bảo cả hai hoạt động cùng có mặt để vi phạm loại trừ lẫn nhau
+            if rule_cand_list and act_b:
+                a_only_cands = [
+                    d for d in rule_cand_list
+                    if act_a in set(d["concept:name"]) and act_b not in set(d["concept:name"])
+                ]
+                b_only_cands = [
+                    d for d in rule_cand_list
+                    if act_b in set(d["concept:name"]) and act_a not in set(d["concept:name"])
+                ]
+                if con_counts[rid] % 2 == 0 and a_only_cands:
+                    injected_df = a_only_cands[(con_counts[rid] // 2) % len(a_only_cands)].copy()
+                    injected_df["case:concept:name"] = f"Application_{seed_num}"
+                elif b_only_cands:
+                    injected_df = b_only_cands[con_counts[rid] % len(b_only_cands)].copy()
+                    injected_df["case:concept:name"] = f"Application_{seed_num}"
             if act_a not in set(injected_df["concept:name"]):
                 new_row_a = injected_df.iloc[-1].copy()
                 new_row_a["concept:name"] = act_a
-                new_row_a["time:timestamp"] = new_row_a["time:timestamp"] + pd.Timedelta(hours=1)
+                new_row_a["time:timestamp"] = new_row_a["time:timestamp"] + _realistic_offset(seed_num)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row_a])], ignore_index=True)
             if act_b not in set(injected_df["concept:name"]):
                 new_row_b = injected_df.iloc[-1].copy()
                 new_row_b["concept:name"] = act_b
-                new_row_b["time:timestamp"] = new_row_b["time:timestamp"] + pd.Timedelta(hours=2)
+                new_row_b["time:timestamp"] = new_row_b["time:timestamp"] + _realistic_offset(seed_num + 97, min_minutes=45, span_minutes=180)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row_b])], ignore_index=True)
         elif tpl == "Existence":
             if act_a not in set(injected_df["concept:name"]):
                 new_row = injected_df.iloc[-1].copy()
                 new_row["concept:name"] = act_a
-                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                new_row["time:timestamp"] = new_row["time:timestamp"] + _realistic_offset(seed_num)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
-            if gast.activation_attr == "OfferedAmount" and gast.activation_op == ">=":
-                injected_df["OfferedAmount"] = 100.0
-            elif gast.activation_attr == "OfferedAmount" and gast.activation_op == "<=":
-                injected_df["OfferedAmount"] = 85000.0
-            elif gast.activation_attr == "NumberOfTerms":
-                injected_df["NumberOfTerms"] = 6.0
-            elif gast.activation_attr in ("case:RequestedAmount", "RequestedAmount"):
-                if gast.activation_op == ">=":
-                    injected_df["case:RequestedAmount"] = 100.0
-                    injected_df["RequestedAmount"] = 100.0
-                else:
-                    injected_df["case:RequestedAmount"] = 85000.0
-                    injected_df["RequestedAmount"] = 85000.0
-            elif gast.activation_attr == "MonthlyCost":
-                injected_df["MonthlyCost"] = 5.0
+            if gast.activation_attr in ("case:RequestedAmount", "RequestedAmount"):
+                bad_val = _sample_near_boundary_violation_value(gast.activation_op, gast.activation_val, seed_num)
+                injected_df["case:RequestedAmount"] = bad_val
+                injected_df["RequestedAmount"] = bad_val
+            elif gast.activation_attr in ("OfferedAmount", "NumberOfTerms", "MonthlyCost", "CreditScore"):
+                bad_val = _sample_near_boundary_violation_value(gast.activation_op, gast.activation_val, seed_num)
+                injected_df[gast.activation_attr] = bad_val
             else:
                 injected_df = injected_df[injected_df["concept:name"] != act_a].reset_index(drop=True)
         elif tpl == "Absence":
             if act_a not in set(injected_df["concept:name"]):
                 new_row = injected_df.iloc[-1].copy()
                 new_row["concept:name"] = act_a
-                new_row["time:timestamp"] = new_row["time:timestamp"] + pd.Timedelta(hours=1)
+                new_row["time:timestamp"] = new_row["time:timestamp"] + _realistic_offset(seed_num)
                 injected_df = pd.concat([injected_df, pd.DataFrame([new_row])], ignore_index=True)
             if gast.activation_attr == "OfferedAmount":
-                injected_df["OfferedAmount"] = 85000.0
+                base_thr = float(gast.activation_val) if gast.activation_val is not None else 50000.0
+                injected_df["OfferedAmount"] = base_thr + float(1500 + (seed_num % 7) * 500)
 
+        injected_df = injected_df.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
         is_c, d_info = check_single_trace_semantics(injected_df, gast)
-        assert not is_c, f"Lỗi tạo ca vi phạm tiêm lỗi cho {rid}: dự kiến False nhưng nhận True! Details: {d_info}"
+        assert not is_c, f"Failed to synthesize violating counterexample for {rid}: {d_info}"
         subtype = d_info.get("violation_subtype", "SEMANTIC_VIOLATION")
 
+        con_counts[rid] += 1
         contradicted_items.append({
             "benchmark_id": f"CON-{len(contradicted_items) + 1:04d}",
             "rule_id": rid,
@@ -981,44 +1437,92 @@ def build_stratified_trace_benchmark(
             "trace_origin": f"SEMANTIC_FAULT_INJECTION_{subtype}_{rid}",
         })
 
-    # Xây dựng nhóm BASELESS trải đều trên 8 quy tắc bẫy R23–R30:
-    # - R23..R28: Bẫy ảo giác văn bản / ngoài phạm vi / bịa ngưỡng số (gán trace nền đa dạng, không trùng lặp)
-    # - R29: Hồ sơ bị từ chối sớm A_Create Application -> W_Complete application -> A_Denied (thực sự không có O_Create Offer)
-    # - R30: Hồ sơ có O_Create Offer nhưng CreditScore = NaN
-    denied_template_df = base_compliant_df[
-        base_compliant_df["concept:name"].isin(["A_Create Application", "W_Complete application"])
-    ].copy()
-    if not denied_template_df.empty:
-        den_row = denied_template_df.iloc[-1].copy()
-        den_row["concept:name"] = "A_Denied"
-        den_row["time:timestamp"] = den_row["time:timestamp"] + pd.Timedelta(minutes=30)
-        early_denied_df = pd.concat([denied_template_df, pd.DataFrame([den_row])], ignore_index=True)
-    else:
-        early_denied_df = base_compliant_df.copy()
-    orig_denied = str(denied_template_df["case:concept:name"].iloc[0]) if not denied_template_df.empty else "Application_100000000"
-    seed_denied = (abs(hash(f"{orig_denied}_early_denied")) % 900000000) + 100000000
-    early_denied_df["case:concept:name"] = f"Application_{seed_denied}"
-
-    null_credit_df = base_compliant_df.copy()
-    orig_null = str(base_compliant_df["case:concept:name"].iloc[0])
-    seed_null = (abs(hash(f"{orig_null}_null_credit")) % 900000000) + 100000000
-    null_credit_df["case:concept:name"] = f"Application_{seed_null}"
-    null_credit_df["CreditScore"] = float("nan")
-
-    distinct_base_cases = list(grouped_prop.values())
+    # Construct BASELESS traces uniformly across trap rules based on trap_scope & trap_type
+    # Prefer unused real BPIC 2017 Case IDs so BASELESS items don't recycle cases already used in ENTAILED/CONTRADICTED
+    unused_base_cases = [
+        (cid, cdf)
+        for cid, cdf in grouped_prop.items()
+        if not strict_unique_cids or cid not in used_real_cids
+    ] or list(grouped_prop.items())
+    distinct_base_cases = [cdf for _, cdf in unused_base_cases]
 
     if trap_rules:
+        trace_inapp_counter = 0
+        trace_null_counter = 0
+        other_counter = 0
         while len(baseless_items) < per_class_quota:
-            trap_rule = trap_rules[len(baseless_items) % len(trap_rules)]
+            b_idx = len(baseless_items)
+            trap_rule = trap_rules[b_idx % len(trap_rules)]
             rid = trap_rule["rule_id"]
-            if rid == "R29":
-                t_df = early_denied_df
-            elif rid == "R30":
-                t_df = null_credit_df
+            trap_scope = trap_rule.get("trap_scope", "")
+            trap_type = trap_rule.get("trap_type", "")
+            req_act = trap_rule.get("act_a") or ""
+            req_attr = trap_rule.get("attr")
+            origin_tag = f"TIER3_TRAP_{rid}_{trap_type or 'BASELESS'}"
+
+            if trap_scope == "trace" and trap_type == "INAPPLICABLE_TRACE_NO_ACTIVATION" and req_act:
+                matching_no_act = [
+                    (cid, cdf)
+                    for cid, cdf in grouped_prop.items()
+                    if req_act not in set(cdf["concept:name"])
+                    and (not strict_unique_cids or cid not in used_real_cids)
+                ]
+                if not matching_no_act and strict_unique_cids:
+                    matching_no_act = [
+                        (cid, cdf)
+                        for cid, cdf in grouped_prop.items()
+                        if req_act not in set(cdf["concept:name"])
+                    ]
+                if trace_inapp_counter < len(matching_no_act) and not strict_unique_cids:
+                    t_cid, t_raw = matching_no_act[trace_inapp_counter]
+                    t_df = t_raw.copy()
+                    origin_tag = f"BPIC2017_REAL_INAPPLICABLE_{rid}"
+                elif strict_unique_cids and any(cid not in used_real_cids for cid, _ in matching_no_act):
+                    avail = [(cid, cdf) for cid, cdf in matching_no_act if cid not in used_real_cids]
+                    t_cid, t_raw = avail[0]
+                    used_real_cids.add(t_cid)
+                    t_df = t_raw.copy()
+                    origin_tag = f"BPIC2017_REAL_INAPPLICABLE_{rid}"
+                else:
+                    src_df = distinct_base_cases[trace_inapp_counter % len(distinct_base_cases)]
+                    filtered = src_df[src_df["concept:name"] != req_act].copy()
+                    if filtered.empty:
+                        filtered = src_df.iloc[:1].copy()
+                        filtered["concept:name"] = "A_Create Application"
+                    orig_cid = str(src_df["case:concept:name"].iloc[0])
+                    seed_no_act = (abs(hash(f"{orig_cid}_no_act_{rid}_{trace_inapp_counter}")) % 900000000) + 100000000
+                    filtered["case:concept:name"] = f"Application_{seed_no_act}"
+                    t_df = filtered.reset_index(drop=True)
+                    origin_tag = f"SYNTHETIC_NO_ACTIVATION_{rid}"
+                trace_inapp_counter += 1
+            elif trap_scope == "trace" and trap_type == "MISSING_LOG_EVIDENCE_PHI_VIOLATION" and req_act and req_attr:
+                matching_with_act = [
+                    cdf for cdf in distinct_base_cases if req_act in set(cdf["concept:name"])
+                ] or distinct_base_cases
+                src_df = matching_with_act[trace_null_counter % len(matching_with_act)].copy()
+                orig_cid = str(src_df["case:concept:name"].iloc[0])
+                seed_null = (abs(hash(f"{orig_cid}_null_attr_{rid}_{trace_null_counter}")) % 900000000) + 100000000
+                src_df["case:concept:name"] = f"Application_{seed_null}"
+                src_df[req_attr] = float("nan")
+                t_df = src_df
+                origin_tag = f"SYNTHETIC_MISSING_ATTR_{rid}"
+                trace_null_counter += 1
             else:
-                # Đa dạng hóa trace cho R23-R28
-                base_idx = len(baseless_items) % len(distinct_base_cases)
-                t_df = distinct_base_cases[base_idx].copy()
+                avail_other = [
+                    (cid, cdf) for cid, cdf in unused_base_cases if not strict_unique_cids or cid not in used_real_cids
+                ]
+                if avail_other:
+                    t_cid, t_raw = avail_other[other_counter % len(avail_other)] if not strict_unique_cids else avail_other[0]
+                    used_real_cids.add(t_cid)
+                    t_df = t_raw.copy()
+                else:
+                    src_df = distinct_base_cases[other_counter % len(distinct_base_cases)].copy()
+                    orig_cid = str(src_df["case:concept:name"].iloc[0])
+                    seed_other = (abs(hash(f"{orig_cid}_baseless_{rid}_{other_counter}")) % 900000000) + 100000000
+                    src_df["case:concept:name"] = f"Application_{seed_other}"
+                    t_df = src_df
+                origin_tag = f"BPIC2017_REAL_TRAP_{rid}_{trap_type or 'BASELESS'}"
+                other_counter += 1
 
             baseless_items.append({
                 "benchmark_id": f"BAS-{len(baseless_items) + 1:04d}",
@@ -1027,7 +1531,7 @@ def build_stratified_trace_benchmark(
                 "retrieved_chunk": trap_rule["retrieved_chunk"],
                 "test_case_df": t_df,
                 "ground_truth_label": "BASELESS",
-                "trace_origin": f"TIER3_TRAP_{rid}_{trap_rule.get('trap_type', 'BASELESS')}",
+                "trace_origin": origin_tag,
             })
 
     return entailed_items[:per_class_quota] + contradicted_items[:per_class_quota] + baseless_items[:per_class_quota]
@@ -1083,22 +1587,22 @@ def export_benchmark_json(
 
         df_raw = pd.read_parquet(parquet_file)
         df_raw["time:timestamp"] = pd.to_datetime(df_raw["time:timestamp"], utc=True)
-        REAL_LATE_PENDING_CASES = [
-            "Application_1108271369", "Application_1171453988", "Application_130761111",
-            "Application_1499090661", "Application_157155173", "Application_1677498057",
-            "Application_1741752833", "Application_1838182698", "Application_1875888758",
-            "Application_2037628374",
-        ]
-        sample_cids = list(dict.fromkeys(REAL_LATE_PENDING_CASES + df_raw["case:concept:name"].drop_duplicates().iloc[:2500].tolist()))
-        df_sub = df_raw[df_raw["case:concept:name"].isin(sample_cids)].copy()
+        # Sort deterministically before causal forward-fill; take a wide 12,000-case slice
+        # so real BPIC 2017 violations and rare scenarios (e.g. R15 compliant, missing O_Sent, CreditScore=0) are surfaced naturally.
+        sample_cids = df_raw["case:concept:name"].drop_duplicates().iloc[:12000].tolist()
+        df_sub = (
+            df_raw[df_raw["case:concept:name"].isin(sample_cids)]
+            .sort_values(["case:concept:name", "time:timestamp"], kind="mergesort")
+            .copy()
+        )
         offer_cols = [
             c
-            for c in ["OfferedAmount", "CreditScore", "Accepted", "MonthlyCost", "NumberOfTerms"]
+            for c in ["OfferedAmount", "CreditScore", "Accepted", "Selected", "MonthlyCost", "NumberOfTerms", "FirstWithdrawalAmount"]
             if c in df_sub.columns
         ]
         if offer_cols:
-            df_sub[offer_cols] = df_sub.groupby("case:concept:name", sort=False)[offer_cols].ffill().bfill()
-            df_sub[offer_cols] = df_sub.groupby("case:concept:name", sort=False)[offer_cols].bfill()
+            # Strict causal forward-fill only (no bfill() backward leakage onto pre-offer events)
+            df_sub[offer_cols] = df_sub.groupby("case:concept:name", sort=False)[offer_cols].ffill()
 
         items = build_stratified_trace_benchmark(
             df_propagated=df_sub,
@@ -1110,6 +1614,8 @@ def export_benchmark_json(
         serializable_items = []
         for it in items:
             cdf: pd.DataFrame = it["test_case_df"]
+            if "time:timestamp" in cdf.columns and not cdf.empty:
+                cdf = cdf.sort_values("time:timestamp", kind="mergesort").reset_index(drop=True)
             events_list = []
             for _, row in cdf.iterrows():
                 events_list.append(
@@ -1132,8 +1638,17 @@ def export_benchmark_json(
                         "case:LoanGoal": (
                             None if pd.isna(row.get("case:LoanGoal")) else str(row.get("case:LoanGoal"))
                         ),
+                        "case:ApplicationType": (
+                            None if pd.isna(row.get("case:ApplicationType")) else str(row.get("case:ApplicationType"))
+                        ),
                         "MonthlyCost": (
                             None if pd.isna(row.get("MonthlyCost")) else float(row.get("MonthlyCost"))
+                        ),
+                        "Selected": (
+                            None if pd.isna(row.get("Selected")) else bool(row.get("Selected"))
+                        ),
+                        "Accepted": (
+                            None if pd.isna(row.get("Accepted")) else bool(row.get("Accepted"))
                         ),
                     }
                 )
@@ -1141,6 +1656,7 @@ def export_benchmark_json(
                 {
                     "benchmark_id": it["benchmark_id"],
                     "rule_id": it["rule_id"],
+                    "dataset_split": it["rule_meta"].get("dataset_split"),
                     "ground_truth_label": it["ground_truth_label"],
                     "trace_origin": it["trace_origin"],
                     "retrieved_chunk": it["retrieved_chunk"],

@@ -57,7 +57,7 @@ class Declare4Py:
             df["time:timestamp"] = pd.to_datetime(df["time:timestamp"], utc=True)
             df = df.sort_values(["case:concept:name", "time:timestamp"], kind="mergesort")
 
-        # Lan truyền thuộc tính Offer trong phạm vi từng hồ sơ (case:concept:name)
+        # Forward-propagate Offer attributes strictly causally within each case (no backward bfill leakage)
         offer_cols = [
             c
             for c in [
@@ -73,7 +73,7 @@ class Declare4Py:
         ]
         if offer_cols:
             df[offer_cols] = df.groupby("case:concept:name", sort=False)[offer_cols].transform(
-                lambda g: g.ffill().bfill()
+                lambda g: g.ffill()
             )
 
         self.log_df = df
@@ -326,7 +326,10 @@ class Declare4Py:
                     else:  # Response
                         candidates = [e2 for e2 in events[i + 1 :] if e2["concept:name"] == act_b and corr_cond(e2)]
 
-                    fulfilled = any(self._within_time(ev, c, time_window) for c in candidates)
+                    fulfilled = any(
+                        self._within_time(ev, c, time_window, directional=(tpl != "Responded Existence"))
+                        for c in candidates
+                    )
                     if fulfilled:
                         num_fulfillments += 1
                     else:
@@ -364,7 +367,23 @@ class Declare4Py:
                     else:
                         num_violations += 1
 
-        elif tpl in ("Not Response", "Not Co-Existence", "Not Responded Existence", "Not Precedence"):
+        elif tpl == "Not Precedence":
+            for i, ev in enumerate(events):
+                if ev["concept:name"] == act_b and corr_cond(ev):
+                    num_activations += 1
+                    bad = [
+                        e_prev
+                        for e_prev in events[:i]
+                        if e_prev["concept:name"] == act_a
+                        and act_cond(e_prev)
+                        and self._within_time(e_prev, ev, time_window)
+                    ]
+                    if bad:
+                        num_violations += 1
+                    else:
+                        num_fulfillments += 1
+
+        elif tpl in ("Not Response", "Not Responded Existence"):
             for i, ev in enumerate(events):
                 if ev["concept:name"] == act_a and act_cond(ev):
                     num_activations += 1
@@ -372,17 +391,48 @@ class Declare4Py:
                         bad = [
                             e2
                             for e2 in events[i + 1 :]
-                            if e2["concept:name"] == act_b and self._within_time(ev, e2, time_window)
-                        ]
-                    elif tpl == "Not Precedence":
-                        bad = [
-                            e_prev
-                            for e_prev in events[:i]
-                            if e_prev["concept:name"] == act_b and self._within_time(e_prev, ev, time_window)
+                            if e2["concept:name"] == act_b
+                            and corr_cond(e2)
+                            and self._within_time(ev, e2, time_window)
                         ]
                     else:
-                        bad = [e2 for e2 in events if e2["concept:name"] == act_b]
+                        bad = [
+                            e2
+                            for e2 in events
+                            if e2["concept:name"] == act_b
+                            and corr_cond(e2)
+                            and self._within_time(ev, e2, time_window, directional=False)
+                        ]
 
+                    if bad:
+                        num_violations += 1
+                    else:
+                        num_fulfillments += 1
+
+        elif tpl == "Not Co-Existence":
+            for ev in events:
+                if ev["concept:name"] == act_a and act_cond(ev):
+                    num_activations += 1
+                    bad = [
+                        e2
+                        for e2 in events
+                        if e2["concept:name"] == act_b
+                        and corr_cond(e2)
+                        and self._within_time(ev, e2, time_window, directional=False)
+                    ]
+                    if bad:
+                        num_violations += 1
+                    else:
+                        num_fulfillments += 1
+                elif ev["concept:name"] == act_b and corr_cond(ev):
+                    num_activations += 1
+                    bad = [
+                        e1
+                        for e1 in events
+                        if e1["concept:name"] == act_a
+                        and act_cond(e1)
+                        and self._within_time(e1, ev, time_window, directional=False)
+                    ]
                     if bad:
                         num_violations += 1
                     else:
@@ -391,7 +441,7 @@ class Declare4Py:
         else:
             # Choice / Exclusive Choice
             has_a = any(e["concept:name"] == act_a and act_cond(e) for e in events)
-            has_b = any(e["concept:name"] == act_b and act_cond(e) for e in events)
+            has_b = any(e["concept:name"] == act_b and corr_cond(e) for e in events)
             num_activations = 1 if (has_a or has_b) else 0
             if tpl == "Choice":
                 if has_a or has_b:

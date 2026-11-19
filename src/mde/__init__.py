@@ -15,6 +15,14 @@ from .typing_environment import (
     ProcessTypingEnvironment,
     check_layer1_and_layer2,
 )
+from .deontic_mde_compiler import (
+    UNMAPPED_ATTR_TOKEN,
+    build_constrained_deontic_schema,
+    check_behavioral_profile_grounding,
+    compile_deontic_to_declare4py,
+    format_behavioral_profile_for_prompt,
+    validate_and_compile_deontic_or_ast,
+)
 
 __all__ = [
     "UNARY_TEMPLATES",
@@ -24,4 +32,10 @@ __all__ = [
     "validate_layer1_ast",
     "ProcessTypingEnvironment",
     "check_layer1_and_layer2",
+    "UNMAPPED_ATTR_TOKEN",
+    "build_constrained_deontic_schema",
+    "check_behavioral_profile_grounding",
+    "compile_deontic_to_declare4py",
+    "format_behavioral_profile_for_prompt",
+    "validate_and_compile_deontic_or_ast",
 ]

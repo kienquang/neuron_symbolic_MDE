@@ -38,9 +38,12 @@ class TestExtractProcessSchema(unittest.TestCase):
         self.assertIn("time:timestamp", schema["event_attributes"])
         self.assertEqual(schema["event_attributes"]["time:timestamp"]["type"], "Timestamp")
 
-        # Kiểm tra DFG transitions
+        # Kiểm tra DFG transitions và Behavioral Profile Matrix
         self.assertGreater(len(schema["frequent_transitions"]), 0)
         self.assertLessEqual(len(schema["frequent_transitions"]), 30)
+        self.assertIn("behavioral_profile", schema)
+        self.assertGreater(len(schema["behavioral_profile"]["strict_causal_pairs"]), 0)
+        self.assertGreater(len(schema["behavioral_profile"]["mutually_exclusive_pairs"]), 0)
 
 
 if __name__ == "__main__":

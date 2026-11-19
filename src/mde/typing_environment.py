@@ -250,6 +250,19 @@ class ProcessTypingEnvironment:
             )
             if not ok_type and msg_type:
                 errors.append(msg_type)
+            elif attr_context == "Event" and clean_attr in self.event_attributes:
+                app_acts = self.event_attributes[clean_attr].get("applicable_activities")
+                if (
+                    isinstance(app_acts, list)
+                    and len(app_acts) > 0
+                    and ast_obj.activation_activity not in app_acts
+                ):
+                    errors.append(
+                        f"Event-Attribute Domain/Vacuity Violation in Γ: Event attribute '{clean_attr}' "
+                        f"is never populated (0 non-null records) on activity '{ast_obj.activation_activity}'. "
+                        f"In Process Metamodel Γ, '{clean_attr}' is only recorded on activities: {app_acts}. "
+                        f"Please select an anchor/activation activity from {app_acts}."
+                    )
 
         # 4. Kiểm tra tính nhất quán giữa bước phân rã Req2LTL (nếu có) và Template được chọn
         if ast_obj.decomposition is not None:

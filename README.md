@@ -53,9 +53,11 @@ flowchart TD
     end
 ```
 
-## 3. Kết quả Thực nghiệm Hiện tại (Current Empirical Results)
+## 3. Kết quả Thực nghiệm Tham khảo (Pre-Fix Snapshot — Cần Tái chạy sau Bản vá)
 
-Toàn bộ thực nghiệm được thực thi tự động với mô hình thật **`openai/gpt-oss-120b`** (thông qua Groq API, `temperature = 0.0`) trên **Bộ 30 Quy tắc Chuẩn R01–R30** và **300 hồ sơ kiểm thử phân tầng chuẩn hóa** (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS) từ nhật ký sự kiện BPIC 2017:
+> **Lưu ý Liêm chính Khoa học**: Toàn bộ bảng số liệu RQ1–RQ3 dưới đây (và trong `results/rq1_rq2_rq3_*`) là **bản chụp trước khi áp dụng các bản vá kiểm toán mới nhất** (sửa `R07`/`R29`, khử trùng lặp Case ID & cân bằng phủ 22/22 quy tắc trong `benchmark_items.json`, khóa strict verdict cho Counterfactual Judge, sửa compiler `EXEMPTION_OUT_OF_SCOPE`, chuẩn hóa `trace_safety_classifier.py` cho `Existence`, và cân bằng prompt/ablation B2–NoPre). Số liệu mới chưa được tái chạy để tiết kiệm token API.
+
+Toàn bộ thực nghiệm được thiết kế chạy với mô hình thật **`openai/gpt-oss-120b`** (thông qua Groq API, `temperature = 0.0`) trên **Bộ 30 Quy tắc Chuẩn R01–R30** (chia phân tầng `DEV_RULE_IDS` vs `HELDOUT_TEST_RULE_IDS`) và **300 hồ sơ kiểm thử phân tầng chuẩn hóa** (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS) từ nhật ký sự kiện BPIC 2017:
 - **Zero Prompt Leakage**: Tuyệt đối không rò rỉ đáp án hoặc dấu hiệu nhãn vào prompt thẩm định (theo đúng Chuẩn Hướng A).
 - **Zero Modulo Fallback**: Không sử dụng bất kỳ công thức nhân tạo hay modulo giả lập nào.
 - **Thẩm định Tầng 3 Khách quan**: Semantic Verifier kiểm soát chặt chẽ bằng AST đối ngẫu, loại bỏ hoàn toàn cơ chế mặc định `EQUIVALENT` ngầm.
@@ -120,7 +122,7 @@ Toàn bộ thực nghiệm được thực thi tự động với mô hình th�
 
 ---
 
-### Bảng 4: Phân tích Khả năng Bắt Bẫy Ảo giác (Baseless Traps Detection) trên Tập Kiểm thử Mù (Held-Out Test Set R23–R30)
+### Bảng 4 (Pre-Fix Snapshot — Tham khảo Cũ): Phân tích Khả năng Bắt Bẫy Ảo giác (R23–R30)
 
 | Mã Quy tắc | Điều khoản Luật | Loại Bẫy Ngữ nghĩa | Trạng thái Thẩm định / Ngăn chặn | Số vòng tự sửa |
 | :---: | :---: | :--- | :---: | :---: |
@@ -161,10 +163,13 @@ neuron_symbolic_reasoning/
 │   ├── symbolic/                       # Giai đoạn 3 (Tầng 3): Round-trip, Vacuity & Declare4Py
 │   └── evaluation/                     # Giai đoạn 4 & RQ1–RQ3: Phán quyết 3 Trạng thái & Giải trình
 ├── scripts/
-│   ├── run_real_llm_experiment.py      # Kịch bản thực thi chính thức với Model thật (Groq/OpenAI)
-│   ├── run_benchmark_evaluation.py     # Kịch bản chạy nhanh với Mock Client
-│   └── run_phase1a.py ... run_phase4.py # Các script chạy độc lập từng giai đoạn
-├── tests/                              # Bộ 17 Unit Tests tự động kiểm thử toàn diện
+│   ├── run_clean_evaluation_without_b1.py # Kịch bản thực nghiệm sạch với Model thật (không chạy B1)
+│   ├── rerun_full_benchmark_300.py        # Kịch bản tái chạy đầy đủ 300 mẫu & xuất bảng kết quả
+│   ├── regenerate_benchmark.py            # Tái sinh bộ benchmark_rules_30.json & benchmark_items.json
+│   ├── verify_benchmark_health.py         # Kiểm tra sức khỏe & liêm chính dữ liệu benchmark
+│   ├── build_benchmark.py                 # Khởi tạo nhanh file benchmark chuẩn
+│   └── inspect_case.py                    # Công cụ kiểm tra thủ công từng ca benchmark (CLI)
+├── tests/                                 # Bộ Unit Tests tự động kiểm thử toàn diện
 ├── results/
 │   ├── real_llm_trajectories.json      # Nhật ký tự sửa lỗi thực tế của LLM thật
 │   ├── rq1_rq2_rq3_evaluation_tables.json # Toàn bộ số liệu thực nghiệm định dạng JSON
@@ -201,15 +206,15 @@ LLM_MODEL_NAME=openai/gpt-oss-120b
 LLM_BASE_URL=https://api.groq.com/openai/v1
 ```
 
-### 5.3. Chạy Toàn bộ Bộ Kiểm thử Tự động (Unit Tests)
+### 5.3. Chạy Toàn bộ Bộ Kiểm thử Tự động (Unit Tests) & Kiểm tra Benchmark
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-# Kết quả mong đợi: Ran 17 tests in ~9s - OK
+.\.venv\Scripts\python.exe scripts/verify_benchmark_health.py
 ```
 
 ### 5.4. Chạy Thực nghiệm Chính thức với Model Thật (RQ1, RQ2, RQ3)
 ```powershell
-.\.venv\Scripts\python.exe scripts/run_real_llm_experiment.py --model openai/gpt-oss-120b --split dev --target-items 60
+.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model openai/gpt-oss-120b
 ```
 Lệnh trên sẽ tự động:
 1. Nạp và lưu Disk Cache (`real_llm_cache.json`) để không lặp lại chi phí gọi API.

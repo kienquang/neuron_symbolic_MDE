@@ -1,6 +1,6 @@
 """
 Công cụ Hỗ trợ Kiểm tra Thủ công (Manual Inspection Tool)
-Cho phép người dùng tự tay kiểm tra chi tiết từng hồ sơ trong bộ benchmark đối sánh 300 mẫu trên 26 quy tắc.
+Cho phép người dùng tự tay kiểm tra chi tiết từng hồ sơ trong bộ benchmark đối sánh 300 mẫu trên 30 quy tắc.
 
 Sử dụng:
   python scripts/inspect_case.py --stats
