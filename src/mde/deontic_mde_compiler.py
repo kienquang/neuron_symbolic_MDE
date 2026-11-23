@@ -1,14 +1,20 @@
 """
-Bước 2 (Kiến trúc Mới): Khung Pháp lý Chuẩn tắc (Deontic MDE Intermediate Model),
-Giải mã Ép Văn phạm (Grammar-Constrained Decoding) & Neo Thực thể bằng Ma trận Hành vi (Behavioral Profile Grounding).
+Giai đoạn 2: Trình biên dịch Mô hình Chuẩn tắc Hướng Hành vi (Behavioral-Aware Deontic MDE Compiler)
+kết hợp Giải mã Ép Văn phạm (Grammar-Constrained Decoding) & Phân tích Tương thích Hành vi Quy trình.
 
-Thay thế vòng lặp bắt lỗi cú pháp/từ vựng Tầng 1 & Tầng 2 truyền thống bằng:
+Thay thế kiến trúc kiểm tra tĩnh chia tầng truyền thống bằng một trình biên dịch hợp nhất PIM -> PSM đặc thù
+cho Khai phá Quy trình (Process Mining):
 1. Khóa không gian sinh token (Literal Enum Schema) trực tiếp từ `process_schema.json`.
 2. Phân tách Mô hình Chuẩn tắc Độc lập Nền tảng (Deontic PIM: Obligation, Prohibition, Permission, Exemption)
-   và Biên dịch Tất định (Deterministic MDE Model-to-Model Compiler) sang `DeclareConstraintAST`.
-3. Tự động chặn các điều khoản Miễn trừ (`EXEMPTION_OUT_OF_SCOPE`) và Thiếu thuộc tính Log (`UNMAPPED_MISSING_IN_LOG`)
+   và Biên dịch Tất định (Deterministic Deontic-Temporal M2M Compiler) sang `DeclareConstraintAST` (PSM),
+   bao gồm ngữ nghĩa chuẩn cho cả `PROHIBITION` lẫn `PERMISSION_RIGHT` (non-obligatory precondition).
+3. Chặn tức thì các điều khoản Miễn trừ (`EXEMPTION_OUT_OF_SCOPE`) và Thiếu thuộc tính Log (`UNMAPPED_MISSING_IN_LOG`)
    ngay tại thời điểm biên dịch (Zero-Retry).
-4. Kiểm tra và neo cặp hoạt động dựa trên Ma trận Quan hệ Hành vi (`behavioral_profile` / DFG Transition Prior).
+4. Phân tích Tương thích Hành vi Quy trình (Behavioral Profile Static Analyzer) trên Ma trận Hành vi của Event Log:
+   - Direct DFG Adjacency Check (`Chain Precedence` / `Chain Response`)
+   - Strict Causal Direction Invariant Check (chặn Causal Inversion & Vacuous Reversed Prohibition)
+   - Behavioral Mutual-Exclusion & Lifecycle Co-Occurrence Consistency Check
+   - Causal Attribute Availability Check (tích hợp trong `ProcessSchemaValidator`)
 """
 
 import json
@@ -21,7 +27,7 @@ from src.mde.constraint_ast import (
     DeclareConstraintAST,
     extract_json_payload,
 )
-from src.mde.typing_environment import ProcessTypingEnvironment
+from src.mde.typing_environment import ProcessSchemaValidator
 
 UNMAPPED_ATTR_TOKEN = "UNMAPPED_MISSING_IN_LOG"
 
@@ -180,46 +186,141 @@ def format_behavioral_profile_for_prompt(
     return "\n".join(lines)
 
 
+POSITIVE_ORDERING_TEMPLATES = {
+    "Precedence",
+    "Chain Precedence",
+    "Alternate Precedence",
+    "Response",
+    "Chain Response",
+    "Alternate Response",
+}
+
+POSITIVE_COOCCURRENCE_TEMPLATES = POSITIVE_ORDERING_TEMPLATES | {
+    "Responded Existence",
+}
+
+
 def check_behavioral_profile_grounding(
     ast_obj: DeclareConstraintAST,
     process_schema: Dict[str, Any],
 ) -> Tuple[bool, Optional[str]]:
     """
-    Kiểm tra tính neo thực thể hành vi (Behavioral Profile Grounding) cho cặp hoạt động (A, B):
-    - Nếu chọn 'Chain Precedence' hoặc 'Chain Response', cặp (A, B) bắt buộc phải có chuyển tiếp trực tiếp (Direct DFG > 0)
-      trong nhật ký sự kiện.
+    Phân tích Tương thích Hành vi Quy trình (Process Behavioral Profile Static Analyzer) cho cặp hoạt động (A, B):
+    1. Direct DFG Adjacency Check: `Chain Precedence` / `Chain Response` đòi chuyển tiếp trực tiếp (DFG > 0).
+    2. Strict Causal Direction Invariant Check:
+       - Nếu (B -> A) là bất biến nhân quả nghiêm ngặt (order_ratio >= 0.99, co_occurrence >= 100):
+         + Chặn các mẫu đòi A trước B (Causal Direction Inversion).
+         + Chặn `Not Precedence(A, B)` vì B luôn xảy ra trước A nên ràng buộc bị rỗng hóa do đảo chiều (Vacuous Reversed Prohibition).
+    3. Behavioral Mutual-Exclusion & Lifecycle Co-Occurrence Check:
+       - Nếu (A, B) là cặp loại trừ lẫn nhau trong log (co_occurrence_rate <= 0.01): chặn các mẫu đồng xuất hiện dương.
+       - Nếu chọn `Not Co-Existence(A, B)` trên một cặp bất biến luôn cùng xảy ra (order_ratio >= 0.99, P(B|A) >= 0.99, P(A|B) >= 0.99, co_occurrence >= 1000): chặn vì mâu thuẫn vòng đời.
     """
-    if ast_obj.template_name not in ("Chain Precedence", "Chain Response"):
-        return True, None
-
     act_a = ast_obj.activation_activity
     act_b = ast_obj.target_activity
     if not act_b:
         return True, None
 
-    # Kiểm tra trong frequent_transitions và behavioral_profile
     freq_trans = process_schema.get("frequent_transitions", [])
-    bp_pairs = process_schema.get("behavioral_profile", {}).get("strict_causal_pairs", [])
+    bp = process_schema.get("behavioral_profile", {})
+    bp_pairs = bp.get("strict_causal_pairs", [])
+    mutex_pairs = bp.get("mutually_exclusive_pairs", [])
 
-    # Nếu lược đồ không chứa dữ liệu DFG (ví dụ trong mock test nhỏ), bỏ qua kiểm tra DFG
-    if not freq_trans and not bp_pairs:
+    # Nếu lược đồ tối giản (ví dụ unit test nhỏ) không chứa dữ liệu hành vi, bỏ qua kiểm tra
+    if not freq_trans and not bp_pairs and not mutex_pairs:
         return True, None
 
-    has_direct = any(
-        t.get("from") == act_a and t.get("to") == act_b and t.get("count", 0) > 0
-        for t in freq_trans
-    ) or any(
-        p.get("from") == act_a and p.get("to") == act_b and p.get("direct_dfg_count", 0) > 0
-        for p in bp_pairs
-    )
+    # 1. Direct DFG Adjacency Check cho Chain Precedence / Chain Response
+    if ast_obj.template_name in ("Chain Precedence", "Chain Response"):
+        has_direct = any(
+            t.get("from") == act_a and t.get("to") == act_b and t.get("count", 0) > 0
+            for t in freq_trans
+        ) or any(
+            p.get("from") == act_a and p.get("to") == act_b and p.get("direct_dfg_count", 0) > 0
+            for p in bp_pairs
+        )
+        if not has_direct:
+            return (
+                False,
+                f"[Behavioral DFG Adjacency Violation]: Template '{ast_obj.template_name}' requires direct adjacency "
+                f"(Directly-Follows > 0) between '{act_a}' and '{act_b}', but they are not directly adjacent in the DFG. "
+                f"Use 'Precedence' or 'Response' instead, or select a directly adjacent pair.",
+            )
 
-    if not has_direct:
+    # 2. Strict Causal Direction Invariant Check (trên strict_causal_pairs)
+    rev_strict = next(
+        (
+            p
+            for p in bp_pairs
+            if p.get("from") == act_b
+            and p.get("to") == act_a
+            and p.get("order_ratio", 0.0) >= 0.99
+            and p.get("co_occurrence_cases", 0) >= 100
+        ),
+        None,
+    )
+    if rev_strict is not None:
+        ratio_pct = rev_strict.get("order_ratio", 1.0) * 100.0
+        co_cases = rev_strict.get("co_occurrence_cases", 0)
+        if ast_obj.template_name in POSITIVE_ORDERING_TEMPLATES:
+            return (
+                False,
+                f"[Behavioral Causal Inversion Violation]: Template '{ast_obj.template_name}({act_a}, {act_b})' "
+                f"requires '{act_a}' to occur before '{act_b}', but in the empirical Process Behavioral Profile "
+                f"'{act_b}' strictly precedes '{act_a}' ({ratio_pct:.1f}% across {co_cases} cases). "
+                f"Swap anchor_activity/consequent_activity or select activities consistent with lifecycle causality.",
+            )
+        if ast_obj.template_name == "Not Precedence":
+            return (
+                False,
+                f"[Behavioral Vacuous Reversed Prohibition]: Template 'Not Precedence({act_a}, {act_b})' forbids "
+                f"'{act_a}' from occurring before '{act_b}', but in the empirical Process Behavioral Profile "
+                f"'{act_b}' already strictly precedes '{act_a}' ({ratio_pct:.1f}% across {co_cases} cases), making this "
+                f"prohibition structurally vacuous. Check whether the activity order is inverted or whether a positive "
+                f"prerequisite ('PREREQUISITE_BEFORE' / 'PERMISSION_RIGHT' with anchor='{act_b}', consequent='{act_a}') was intended.",
+            )
+
+    # 3. Behavioral Mutual-Exclusion & Lifecycle Co-Occurrence Consistency Check
+    is_mutex = any(
+        (
+            (m.get("act_a") == act_a and m.get("act_b") == act_b)
+            or (m.get("act_a") == act_b and m.get("act_b") == act_a)
+        )
+        and m.get("co_occurrence_rate", 0.0) <= 0.01
+        for m in mutex_pairs
+    )
+    if is_mutex and ast_obj.template_name in POSITIVE_COOCCURRENCE_TEMPLATES:
         return (
             False,
-            f"Behavioral Profile Grounding Violation: Template '{ast_obj.template_name}' requires direct adjacency "
-            f"(Directly-Follows > 0) between '{act_a}' and '{act_b}', but they are not directly adjacent in the DFG. "
-            f"Use 'Precedence' or 'Response' instead, or select a directly adjacent pair.",
+            f"[Behavioral Mutual-Exclusion Conflict]: Template '{ast_obj.template_name}({act_a}, {act_b})' "
+            f"requires '{act_a}' and '{act_b}' to co-occur in the same trace, but the Process Behavioral Profile "
+            f"shows they lie on mutually exclusive lifecycle branches (co-occurrence <= 1%). "
+            f"Use 'MUTUAL_EXCLUSION' / 'PROHIBITION' or revise the chosen activities.",
         )
+
+    if ast_obj.template_name == "Not Co-Existence":
+        invariant_co = next(
+            (
+                p
+                for p in bp_pairs
+                if (
+                    (p.get("from") == act_a and p.get("to") == act_b)
+                    or (p.get("from") == act_b and p.get("to") == act_a)
+                )
+                and p.get("order_ratio", 0.0) >= 0.99
+                and p.get("prob_to_given_from", 0.0) >= 0.99
+                and p.get("prob_from_given_to", 0.0) >= 0.99
+                and p.get("co_occurrence_cases", 0) >= 1000
+            ),
+            None,
+        )
+        if invariant_co is not None:
+            return (
+                False,
+                f"[Behavioral Lifecycle Contradiction]: Template 'Not Co-Existence({act_a}, {act_b})' forbids "
+                f"co-occurrence of '{act_a}' and '{act_b}', but in the Process Behavioral Profile they are an "
+                f"invariant co-occurring lifecycle pair ({invariant_co.get('co_occurrence_cases')} cases, >=99% bidirectional support). "
+                f"Select genuinely conflicting terminal/outcome activities instead.",
+            )
 
     return True, None
 
@@ -249,12 +350,12 @@ def compile_deontic_to_declare4py(
     if frame_dict.get("deontic_modality") == "EXEMPTION_OUT_OF_SCOPE" or frame_dict.get("unsupported_by_text") is True:
         baseless_status = "BASELESS_OR_EXEMPT"
         baseless_reason = (
-            f"[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> OUT_OF_DIRECTIVE_SCOPE]: "
+            f"[Semantic BASELESS]: [Deontic MDE Compiler -> OUT_OF_DIRECTIVE_SCOPE]: "
             f"Clause '{frame_dict.get('article_id', '')}' is classified as a statutory exemption "
             f"('shall not apply' / out-of-scope) or contains no enforceable process obligation."
         )
 
-    # 2. Kiểm tra thuộc tính thiếu trong Metamodel Γ TRƯỚC khi kiểm tra tính toàn vẹn bộ ba điều kiện thuộc tính
+    # 2. Kiểm tra thuộc tính thiếu trong Process Schema TRƯỚC khi kiểm tra tính toàn vẹn bộ ba điều kiện thuộc tính
     attr_guard = frame_dict.get("attribute_guard")
     guard_op_raw = frame_dict.get("guard_operator")
     if attr_guard == UNMAPPED_ATTR_TOKEN:
@@ -268,9 +369,9 @@ def compile_deontic_to_declare4py(
             )
         baseless_status = "BASELESS_MISSING_ATTR"
         baseless_reason = (
-            f"[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: "
+            f"[Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: "
             f"Clause '{frame_dict.get('article_id', '')}' requires a quantitative metric/attribute that is absent from "
-            f"the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG)."
+            f"the Process Schema (UNMAPPED_MISSING_IN_LOG)."
         )
 
     attr_triplet = [attr_guard is not None, guard_op_raw is not None, raw_guard_val is not None]
@@ -323,7 +424,11 @@ def compile_deontic_to_declare4py(
 
     tpl = rel_to_template[rel]
 
-    # Xử lý chuẩn xác ngữ nghĩa CẤM ĐOÁN (PROHIBITION):
+    # Xử lý chuẩn xác ngữ nghĩa chuẩn tắc (Deontic-Temporal Modality Compilation):
+    # - PROHIBITION: đảo ngữ nghĩa sang tập cấm đoán (Absence / Not Response / Not Precedence).
+    # - PERMISSION_RIGHT: quyền tự nguyện có điều kiện/thời hạn (may/right to perform B after A)
+    #   KHÔNG bắt buộc B phải xảy ra sau mỗi A; do đó MANDATORY_RESPONSE/IMMEDIATE_RESPONSE
+    #   được biên dịch sang ngữ nghĩa tiền điều kiện không bắt buộc (Precedence / Chain Precedence).
     if modality == "PROHIBITION":
         if tpl == "Existence":
             tpl = "Absence"
@@ -340,6 +445,11 @@ def compile_deontic_to_declare4py(
                     "[Deontic MDE Compiler Error]: PROHIBITION modality is incompatible with "
                     f"{rel} (use PREREQUISITE_BEFORE, MANDATORY_RESPONSE, MUTUAL_EXCLUSION, or UNARY_CONDITION).",
                 )
+    elif modality == "PERMISSION_RIGHT":
+        if tpl == "Response":
+            tpl = "Precedence"
+        elif tpl == "Chain Response":
+            tpl = "Chain Precedence"
 
     act_a = frame_dict.get("anchor_activity")
     act_b = frame_dict.get("consequent_activity")
@@ -362,7 +472,7 @@ def compile_deontic_to_declare4py(
     has_complete_guard = attr_guard is not None and guard_op is not None and guard_val is not None
 
     # Kiểm tra cấu trúc AST qua DeclareConstraintAST
-    # (Với khung BASELESS/EXEMPT chưa đủ bộ ba thuộc tính, vẫn dựng AST an toàn để truyền baseless_reason sang Layer 3)
+    # (Với khung BASELESS/EXEMPT chưa đủ bộ ba thuộc tính, vẫn dựng AST an toàn để truyền baseless_reason sang Counterfactual Probe)
     try:
         ast_obj = DeclareConstraintAST(
             article_id=str(frame_dict.get("article_id", "")),
@@ -380,12 +490,12 @@ def compile_deontic_to_declare4py(
         err_msg = "; ".join(f"{'.'.join(str(loc) for loc in e['loc'])}: {e['msg']}" for e in exc.errors())
         return "COMPILE_ERROR", f"[Deontic MDE Structural Error]: {err_msg}"
 
-    # 4. Nếu có process_schema: Kiểm tra Attribute-Grammar (Self-loop, Type Conformance, Behavioral Grounding)
+    # 4. Nếu có process_schema: Kiểm tra Schema/Causal Attribute Availability & Behavioral Profile Consistency
     if process_schema is not None and baseless_status is None:
-        gamma = ProcessTypingEnvironment(process_schema)
-        ok_l2, l2_err = gamma.validate_ast(ast_obj, retrieved_chunk=retrieved_chunk)
-        if not ok_l2:
-            return "COMPILE_ERROR", str(l2_err)
+        schema_validator = ProcessSchemaValidator(process_schema)
+        ok_schema, schema_err = schema_validator.validate_ast(ast_obj, retrieved_chunk=retrieved_chunk)
+        if not ok_schema:
+            return "COMPILE_ERROR", str(schema_err)
 
         ok_bp, bp_err = check_behavioral_profile_grounding(ast_obj, process_schema)
         if not ok_bp:
@@ -417,9 +527,9 @@ def validate_and_compile_deontic_or_ast(
 ) -> Tuple[bool, Union[Dict[str, Any], str]]:
     """
     Hàm tích hợp hỗ trợ đồng thời cả 2 định dạng đầu ra:
-      1. Định dạng mới `DeonticNormativeFrame` (có `deontic_modality`, `temporal_relation`, `anchor_activity`).
-      2. Định dạng `DeclareConstraintAST` (có `template_name`, `activation_activity`) để tương thích ngược 100%
-         với toàn bộ dữ liệu cache và bộ kiểm thử hiện có.
+      1. Định dạng `DeonticNormativeFrame` (có `deontic_modality`, `temporal_relation`, `anchor_activity`).
+      2. Định dạng `DeclareConstraintAST` (có `template_name`, `activation_activity`) để tương thích ngược
+         với bộ kiểm thử và dữ liệu cache hiện có.
     """
     try:
         if isinstance(raw_response, str):
@@ -428,9 +538,9 @@ def validate_and_compile_deontic_or_ast(
         elif isinstance(raw_response, dict):
             data = raw_response
         else:
-            return False, f"[Layer 1 Syntax Error]: Unsupported payload type {type(raw_response).__name__}."
+            return False, f"[Deontic Syntax Error]: Unsupported payload type {type(raw_response).__name__}."
     except json.JSONDecodeError as exc:
-        return False, f"[Layer 1 JSON Decode Error]: Output is not valid JSON ({exc})."
+        return False, f"[Deontic JSON Decode Error]: Output is not valid JSON ({exc})."
 
     # Trường hợp 1: Đầu ra là DeonticNormativeFrame
     if "deontic_modality" in data or "anchor_activity" in data or "temporal_relation" in data:
@@ -457,15 +567,15 @@ def validate_and_compile_deontic_or_ast(
         return False, str(result)
 
     # Trường hợp 2: Đầu ra là DeclareConstraintAST (tương thích ngược)
-    from src.mde.typing_environment import check_layer1_and_layer2 as _legacy_check_l1_l2
+    from src.mde.typing_environment import validate_ast_against_process_schema as _validate_direct_ast
 
-    ok_l12, res_l12 = _legacy_check_l1_l2(data, process_schema, retrieved_chunk)
-    if not ok_l12:
-        return False, str(res_l12)
+    ok_schema, res_schema = _validate_direct_ast(data, process_schema, retrieved_chunk)
+    if not ok_schema:
+        return False, str(res_schema)
 
-    assert isinstance(res_l12, DeclareConstraintAST)
-    ok_bp, bp_err = check_behavioral_profile_grounding(res_l12, process_schema)
+    assert isinstance(res_schema, DeclareConstraintAST)
+    ok_bp, bp_err = check_behavioral_profile_grounding(res_schema, process_schema)
     if not ok_bp:
-        return False, f"- [Layer 2 Static Error]: {bp_err}"
+        return False, f"- [Behavioral Compiler Error]: {bp_err}"
 
-    return True, res_l12.model_dump()
+    return True, res_schema.model_dump()

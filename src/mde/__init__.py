@@ -1,7 +1,8 @@
 """
-Model-Driven Engineering (MDE) module:
-- Bước 2.1: DeclareConstraintAST, SemanticDecomposition & Layer 1 Schema Validator (OVAS + Declare4Py + Req2LTL)
-- Bước 2.2: ProcessTypingEnvironment (Γ), δ(C, p) lookup & Layer 2 Type Conformance Checker (OVAS)
+Model-Driven Engineering (MDE) & Behavioral-Aware Process Compilation module:
+- DeonticNormativeFrame (PIM) -> Behavioral-Aware M2M Compiler -> DeclareConstraintAST (PSM)
+- ProcessSchemaValidator & Causal Attribute Availability Checking
+- Behavioral Profile Grounding (DFG Adjacency, Strict Causal Direction, Mutual Exclusion, Lifecycle Consistency)
 """
 
 from .constraint_ast import (
@@ -9,11 +10,14 @@ from .constraint_ast import (
     UNARY_TEMPLATES,
     DeclareConstraintAST,
     SemanticDecomposition,
+    validate_declare_ast,
     validate_layer1_ast,
 )
 from .typing_environment import (
+    ProcessSchemaValidator,
     ProcessTypingEnvironment,
     check_layer1_and_layer2,
+    validate_ast_against_process_schema,
 )
 from .deontic_mde_compiler import (
     UNMAPPED_ATTR_TOKEN,
@@ -29,8 +33,11 @@ __all__ = [
     "BINARY_TEMPLATES",
     "SemanticDecomposition",
     "DeclareConstraintAST",
+    "validate_declare_ast",
     "validate_layer1_ast",
+    "ProcessSchemaValidator",
     "ProcessTypingEnvironment",
+    "validate_ast_against_process_schema",
     "check_layer1_and_layer2",
     "UNMAPPED_ATTR_TOKEN",
     "build_constrained_deontic_schema",

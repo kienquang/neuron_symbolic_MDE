@@ -1,10 +1,9 @@
 """
-Bước 2.3 & Bước 3.3: Phân rã Ngữ nghĩa (Req2LTL) & Vòng lặp Tự sửa lỗi 3 Tầng (Three-Layer Defense Loop)
+Vòng lặp Tổng hợp & Kiểm chứng Quy trình Pháp lý Hướng Hành vi (Behavioral-Aware CEGIS Synthesis Loop)
 Tích hợp:
-1. Req2LTL (ASE 2025, arXiv:2512.17334): Prompt phân rã câu luật thành Tiền đề (Activation) -
-   Hệ quả (Target) - Chiều thời gian (Precedence vs Response) trước khi ánh xạ vào AST.
-2. OVAS (OCL2026 - Hình 1): Vòng lặp Three-Layer Defense (Layer 1 Syntax -> Layer 2 Static Type Γ ->
-   Layer 3 Roundtrip, Vacuity & Declare4Py Conformance Verification) với Max_Retry = 5, temperature = 0.0.
+1. Req2LTL (ASE 2025, arXiv:2512.17334): Phân rã câu luật thành Tiền đề (Activation) - Hệ quả (Target) - Chiều thời gian.
+2. Behavioral-Aware Deontic MDE Compiler & Counterfactual Probing Loop:
+   Biên dịch PIM -> PSM gắn Behavioral Profile -> Thẩm định Phản thực tế -> Kiểm chứng Declare4Py & Vacuity (Max_Retry = 5, temperature = 0.0).
 3. arXiv:2510.07161 (Janus): Cấu trúc phân vai thông điệp Role = {'domain-expert', 'assistant', 'service'}.
 """
 
@@ -51,7 +50,7 @@ def build_role_tagged_message(
     }
 
 
-def generate_with_ovas_and_req2ltl_loop(
+def generate_with_mde_and_req2ltl_loop(
     retrieved_chunk: Dict[str, Any],
     process_schema: Dict[str, Any],
     llm_client: LLMClientProtocol,
@@ -59,8 +58,8 @@ def generate_with_ovas_and_req2ltl_loop(
     record_trace: bool = False,
 ) -> Any:
     """
-    Vòng lặp Bước 2 (Tầng 1 + Tầng 2): Kết hợp cơ chế Role-tagged Message của arXiv:2510.07161,
-    Semantic Decomposition của Req2LTL và Static Checkers của repo OVAS.
+    Vòng lặp Tổng hợp Giai đoạn 2: Kết hợp cơ chế Role-tagged Message của arXiv:2510.07161,
+    Semantic Decomposition của Req2LTL và Bộ kiểm chứng Lược đồ Quy trình MDE.
     """
     filtered_ctx = DirectiveRAGRetriever.filter_relevant_schema(
         retrieved_chunk, process_schema
@@ -79,7 +78,7 @@ def generate_with_ovas_and_req2ltl_loop(
                 "Step 1 (Req2LTL Decomposition): Identify whether the rule mandates a Prerequisite "
                 "(Precedence: Target B requires prior Activation A) or a Consequence "
                 "(Response: Activation A triggers subsequent Target B).\n"
-                "Step 2 (OVAS AST Instantiation): Output strictly valid JSON matching DeclareConstraintAST."
+                "Step 2 (MDE AST Instantiation): Output strictly valid JSON matching DeclareConstraintAST."
             ),
         ),
         build_role_tagged_message(
@@ -152,11 +151,10 @@ def generate_with_three_layer_defense_loop(
     max_retry: int = 5,
 ) -> Dict[str, Any]:
     """
-    Vòng lặp Tự sửa 3 Tầng hợp nhất (Hình 1 của bài OCL2026 - OVAS):
-      - Tầng 1: JSON Schema & Closed Enumeration (constraint_ast.py)
-      - Tầng 2: Typing Environment Γ & δ(C, p) Type Conformance (typing_environment.py)
-      - Tầng 3.1: Deterministic Verbalization & Roundtrip Check (verbalizer_roundtrip.py)
-      - Tầng 3.2: Declare4Py Conformance Check, Log-Grounded Vacuity Check & Counterexample Snapshot (declare4py_verifier.py)
+    Vòng lặp Tự sửa Hợp nhất (Behavioral-Aware Deontic MDE + Counterfactual Probing + Declare4Py):
+      - Giai đoạn 2: Deontic MDE Compiler + Behavioral Profile Consistency & Schema Validation
+      - Giai đoạn 3A: Counterfactual Trace Mutation Probing & Numeric Entity Guard
+      - Giai đoạn 3B: Declare4Py Conformance Check, Log-Grounded Vacuity Check & Counterexample Snapshot
     """
     filtered_ctx = DirectiveRAGRetriever.filter_relevant_schema(
         retrieved_chunk, process_schema
@@ -175,7 +173,7 @@ def generate_with_three_layer_defense_loop(
                 "Step 1 (Req2LTL Decomposition): Identify whether the rule mandates a Prerequisite "
                 "(Precedence: Target B requires prior Activation A) or a Consequence "
                 "(Response: Activation A triggers subsequent Target B).\n"
-                "Step 2 (OVAS AST Instantiation): Output strictly valid JSON matching DeclareConstraintAST."
+                "Step 2 (MDE AST Instantiation): Output strictly valid JSON matching DeclareConstraintAST."
             ),
         ),
         build_role_tagged_message(
@@ -196,7 +194,7 @@ def generate_with_three_layer_defense_loop(
     for attempt in range(1, max_retry + 1):
         raw_response = llm_client.chat(messages=messages, temperature=0.0)
 
-        # --- GIAI ĐOẠN 1 (Deontic MDE Compiler + CFG/Typing Γ + Behavioral Profile Grounding) ---
+        # --- GIAI ĐOẠN 2: Behavioral-Aware Deontic MDE Compiler & Process Schema Validation ---
         is_l12_valid, l12_res = validate_and_compile_deontic_or_ast(
             raw_response, process_schema, retrieved_chunk
         )
@@ -206,7 +204,7 @@ def generate_with_three_layer_defense_loop(
                 verification_trace.append(
                     {
                         "attempt": attempt,
-                        "failed_layer": "Stage 1 (Deontic MDE Scope/Exemption Filter)",
+                        "failed_stage": "Deontic Scope/Exemption Filter",
                         "is_valid": False,
                         "feedback": feedback_msg,
                     }
@@ -222,7 +220,7 @@ def generate_with_three_layer_defense_loop(
             verification_trace.append(
                 {
                     "attempt": attempt,
-                    "failed_layer": "Layer 1/2 (Syntax & Static Typing Γ)",
+                    "failed_stage": "Behavioral-Aware Deontic Compiler",
                     "is_valid": False,
                     "feedback": feedback_msg,
                 }
@@ -233,7 +231,7 @@ def generate_with_three_layer_defense_loop(
                     "user",
                     "service",
                     f"[Automated Verification Service Feedback - Attempt {attempt}/{max_retry}]:\n"
-                    f"{feedback_msg}\nPlease repair the JSON AST strictly adhering to the Process Schema Γ.",
+                    f"{feedback_msg}\nPlease repair the JSON AST strictly adhering to the Process Schema and Behavioral Profile.",
                 )
             )
             continue
@@ -244,7 +242,7 @@ def generate_with_three_layer_defense_loop(
         )
         ast_dict = ast_obj.model_dump()
 
-        # --- GIAI ĐOẠN 2 (TẦNG 3.1): Kiểm chứng Ngữ nghĩa bằng Đột biến Vết Đối chứng (Counterfactual Trace Probing) ---
+        # --- GIAI ĐOẠN 3A: Kiểm chứng Ngữ nghĩa bằng Đột biến Vết Đối chứng (Counterfactual Trace Probing) ---
         rt_ok, rt_feedback = verify_via_counterfactual_probing(
             ast_dict, retrieved_chunk, llm_client, process_schema=process_schema
         )
@@ -252,7 +250,7 @@ def generate_with_three_layer_defense_loop(
             verification_trace.append(
                 {
                     "attempt": attempt,
-                    "failed_layer": "Layer 3.1 (Roundtrip Semantic Fidelity)",
+                    "failed_stage": "Counterfactual Semantic Probing",
                     "is_valid": False,
                     "feedback": rt_feedback,
                 }
@@ -280,7 +278,7 @@ def generate_with_three_layer_defense_loop(
             )
             continue
 
-        # --- TẦNG 3.2 & 3.3: Kiểm tra Declare4Py Conformance, Vacuity Check & Trích xuất Counterexample ---
+        # --- GIAI ĐOẠN 3B: Kiểm tra Declare4Py Conformance, Vacuity Check & Trích xuất Counterexample ---
         decl_line = ast_obj.to_declare4py_line()
         l3_ok, l3_report = run_layer3_declare4py_verifier(
             d4py_engine=d4py_engine,
@@ -293,7 +291,7 @@ def generate_with_three_layer_defense_loop(
             verification_trace.append(
                 {
                     "attempt": attempt,
-                    "failed_layer": "Layer 3.2 (Log-Grounded Vacuity Check)",
+                    "failed_stage": "Log-Grounded Vacuity Check",
                     "is_valid": False,
                     "feedback": vacuity_feedback,
                 }
@@ -309,14 +307,14 @@ def generate_with_three_layer_defense_loop(
             )
             continue
 
-        # Đã vượt qua cả 3 Tầng kiểm chứng!
+        # Đã vượt qua toàn bộ chu trình biên dịch và kiểm chứng!
         verbalized = verbalize_declare_ast(ast_dict)
         verification_trace.append(
             {
                 "attempt": attempt,
-                "failed_layer": None,
+                "failed_stage": None,
                 "is_valid": True,
-                "feedback": "Passed Layer 1, Layer 2, Layer 3.1 (Roundtrip), and Layer 3.2 (Declare4Py Non-Vacuous Conformance).",
+                "feedback": "Passed Behavioral-Aware Deontic Compilation, Counterfactual Semantic Probing, and Declare4Py Non-Vacuous Conformance.",
             }
         )
         return {
@@ -351,7 +349,7 @@ from tests.mocks.mock_synthesizer import NeuroSymbolicLegalSynthesizerClient
 __all__ = [
     "LLMClientProtocol",
     "build_role_tagged_message",
-    "generate_with_ovas_and_req2ltl_loop",
+    "generate_with_mde_and_req2ltl_loop",
     "generate_with_three_layer_defense",
     "NeuroSymbolicLegalSynthesizerClient",
 ]

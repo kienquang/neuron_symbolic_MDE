@@ -4,7 +4,7 @@ Bước 3.1: Kiểm chứng Ràng buộc Không cần Đáp án chuẩn (Determi
 
 Tham khảo:
 
-- Bài OCL2026 (OVAS): Mục 3.4.6 & Mục 5.3 (Reference-free verification scenarios)
+- Kiểm chứng không cần đáp án chuẩn & phản hồi đối nghịch trong tổng hợp đặc tả hình thức (Reference-free Roundtrip Verification)
 
 - Bài IJCAI 2025 (Declarative PM) & Roundtrip Check (arXiv:2604.25031):
 
@@ -518,7 +518,7 @@ def verify_generic_numeric_entities(
 
         conflict_prefix = (
 
-            "[Layer 3 Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
+            "[Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
 
             if is_from_policy
 
@@ -618,7 +618,7 @@ def verify_generic_numeric_entities(
 
         conflict_prefix = (
 
-            "[Layer 3 Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
+            "[Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT]: "
 
             if is_from_policy
 
@@ -804,7 +804,7 @@ def check_roundtrip_fidelity(
 
             False,
 
-            f"[Layer 3 Semantic {num_verdict}]: {num_diag} (Back-translation: {verbalized_rule})",
+            f"[Semantic Verification {num_verdict}]: {num_diag} (Back-translation: {verbalized_rule})",
 
         )
 
@@ -878,7 +878,7 @@ Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "SEMANTIC_MISMA
 
             except Exception as e:
 
-                raise RuntimeError(f"Layer 3 Semantic Verifier received non-JSON response from LLM: {res}") from e
+                raise RuntimeError(f"Semantic Verifier received non-JSON response from LLM: {res}") from e
 
     else:
 
@@ -896,13 +896,13 @@ Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "SEMANTIC_MISMA
 
         except Exception as e:
 
-            raise RuntimeError(f"Layer 3 Semantic Verifier received non-JSON response from LLM: {raw}") from e
+            raise RuntimeError(f"Semantic Verifier received non-JSON response from LLM: {raw}") from e
 
 
 
     if not isinstance(res, dict) or "verdict" not in res:
 
-        raise RuntimeError(f"Layer 3 Semantic Verifier failed: LLM output lacks 'verdict' key: {res}")
+        raise RuntimeError(f"Semantic Verifier failed: LLM output lacks 'verdict' key: {res}")
 
 
 
@@ -916,7 +916,7 @@ Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "SEMANTIC_MISMA
 
     if verdict not in ("REVERSED_ORDER", "THRESHOLD_MISMATCH", "BASELESS", "SEMANTIC_MISMATCH"):
 
-        raise RuntimeError(f"Layer 3 Semantic Verifier returned unknown verdict '{verdict}' (payload: {res})")
+        raise RuntimeError(f"Semantic Verifier returned unknown verdict '{verdict}' (payload: {res})")
 
 
 
@@ -924,7 +924,7 @@ Return JSON only: {{"verdict": "EQUIVALENT" | "REVERSED_ORDER" | "SEMANTIC_MISMA
 
         False,
 
-        f"[Layer 3 Semantic {verdict}]: {res.get('diagnostic_feedback', '')} "
+        f"[Semantic Verification {verdict}]: {res.get('diagnostic_feedback', '')} "
 
         f"(Back-translation: {verbalized_rule})",
 

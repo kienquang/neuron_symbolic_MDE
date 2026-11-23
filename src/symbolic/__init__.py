@@ -1,8 +1,8 @@
 """
-Symbolic reasoning & verification module (Bước 3 - Tầng 3):
-- Bước 3.1: verbalize_declare_ast & check_roundtrip_fidelity (OVAS + IJCAI 2025 + arXiv:2604.25031)
-- Bước 3.2: Declare4Py & run_layer3_declare4py_verifier (Declare4Py + OVAS Vacuity Check + Janus stats)
-- Bước 3.3: extract_concrete_trace_snapshots (OVAS Mục 3.4.6 Concrete Counterexample Snapshots)
+Symbolic reasoning & verification module (Giai đoạn 3):
+- Counterfactual Semantic Probing & Deterministic Verbalization (counterfactual_prober.py, verbalizer_roundtrip.py)
+- Declare4Py Symbolic Conformance Engine & Log-Grounded Vacuity Check (declare4py_verifier.py)
+- Deterministic Counterexample Snapshots (extract_concrete_trace_snapshots)
 """
 
 from .verbalizer_roundtrip import (

@@ -1,190 +1,175 @@
 # Neuro-Symbolic + MDE for Trustworthy Reasoning in Process Mining
 
-Dự án nghiên cứu kết hợp **Trí tuệ nhân tạo Tượng trưng - Nơ-ron (Neuro-Symbolic AI)** và **Kỹ nghệ Hướng mô hình (Model-Driven Engineering - MDE)** nhằm giải quyết triệt để vấn đề ảo giác (hallucination), thiếu khả năng giải trình và chi phí tính toán cao khi ứng dụng Mô hình ngôn ngữ lớn (LLM) vào kiểm tra tuân thủ quy trình kinh doanh (Business Process Compliance Checking).
+Dự án nghiên cứu kết hợp **Trí tuệ nhân tạo Tượng trưng - Nơ-ron (Neuro-Symbolic AI)** và **Kỹ nghệ Hướng mô hình (Model-Driven Engineering - MDE)** nhằm giải quyết vấn đề ảo giác (hallucination), thiếu khả năng giải trình và chi phí tính toán cao khi ứng dụng Mô hình ngôn ngữ lớn (LLM) vào kiểm tra tuân thủ quy trình kinh doanh (Business Process Compliance Checking).
 
-Hệ thống được kiểm chứng thực nghiệm trên văn bản pháp lý tín dụng tiêu dùng châu Âu (**Directive 2008/48/EC**) và nhật ký sự kiện ngân hàng thực tế quy mô lớn (**BPI Challenge 2017** gồm 31.509 hồ sơ và 1,2 triệu sự kiện), sử dụng mô hình LLM mã nguồn mở thật (`openai/gpt-oss-120b`).
+Hệ thống được kiểm chứng thực nghiệm trên văn bản pháp lý tín dụng tiêu dùng châu Âu (**Directive 2008/48/EC**) và nhật ký sự kiện ngân hàng thực tế quy mô lớn (**BPI Challenge 2017** gồm 31.509 hồ sơ và 1,2 triệu sự kiện), đánh giá chéo trên 3 mô hình LLM mã nguồn mở (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, `openai/gpt-oss-20b`).
 
 ---
 
 ## 1. Kiến trúc Hệ thống & Quy trình Thực thi (System Architecture)
 
-Hệ thống hoạt động theo quy trình 4 giai đoạn khép kín từ văn bản luật tự nhiên đến báo cáo giải trình kiểm toán toán học:
+Hệ thống hoạt động theo quy trình **4 giai đoạn hợp nhất hướng hành vi (Behavioral-Aware Deontic Neuro-Symbolic Pipeline)** — không chia tầng kiểm tra tĩnh kiểu OCL, mà biên dịch trực tiếp văn bản pháp lý qua Mô hình Chuẩn tắc Độc lập Nền tảng (**Deontic PIM**) sang công thức **DECLARE PSM** được neo vào **Ma trận Hành vi Quy trình (Process Behavioral Profile)** của Event Log:
 
 ```mermaid
 flowchart TD
-    subgraph Phase1["Giai đoạn 1: Tiền xử lý & Trích xuất Siêu mô hình"]
+    subgraph Phase1["Giai đoạn 1: Phân rã Luật & Khai phá Behavioral Profile"]
         D1["Văn bản Luật: Directive 2008/48/EC"] -->|Phân rã điều khoản nghiệp vụ| D2["directive_chunks.json: Articles 1–24"]
-        L1["Nhật ký Sự kiện BPIC 2017"] -->|Trích xuất Lược đồ Quy trình| L2["process_schema.json: Hoạt động, Thuộc tính, Kiểu"]
+        L1["Nhật ký Sự kiện BPIC 2017"] -->|Khai phá Lược đồ & Ma trận Hành vi| L2["process_schema.json: Hoạt động, Thuộc tính, DFG, Strict Causal & Mutex Pairs"]
     end
 
-    subgraph Phase2["Giai đoạn 2: Tổng hợp Ràng buộc MDE & Kiểm tra Tĩnh 2 Tầng"]
-        D2 -->|BM25 RAG Retrieval| RAG["Prompt Ngữ cảnh Luật và Schema"]
+    subgraph Phase2["Giai đoạn 2: Tổng hợp Deontic PIM & Biên dịch Hướng Hành vi"]
+        D2 -->|BM25 RAG Retrieval| RAG["Ngữ cảnh Luật + Behavioral Profile"]
         L2 --> RAG
-        RAG -->|Sinh mã ràng buộc| LLM["LLM: openai/gpt-oss-120b"]
-        LLM -->|JSON thô| L1_Check{"Tầng 1: Kiểm tra Cú pháp AST<br/>Pydantic Grammar"}
-        L1_Check -->|Lỗi cú pháp| Retry1["Phản hồi Lỗi Compiler"]
+        RAG -->|Grammar-Constrained Decoding| LLM["LLM (temperature = 0.0)<br/>Sinh DeonticNormativeFrame (PIM)"]
+        LLM -->|JSON Deontic Frame| Compiler{"Behavioral-Aware Deontic M2M Compiler<br/>PIM -> DECLARE PSM"}
+        Compiler -->|Vi phạm Schema / Nhân quả thuộc tính /<br/>DFG Adjacency / Causal Inversion / Mutex| Retry1["Phản hồi Chẩn đoán Hành vi Quy trình"]
         Retry1 --> LLM
-        L1_Check -->|Hợp lệ| L2_Check{"Tầng 2: Kiểm tra Lược đồ & Kiểu tĩnh<br/>Context Typing Environment"}
-        L2_Check -->|Sai tên sự kiện / lệch kiểu| Retry2["Phản hồi Lỗi Metamodel OVAS"]
+        Compiler -->|EXEMPTION / UNMAPPED_MISSING_IN_LOG| ZeroRetry["Chặn tức thì BASELESS (Zero-Retry)"]
+    end
+
+    subgraph Phase3["Giai đoạn 3: Thẩm định Phản thực tế & Thực thi Tượng trưng"]
+        Compiler -->|DECLARE PSM hợp lệ| Probe{"Counterfactual Trace Mutation Probing<br/>Numeric Entity Guard + Mutant Traces τ+/τ- + Blind Judge"}
+        Probe -->|Lệch chiều / Lệch ngưỡng / Sai hoạt động| Retry2["Phản hồi Đột biến Phản thực tế"]
         Retry2 --> LLM
+        Probe -->|Bẫy luật vô căn cứ| BaseTrap["BASELESS (Rule/Schema Trap)"]
+        Probe -->|Semantically Faithful| Vac{"Log-Grounded Vacuity Check &<br/>Declare4Py Symbolic Engine"}
+        Vac -->|0 kích hoạt trên Log| Vac_Alert["Cảnh báo Vacuous"]
+        Vac -->|Không rỗng| Exec["Thực thi LTLf/DECLARE trên Event Log"]
     end
 
-    subgraph Phase3["Giai đoạn 3: Kiểm chứng Ngữ nghĩa Tầng 3 & Thực thi Tượng trưng"]
-        L2_Check -->|Hợp lệ tĩnh| L3_RT{"Tầng 3A: Kiểm tra Đối ngẫu<br/>Deterministic Round-trip Check"}
-        L3_RT -->|Lệch ngưỡng số / Thiếu bằng chứng| Retry3["Phản hồi Đối soát Thực thể"]
-        Retry3 --> LLM
-        L3_RT -->|Semantically Faithful| L3_Vac{"Tầng 3B: Kiểm tra Độ rỗng<br/>Vacuity Check trên Log"}
-        L3_Vac -->|Ràng buộc Rỗng - 0 kích hoạt| Vac_Alert["Gắn nhãn Vacuous / Cảnh báo"]
-        L3_Vac -->|Không rỗng| D4Py["Declare4Py Symbolic Engine<br/>Biên dịch sang LTL/Declare"]
-    end
-
-    subgraph Phase4["Giai đoạn 4: Phán quyết 3 Trạng thái & Báo cáo Giải trình Minh bạch"]
-        D4Py --> Phi_Check{"Tập Điều kiện An toàn Phi<br/>Trace Safety Guardrail"}
-        Phi_Check -->|Thiếu thuộc tính / Bẫy luật| Base["BASELESS<br/>Ảo giác / Thiếu bằng chứng"]
-        Phi_Check -->|Dữ liệu đầy đủ| Trace_Eval{"Kiểm tra Tuân thủ Declare4Py"}
+    subgraph Phase4["Giai đoạn 4: Phán quyết 3 Trạng thái Φ & Báo cáo Giải trình"]
+        Exec --> Phi_Check{"Tập Điều kiện An toàn Phi<br/>Epistemic Trace Safety Guard"}
+        Phi_Check -->|Thiếu thuộc tính / Ngoài phạm vi áp dụng| Base["BASELESS<br/>Thiếu bằng chứng / Bẫy luật"]
+        ZeroRetry --> Base
+        BaseTrap --> Base
+        Phi_Check -->|Dữ liệu đầy đủ| Trace_Eval{"Phán quyết Declare4Py"}
         Trace_Eval -->|Thỏa mãn công thức| Ent["ENTAILED<br/>Tuân thủ"]
-        Trace_Eval -->|Vi phạm công thức| Cont["CONTRADICTED<br/>Vi phạm + Tính MCS"]
-        
-        Base --> JTree["Cây Biện minh Tất định xpSHACL<br/>Gắn Luật - Công thức - Bằng chứng Log"]
+        Trace_Eval -->|Vi phạm công thức| Cont["CONTRADICTED<br/>Vi phạm + Counterexample Snapshot"]
+
+        Base --> JTree["Cây Biện minh Tất định<br/>Gắn Luật - Công thức - Bằng chứng Log"]
         Ent --> JTree
         Cont --> JTree
-        JTree --> Auditor["LLM Diễn giải Báo cáo Giải trình XAI"]
-        Auditor --> Guard["Post-hoc Grounding Guard<br/>Khóa nguồn số liệu, chống bịa đặt"]
+        JTree --> Auditor["LLM Diễn giải Báo cáo Giải trình"]
+        Auditor --> Guard["Post-hoc Grounding Guard<br/>Khóa nguồn case_id, ngày, Article"]
     end
 ```
 
-## 3. Kết quả Thực nghiệm Tham khảo (Pre-Fix Snapshot — Cần Tái chạy sau Bản vá)
-
-> **Lưu ý Liêm chính Khoa học**: Toàn bộ bảng số liệu RQ1–RQ3 dưới đây (và trong `results/rq1_rq2_rq3_*`) là **bản chụp trước khi áp dụng các bản vá kiểm toán mới nhất** (sửa `R07`/`R29`, khử trùng lặp Case ID & cân bằng phủ 22/22 quy tắc trong `benchmark_items.json`, khóa strict verdict cho Counterfactual Judge, sửa compiler `EXEMPTION_OUT_OF_SCOPE`, chuẩn hóa `trace_safety_classifier.py` cho `Existence`, và cân bằng prompt/ablation B2–NoPre). Số liệu mới chưa được tái chạy để tiết kiệm token API.
-
-Toàn bộ thực nghiệm được thiết kế chạy với mô hình thật **`openai/gpt-oss-120b`** (thông qua Groq API, `temperature = 0.0`) trên **Bộ 30 Quy tắc Chuẩn R01–R30** (chia phân tầng `DEV_RULE_IDS` vs `HELDOUT_TEST_RULE_IDS`) và **300 hồ sơ kiểm thử phân tầng chuẩn hóa** (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS) từ nhật ký sự kiện BPIC 2017:
-- **Zero Prompt Leakage**: Tuyệt đối không rò rỉ đáp án hoặc dấu hiệu nhãn vào prompt thẩm định (theo đúng Chuẩn Hướng A).
-- **Zero Modulo Fallback**: Không sử dụng bất kỳ công thức nhân tạo hay modulo giả lập nào.
-- **Thẩm định Tầng 3 Khách quan**: Semantic Verifier kiểm soát chặt chẽ bằng AST đối ngẫu, loại bỏ hoàn toàn cơ chế mặc định `EQUIVALENT` ngầm.
-
-### Bảng 1 (Trả lời RQ1): Năng lực Kiểm chứng & Hiệu chỉnh Ngữ nghĩa theo Độ phức tạp (Complexity Tiers)
-
-Đánh giá năng lực dịch từ ngôn ngữ tự nhiên sang DECLARE AST có kiểm chứng ngữ nghĩa (Eq.) trên toàn bộ 22 quy tắc định chuẩn (Tier 1: 12 quy tắc luồng điều khiển, Tier 2: 10 quy tắc thời gian và số liệu):
-
-| Độ phức tạp Ràng buộc (Complexity Tier) | Số Quy tắc | Đúng Ngữ nghĩa (Eq. %) ↑ | Quá Chặt (Strengthened %) ↓ | Quá Lỏng (Weakened %) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng (Vacuous %) ↓ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **1A. Khi tắt Vòng lặp Tự sửa (One-Shot Synthesis - Vòng 1 của LLM trên R01–R22)** | | | | | | |
-| • Tier 1: Luồng điều khiển cơ bản (Control-Flow Only) | 12 | **66.67%** | 0.00% | 8.33% | 25.00% | 0.00% |
-| • Tier 2: Thời gian & Dữ liệu (Temporal & Data-Aware) | 10 | **60.00%** | 0.00% | 0.00% | 20.00% | 20.00% |
-| • **Toàn hệ thống One-Shot (Overall - 22 rules)** | 22 | **63.64%** | 0.00% | 4.55% | 22.73% | 9.09% |
-| **1B. Full Proposed Pipeline (Sau Kiến trúc 3 Tầng & Vòng lặp Tự sửa)** | | | | | | |
-| • Tier 1: Luồng điều khiển cơ bản (Control-Flow Only) | 12 | **66.67%** | 0.00% | 8.33% | 25.00% | 0.00% |
-| • Tier 2: Thời gian & Dữ liệu (Temporal & Data-Aware) | 10 | **60.00%** | 10.00% | 0.00% | 10.00% | 20.00% |
-| • **Toàn hệ thống Đề xuất (Overall - 22 rules)** | 22 | **63.64%** | 4.55% | 4.55% | 18.18% | 9.09% |
-
-> **Nhận xét RQ1**:
-> 1. Ở Tier 1 (luồng điều khiển), tỷ lệ đúng ngữ nghĩa đạt **66.67%**, thể hiện khả năng nắm bắt chính xác trình tự nghiệp vụ của các hoạt động cốt lõi ngân hàng.
-> 2. Ở Tier 2 (thời gian & dữ liệu), tỷ lệ đúng ngữ nghĩa đạt **60.00%** nhờ cơ chế đối ngẫu toán học hình thức (Mathematical Duality giữa Existence/Absence cho chặn trên/dưới và tính đối ngẫu Precedence/Response) kết hợp cùng Từ điển dữ liệu nghiệp vụ (Process Schema Data Dictionary).
-> 3. Tỷ lệ lệch hướng/đảo chiều giảm mạnh xuống còn **18.18%**, khẳng định kiến trúc 3 tầng giúp loại bỏ triệt để các suy diễn sai lệch về ngữ nghĩa pháp lý.
+### Điểm khác biệt cốt lõi của **Behavioral-Aware Deontic MDE Compiler** (`src/mde/deontic_mde_compiler.py`)
+1. **Deontic-Temporal Modality Compilation (PIM $\rightarrow$ PSM)**: Ánh xạ tất định đầy đủ cả 4 thái độ chuẩn tắc (`OBLIGATION`, `PROHIBITION` $\rightarrow$ `Absence` / `Not Response` / `Not Precedence`, `PERMISSION_RIGHT` $\rightarrow$ tiền điều kiện không bắt buộc `Precedence` / `Chain Precedence`, `EXEMPTION_OUT_OF_SCOPE` $\rightarrow$ chặn tức thì).
+2. **Direct DFG Adjacency Check**: Ràng buộc liền kề (`Chain Precedence` / `Chain Response`) phải tồn tại cạnh trực tiếp (`direct_dfg_count > 0`) trong DFG của Event Log.
+3. **Strict Causal Direction Invariant Check**: Chặn đảo chiều nhân quả (**Causal Direction Inversion**) và lệnh cấm rỗng do đảo chiều (**Vacuous Reversed Prohibition**, ví dụ `Not Precedence(A, B)` khi `B` luôn xảy ra trước `A` với `order_ratio >= 0.99`).
+4. **Behavioral Mutual-Exclusion & Lifecycle Co-Occurrence Check**: Chặn ràng buộc đồng xuất hiện dương trên các cặp nhánh loại trừ (`co_occurrence_rate <= 0.01`) và chặn `Not Co-Existence` trên các cặp bất biến vòng đời (`>= 99%` đồng xuất hiện hai chiều).
+5. **Causal Attribute Availability Check** (`src/mde/typing_environment.py` — `ProcessSchemaValidator`): Kiểm tra tính hợp lệ thực thể, kiểu toán tử và tính khả dụng nhân quả của thuộc tính sự kiện theo thứ tự phát sinh trong Behavioral Profile.
 
 ---
 
-### Bảng 2 (Trả lời RQ2): Nghiên cứu Triệt tiêu (Ablation Study) & So sánh Baseline trên 300 Mẫu
+## 2. Kết quả Thực nghiệm Sạch & Khách quan (Clean Benchmark Results)
 
-Đánh giá giá trị thực sự của từng thành phần trong kiến trúc đối với độ chính xác kiểm toán quy trình trên toàn bộ 300 mẫu hồ sơ phân tầng (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS):
+Toàn bộ thực nghiệm sử dụng **Bộ 30 Quy tắc Chuẩn `R01–R30`** (`DEV`: 15 quy tắc / 150 mẫu; `HELDOUT_TEST`: 15 quy tắc / 150 mẫu; 0 trùng lặp quy tắc và 0 trùng lặp mã hồ sơ) trên **300 hồ sơ phân tầng** (100 `ENTAILED`, 100 `CONTRADICTED`, 100 `BASELESS`; 224/300 = 74.7% vết nguyên bản từ BPIC 2017, loại bỏ `bfill()` để đảm bảo tính nhân quả, không từ khóa khớp luật trong `process_schema.json`, `CRASH` phạt trực tiếp vào Precision/F1, `temperature = 0.0`).
 
-| Cấu hình Thực nghiệm (Configuration) | Tỷ lệ Thực thi được (%) ↑ | Tỷ lệ Đúng Ngữ nghĩa (Eq. %) ↑ | Conformance Precision ↑ | Conformance Recall ↑ | Conformance F1-Score ↑ |
+### 2.1. Kết quả Chính trên `openai/gpt-oss-120b` (`results/rq1_rq2_rq3_paper_tables.md`)
+
+#### Bảng 1 (RQ1): Kiểm chứng Ngữ nghĩa Ràng buộc theo Độ phức tạp (`R01–R22`)
+
+| Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt (%) ↓ | Quá Lỏng (%) ↓ | Đảo Chiều (%) ↓ | Sai Hoạt động (%) ↓ | Từ chối / Lỗi khác (%) ↓ |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1A. Round-1 Behavioral Deontic Synthesis (Tắt Counterfactual Probe & tự sửa)** | | | | | | |
+| • Tier 1: Control-Flow Only | **58.33%** | 0.0% | 8.33% | 0.0% | 33.33% | 0.0% |
+| • Tier 2: Temporal & Data-Aware | **100.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| • **Overall Pipeline (One-Shot MDE)** | **77.27%** | 0.0% | 4.55% | 0.0% | 18.18% | 0.0% |
+| **1B. Full Pipeline (Bật Behavioral Deontic Compiler + Counterfactual Probe + Tự sửa)** | | | | | | |
+| • Tier 1: Control-Flow Only | **66.67%** | 0.0% | 8.33% | 0.0% | 25.0% | 0.0% |
+| • Tier 2: Temporal & Data-Aware | **90.0%** | 0.0% | 0.0% | 0.0% | 0.0% | 10.0% |
+| • **Overall Pipeline (Full)** | **77.27%** | 0.0% | 4.55% | 0.0% | 13.64% | 4.55% |
+
+> *Ghi chú Bảng 1*: Cả 1A và 1B đều có `Reversed = 0.0%`, `Crash = 0.0%` và `Vacuous = 0.0%` (`Abstained = 4.55%` ở 1B).
+
+#### Bảng 2 (RQ2): Nghiên cứu Triệt tiêu (Ablation Study) & So sánh Baseline (300 mẫu)
+
+| Cấu hình Thực nghiệm (Configuration) | Thực thi Hợp lệ (%) ↑ | Norm Eq (`R01–R22` %) ↑ | Trap Detect (`R23–R30` %) ↑ | Accuracy (%) ↑ | Macro-F1 ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py)** | *N/A* | *N/A* | 0.2789 | 0.2867 | **0.2558** |
-| **Baseline 2: One-Shot LLM-to-DECLARE (Không kiểm tra 3 tầng)** | 93.00% | 44.67% | 0.4284 | 0.5567 | **0.4674** |
-| **- Self-Correction Loop (Tắt Vòng lặp Tự sửa)** | 85.67% | 65.67% | 0.9002 | 0.7600 | **0.8140** |
-| **- Pre-Verification (Tắt Tầng 1 & Tầng 2)** | 78.00% | 66.00% | 0.8659 | 0.6733 | **0.7475** |
-| **Full Neuro-Symbolic Pipeline (Kiến trúc Đề xuất)** | **92.67%** | **69.33%** | **0.9020** | **0.8233** | **0.8514** |
+| **Baseline 1: Vanilla RAG + LLM Direct QA** | *N/A* | *N/A* | 57.0% | 55.67% | **0.5532** |
+| **Baseline 2: One-Shot LLM-to-DECLARE** *(Không qua Compiler & Counterfactual)* | 90.67% | 67.0% | 63.0% | 67.67% | **0.6772** |
+| **- Self-Correction Loop** *(Tắt Vòng lặp Tự sửa)* | 100.0% | 71.0% | 87.0% | 85.0% | **0.85** |
+| **- Behavioral Deontic Compiler** *(Tắt Biên dịch Deontic & Behavioral Profile)* | 90.67% | 54.0% | 76.0% | 76.0% | **0.7586** |
+| **Full Neuro-Symbolic Pipeline (Đề xuất)** | **100.0%** | **76.0%** | **87.0%** | **88.33%** | **0.8836** |
 
-> **Nhận xét RQ2**:
-> 1. **Vượt trội so với Baseline 1 (Vanilla RAG)**: Hỏi trực tiếp LLM chỉ đạt Conformance F1 = **0.2558**. Do các vết sự kiện thực tế trong log ngân hàng BPIC 2017 rất dài và phức tạp, LLM thông thường gặp ảo giác nặng về quan hệ phụ thuộc thời gian và thường thiên lệch phán đoán BASELESS.
-> 2. **Vượt trội so với Baseline 2 (One-Shot DECLARE)**: One-Shot không có kiểm chứng chỉ đạt F1 = **0.4674**, bất lực trước các ca bẫy BASELESS vì luôn ép buộc sinh công thức ngay cả khi luật nằm ngoài phạm vi.
-> 3. **Tác động của Pre-Verification (T1 & T2)**: Bộ kiểm tra tĩnh Tầng 1 (Pydantic AST) và Tầng 2 (Metamodel Typing Environment) giúp tỷ lệ thực thi tăng từ 78.00% lên 92.67% (+14.67 điểm phần trăm) và F1 tăng từ 0.7475 lên 0.8514 (+10.39 điểm phần trăm).
-> 4. **Tác động của Self-Correction Loop**: Đóng vai trò sống còn trong việc trau chuốt AST, đẩy tỷ lệ đúng ngữ nghĩa từ 65.67% lên 69.33% và F1 từ 0.8140 lên **0.8514**, đạt tỷ lệ thực thi đỉnh cao **92.67%** trên Declare4Py.
+> *Chi tiết Bảng 2*:
+> - **Phân tách `DEV` vs `HELDOUT_TEST` (Full Pipeline, 150 mẫu/tập)**: `DEV` đạt `Accuracy = 92.67%`, `Macro-F1 = 0.9258` (`Trap = 100.0%`); `HELDOUT_TEST` đạt `Accuracy = 84.0%`, `Macro-F1 = 0.8391` (`Trap = 74.0%`).
+> - **Phát hiện bẫy `R23–R30` (Full Pipeline)**: `Rule/Schema Trap = 82.89%` (`5/6` loại bẫy luật/lược đồ: `R23, R24, R25, R27, R28`), `Trace Φ = 100.0%` (`2/2` loại bẫy log: `R29, R30`); tổng hợp `Trap Detect = 87.0%`.
+> - **Tỷ lệ `Crash`**: Baseline 2 và `- Behavioral Deontic Compiler` có `Crash = 9.33%`; Full Pipeline và `- Self-Correction` có `Crash = 0.0%`.
 
----
+#### Bảng 3 (RQ3): Hiệu năng Chẩn đoán 3 Trạng thái & Giải trình (300 mẫu, bật `--with-explanations`)
 
-### Bảng 3 (Trả lời RQ3): Độ Tin cậy Chẩn đoán 3 Trạng thái, Giải trình & Hiệu năng Tính toán (300 mẫu)
-
-| Nhãn Chẩn đoán (Diagnostic Class) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng Tự sửa TB ↓ | Thời gian Kiểm chứng TB ↓ | Trích dẫn Minh bạch (Citation Fidelity) ↑ |
+| Nhãn Phân loại Tuân thủ (Compliance Verdict) | Precision ↑ | Recall ↑ | F1-Score ↑ | Số vòng sửa TB | Thời gian TB (s) ↓ | Citation Fidelity (%) ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **ENTAILED** (Tuân thủ - 100 mẫu) | 0.8679 | 0.9200 | **0.8932** | 0.34 lượt | 8.7 ms | 97.0% |
-| **CONTRADICTED** (Vi phạm - 100 mẫu) | 1.0000 | 0.6700 | **0.8024** | 0.86 lượt | 7.3 ms | 93.0% |
-| **BASELESS** (Ảo giác / Thiếu bằng chứng Φ - 100 mẫu) | 0.8381 | 0.8800 | **0.8585** | 3.16 lượt | 0.6 ms | 88.0% |
-| **Trung bình Toàn hệ thống (Overall - 300 mẫu)** | **0.9020** | **0.8233** | **0.8514** | **1.45 lượt** | **6.0 ms** | **92.67%** |
-
-> **Nhận xét RQ3**:
-> 1. **Hiệu năng chẩn đoán toàn diện**: Toàn hệ thống đạt Macro F1 = **0.8514** (Precision = 0.9020, Recall = 0.8233) trên toàn bộ 300 mẫu kiểm thử chuẩn hóa hoàn toàn khách quan, không rò rỉ đáp án.
-> 2. **Độ chính xác hoàn hảo với Vi phạm (CONTRADICTED Precision = 1.0000)**: Không có bất kỳ cảnh báo vi phạm giả nào; mọi trường hợp phán quyết CONTRADICTED đều là vi phạm thực tế 100%.
-> 3. **Ngăn chặn bẫy ảo giác (BASELESS Recall = 0.8800, F1 = 0.8585)**: Nhờ chốt chặn phạm vi áp dụng (Directive Scope Exclusion), loại bỏ nghĩa vụ vô căn cứ và điều kiện an toàn $\Phi$, hệ thống phát hiện chính xác các bẫy ảo giác.
-> 4. **Tốc độ kiểm chứng siêu tốc (6.0 ms / trace)**: Động cơ toán học Declare4Py thực thi kiểm chứng vết sự kiện trong thời gian mili-giây, nhanh hơn hàng trăm lần so với việc để LLM tự suy luận qua prompt.
-> 5. **Khả năng giải trình minh bạch (92.67% Citation Fidelity trên toàn bộ 300 mẫu, đạt 100.0% trên 278 ca thực thi)**: Mọi phán quyết sinh ra khi thực thi đều được neo chặt với Cây biện minh tất định xpSHACL, viện dẫn chính xác mã điều khoản luật và vết sự kiện vi phạm trong log.
+| **ENTAILED (Tuân thủ)** | 0.8067 | 0.96 | **0.8767** | 0.05 | 0.0067s | **76.0%** |
+| **CONTRADICTED (Vi phạm)** | 0.9535 | 0.82 | **0.8817** | 0.05 | 0.0046s | **76.0%** |
+| **BASELESS (Ảo giác / Thiếu Φ)** | 0.9158 | 0.87 | **0.8923** | 0.0 | 0.0013s | **87.0%** |
+| **Trung bình Toàn hệ thống (Overall)** | **0.892** | **0.8833** | **0.8836** | **0.03** | **0.0042s** | **79.67%** |
 
 ---
 
-### Bảng 4 (Pre-Fix Snapshot — Tham khảo Cũ): Phân tích Khả năng Bắt Bẫy Ảo giác (R23–R30)
+### 2.2. Khái quát hóa Đa mô hình (Cross-Model Generalization, 300 mẫu)
 
-| Mã Quy tắc | Điều khoản Luật | Loại Bẫy Ngữ nghĩa | Trạng thái Thẩm định / Ngăn chặn | Số vòng tự sửa |
-| :---: | :---: | :--- | :---: | :---: |
-| **R23** | Article 7 | Bẫy thời hạn: Quy định thời hạn xử lý hồ sơ 8 ngày không có trong điều khoản | DETECTED_BASELESS_TRAP (Phát hiện sai lệch thời hạn tại Tầng 3) | 4 |
-| **R24** | Article 7 | Bẫy nghiệp vụ: Bắt buộc gọi điện thoại hỗ trợ hồ sơ thiếu | DETECTED_BASELESS_TRAP (Phát hiện nghĩa vụ thủ tục vô căn cứ tại Tầng 3) | 4 |
-| **R25** | Article 2(2) | Bẫy phạm vi: Ép buộc áp dụng Chỉ thị cho các khoản vay mua nhà thế chấp | DETECTED_BASELESS_TRAP (Phát hiện phạm vi loại trừ tại Tầng 3) | 4 |
-| **R26** | Article 8(1) | Bẫy điều kiện số: Ép buộc điểm tín dụng định lượng CreditScore >= 750 | DETECTED_BASELESS_TRAP (Phát hiện thuộc tính không căn cứ tại Tầng 3) | 4 |
-| **R27** | Article 16(2) | Bẫy đền bù: Giới hạn phí trả nợ trước hạn không vượt quá 1.0% | FAILED_L1_L2 (Chặn lỗi tự vòng lặp / thuộc tính) | 5 |
-| **R28** | Article 19(1) | Bẫy tỷ lệ chi phí: APR không được vượt quá 20.0% | DETECTED_BASELESS_TRAP (Phát hiện trần lãi suất không căn cứ tại Tầng 3) | 4 |
-| **R29** | Article 2(2)(c) | Bẫy mức sàn: Ràng buộc số tiền đề nghị tối thiểu từ 200 EUR | Ngăn chặn bằng Điều kiện an toàn Φ (Inapplicable Trace) | 0 |
-| **R30** | Article 8(1) | Bẫy thuộc tính log: Bắt buộc ghi nhận điểm tín dụng CreditScore > 0 | Ngăn chặn bằng Điều kiện an toàn Φ (Missing Log Attribute) | 0 |
+| Model | Baseline 2 Macro-F1 | `- Deontic Compiler` Macro-F1 | `- SelfCorr` Macro-F1 | Full Exec (%) ↑ | Full Reversed (%) ↓ | Full Trap Detect (%) ↑ | Full Trace Φ (%) ↑ | Full Accuracy (%) ↑ | Full Macro-F1 ↑ |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`openai/gpt-oss-20b`** | 0.5262 | 0.6484 | 0.6213 | **100.0%** | **0.0%** | 36.0% | **100.0%** | 70.67% | **0.6824** |
+| **`qwen/qwen3.8-27b`** | 0.4878 | 0.8298 | 0.8582 | **100.0%** | **0.0%** | 75.0% | **100.0%** | 86.0% | **0.8582** |
+| **`openai/gpt-oss-120b`** | 0.6772 | 0.7586 | 0.85 | **100.0%** | **0.0%** | **87.0%** | **100.0%** | **88.33%** | **0.8836** |
 
-> **Kết luận Bắt bẫy**: Toàn bộ **8/8 bẫy ảo giác (100.0%)** được hệ thống phát hiện và ngăn chặn thành công (5 trường hợp qua Thẩm định Ngữ nghĩa Tầng 3, 1 qua Kiểm tra Tĩnh Tầng 1/Tầng 2, 2 qua Điều kiện an toàn Null-dereference Guard Φ). Kết quả này chứng minh sự vững chắc tuyệt đối của kiến trúc Neuro-Symbolic trước các yêu cầu tuân thủ giả mạo hoặc bẫy pháp lý.
+> *Lưu ý*: `qwen/qwen3.8-27b` và `openai/gpt-oss-20b` được chạy ở chế độ tắt Baseline 1 và tắt `--with-explanations` (`results/qwen3_8_27b_paper_tables.md`, `results/gpt_oss_20b_paper_tables.md`). Trên cả 3 mô hình ở 3 kích cỡ/kiến trúc khác nhau, **Full Pipeline** đều đạt **100.0% Thực thi Hợp lệ (`0.0% Crash`)**, **0.0% lỗi Đảo chiều (`Reversed`)**, **100.0% Trace Safety Guard ($\Phi$)** và vượt rõ rệt Baseline 2 lẫn cấu hình tắt Behavioral Deontic Compiler.
 
 ---
 
-## 4. Cấu trúc Thư mục Dự án (Project Structure)
+## 3. Cấu trúc Thư mục Dự án (Project Structure)
 
 ```text
 neuron_symbolic_reasoning/
 ├── configs/
-│   └── config.yaml                     # Tham số cấu hình đường dẫn dữ liệu & mô hình
-├── datasets/                           # Dữ liệu thực nghiệm gốc
-│   ├── directive_2008_48_EC.pdf        # Văn bản luật EU Consumer Credit Directive 2008/48/EC
-│   └── BPI Challenge 2017.xes          # Nhật ký sự kiện ngân hàng (31,509 hồ sơ, 1.2M+ sự kiện)
+│   └── config.yaml                          # Tham số cấu hình đường dẫn dữ liệu & mô hình
+├── datasets/                                # Dữ liệu thực nghiệm gốc
+│   ├── directive_2008_48_EC.pdf             # Văn bản luật EU Consumer Credit Directive 2008/48/EC
+│   └── BPI Challenge 2017.xes               # Nhật ký sự kiện ngân hàng (31,509 hồ sơ, 1.2M+ sự kiện)
 ├── data/
 │   ├── interim/
-│   │   └── bpic2017_events.parquet     # Bản đệm Parquet tăng tốc truy vấn sự kiện
+│   │   └── bpic2017_events.parquet          # Bản đệm Parquet tăng tốc truy vấn sự kiện
 │   └── processed/
-│       ├── directive_chunks.json       # Phân đoạn điều khoản pháp lý Articles 1–24
-│       ├── process_schema.json         # Lược đồ sự kiện & Môi trường kiểu tĩnh Γ
-│       ├── benchmark_rules_30.json     # Bộ 30 quy tắc chuẩn vàng R01–R30
-│       └── benchmark_items.json        # 300 mẫu hồ sơ phân tầng kiểm thử chuẩn (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS)
-├── src/                                # Mã nguồn kiến trúc 4 giai đoạn
-│   ├── preprocessing/                  # Giai đoạn 1: Bóc tách luật & Trích xuất Metamodel log
-│   ├── mde/                            # Giai đoạn 2 (Tầng 1 & 2): Pydantic AST & Typing Environment
-│   ├── neural/                         # Giai đoạn 2 (CEGIS): BM25 RAG & Vòng lặp Tự sửa
-│   ├── symbolic/                       # Giai đoạn 3 (Tầng 3): Round-trip, Vacuity & Declare4Py
-│   └── evaluation/                     # Giai đoạn 4 & RQ1–RQ3: Phán quyết 3 Trạng thái & Giải trình
+│       ├── directive_chunks.json            # Phân đoạn điều khoản pháp lý Articles 1–24
+│       ├── process_schema.json              # Lược đồ sự kiện, thuộc tính & Behavioral Profile (DFG/Causal/Mutex)
+│       ├── benchmark_rules_30.json          # Bộ 30 quy tắc chuẩn R01–R30 (DEV / HELDOUT_TEST)
+│       └── benchmark_items.json             # 300 mẫu hồ sơ phân tầng chuẩn (100/100/100)
+├── src/                                     # Mã nguồn kiến trúc 4 giai đoạn
+│   ├── preprocessing/                       # Giai đoạn 1: Bóc tách luật & Khai phá Behavioral Profile
+│   ├── mde/                                 # Giai đoạn 2: Behavioral-Aware Deontic M2M Compiler & Schema Validator
+│   ├── neural/                              # Giai đoạn 2: BM25 RAG & Vòng lặp Tự sửa CEGIS
+│   ├── symbolic/                            # Giai đoạn 3: Counterfactual Probing, Vacuity Check & Declare4Py
+│   └── evaluation/                          # Giai đoạn 4 & RQ1–RQ3: Phán quyết Φ 3 Trạng thái & Giải trình
 ├── scripts/
-│   ├── run_clean_evaluation_without_b1.py # Kịch bản thực nghiệm sạch với Model thật (không chạy B1)
-│   ├── rerun_full_benchmark_300.py        # Kịch bản tái chạy đầy đủ 300 mẫu & xuất bảng kết quả
-│   ├── regenerate_benchmark.py            # Tái sinh bộ benchmark_rules_30.json & benchmark_items.json
-│   ├── verify_benchmark_health.py         # Kiểm tra sức khỏe & liêm chính dữ liệu benchmark
-│   ├── build_benchmark.py                 # Khởi tạo nhanh file benchmark chuẩn
-│   └── inspect_case.py                    # Công cụ kiểm tra thủ công từng ca benchmark (CLI)
-├── tests/                                 # Bộ Unit Tests tự động kiểm thử toàn diện
+│   ├── run_clean_evaluation_without_b1.py   # Kịch bản thực nghiệm sạch đa model (tùy chọn B1 & XAI)
+│   ├── rerun_full_benchmark_300.py          # Kịch bản tái chạy 300 mẫu trên cache/model mặc định
+│   ├── regenerate_benchmark.py              # Tái sinh benchmark_rules_30.json & benchmark_items.json
+│   ├── verify_benchmark_health.py           # Kiểm tra liêm chính & phân tầng dữ liệu benchmark
+│   ├── build_benchmark.py                   # Khởi tạo file benchmark chuẩn
+│   └── inspect_case.py                      # Công cụ kiểm tra thủ công từng ca benchmark (CLI)
+├── tests/                                   # Bộ Unit Tests tự động (unittest)
 ├── results/
-│   ├── real_llm_trajectories.json      # Nhật ký tự sửa lỗi thực tế của LLM thật
-│   ├── rq1_rq2_rq3_evaluation_tables.json # Toàn bộ số liệu thực nghiệm định dạng JSON
-│   └── rq1_rq2_rq3_paper_tables.md     # Bảng kết quả định dạng Markdown cho bài báo
-├── real_llm_cache.json                 # Disk Cache lưu phản hồi sinh và tự sửa DECLARE của LLM
-├── vanilla_rag_real_cache.json         # Disk Cache lưu phản hồi phân loại trực tiếp của Baseline 1
-├── requirements.txt                    # Danh sách thư viện phụ thuộc
-└── README.md                           # Tài liệu tổng quan dự án
+│   ├── real_llm_trajectories.json           # Nhật ký tự sửa (openai/gpt-oss-120b)
+│   ├── rq1_rq2_rq3_evaluation_tables.json   # Số liệu RQ1–RQ3 định dạng JSON (120B)
+│   ├── rq1_rq2_rq3_paper_tables.md          # Bảng kết quả sạch đầy đủ (120B + Baseline 1 + XAI)
+│   ├── qwen3_8_27b_paper_tables.md          # Bảng kết quả sạch trên qwen/qwen3.8-27b
+│   └── gpt_oss_20b_paper_tables.md          # Bảng kết quả sạch trên openai/gpt-oss-20b
+├── real_llm_cache.json                      # Disk Cache lưu phản hồi LLM theo SHA-256
+├── vanilla_rag_real_cache.json              # Disk Cache cho Baseline 1 (Vanilla RAG)
+├── requirements.txt                         # Danh sách thư viện phụ thuộc
+└── README.md                                # Tài liệu tổng quan dự án
 ```
 
 ---
 
-## 5. Hướng dẫn Cài đặt & Tái lập Thực nghiệm (Reproducibility)
+## 4. Hướng dẫn Cài đặt & Tái lập Thực nghiệm (Reproducibility)
 
-### 5.1. Khởi tạo môi trường
+### 4.1. Khởi tạo môi trường
 Yêu cầu Python 3.11+ (khuyến nghị Python 3.12 / 3.13):
 
 ```powershell
@@ -196,27 +181,30 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 5.2. Cấu hình API Key (Groq API / OpenAI)
-Tạo file `.env` tại thư mục gốc của dự án. Hệ thống hỗ trợ cấu hình nhiều API Key phân cách bằng dấu phẩy để tự động xoay tua vòng tròn (Round-Robin Key Rotation) khi chạm giới hạn 200.000 Tokens/ngày (TPD):
+### 4.2. Cấu hình API Key (Groq API / OpenAI-compatible)
+Tạo file `.env` tại thư mục gốc của dự án. Hệ thống hỗ trợ xoay tua nhiều API Key (Round-Robin Key Rotation) khi chạm giới hạn token:
 ```bash
-# Có thể truyền 1 key hoặc nhiều key dự phòng
 GROQ_API_KEY=gsk_primary_key_here
 GROQ_API_KEYS=gsk_primary_key,gsk_backup_key_1,gsk_backup_key_2
 LLM_MODEL_NAME=openai/gpt-oss-120b
 LLM_BASE_URL=https://api.groq.com/openai/v1
 ```
 
-### 5.3. Chạy Toàn bộ Bộ Kiểm thử Tự động (Unit Tests) & Kiểm tra Benchmark
+### 4.3. Chạy Bộ Kiểm thử Tự động (Unit Tests) & Kiểm tra Benchmark
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -v
 .\.venv\Scripts\python.exe scripts/verify_benchmark_health.py
 ```
 
-### 5.4. Chạy Thực nghiệm Chính thức với Model Thật (RQ1, RQ2, RQ3)
+### 4.4. Chạy Thực nghiệm Đánh giá Đa Mô hình
 ```powershell
-.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model openai/gpt-oss-120b
+# Chạy đầy đủ Baseline 1 + Baseline 2 + Ablation + Citation Fidelity (Step 4.3) trên 120B
+.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model openai/gpt-oss-120b --with-baseline1 --with-explanations
+
+# Chạy trên model khác và lưu ra file riêng theo prefix
+.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model qwen/qwen3.8-27b --out-prefix qwen3_8_27b
+.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model openai/gpt-oss-20b --out-prefix gpt_oss_20b
+
+# Tái lập tức thì 100% từ Disk Cache (không gọi API)
+.\.venv\Scripts\python.exe scripts/run_clean_evaluation_without_b1.py --model openai/gpt-oss-120b --with-baseline1 --with-explanations --cache-only
 ```
-Lệnh trên sẽ tự động:
-1. Nạp và lưu Disk Cache (`real_llm_cache.json`) để không lặp lại chi phí gọi API.
-2. Lưu vết toàn bộ chu trình tự sửa của LLM vào `results/real_llm_trajectories.json`.
-3. Tính toán và cập nhật số liệu Bảng 1, Bảng 2, Bảng 3 vào `results/rq1_rq2_rq3_evaluation_tables.json` và `results/rq1_rq2_rq3_paper_tables.md`.

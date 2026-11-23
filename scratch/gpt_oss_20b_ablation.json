@@ -1,5 +1,5 @@
 {
-  "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)": {
+  "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)": {
     "Executable_Rate (%)": 93.33,
     "Raw_Log_Executable_Rate (%)": 93.33,
     "Crash_Rate (%)": 6.67,
@@ -17,7 +17,7 @@
     "Unpenalized_3Class_Macro_Precision": 0.6088,
     "Unpenalized_3Class_Macro_F1": 0.5406,
     "Avg_Retry_Rounds": 0.0,
-    "Avg_Verification_Time (s)": 0.0126,
+    "Avg_Verification_Time (s)": 0.0033,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
@@ -27,7 +27,7 @@
         "Unpenalized_Precision": 0.5915,
         "Crash_Count": 4,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0145,
+        "Avg_Verification_Time (s)": 0.004,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
@@ -37,7 +37,7 @@
         "Unpenalized_Precision": 0.6696,
         "Crash_Count": 4,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0123,
+        "Avg_Verification_Time (s)": 0.0029,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
@@ -47,7 +47,7 @@
         "Unpenalized_Precision": 0.5652,
         "Crash_Count": 12,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0084,
+        "Avg_Verification_Time (s)": 0.0022,
         "Citation_Fidelity (%)": null
       }
     },
@@ -294,45 +294,45 @@
       ]
     }
   },
-  "- Pre-Verification (Tắt Tầng 1 & Tầng 2)": {
+  "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)": {
     "Executable_Rate (%)": 96.0,
     "Raw_Log_Executable_Rate (%)": 96.0,
     "Crash_Rate (%)": 4.0,
-    "Strict_Accuracy (%)": 65.0,
-    "Normative_Accuracy (%)": 79.0,
-    "Normative_Macro_F1": 0.854,
+    "Strict_Accuracy (%)": 66.0,
+    "Normative_Accuracy (%)": 80.5,
+    "Normative_Macro_F1": 0.8702,
     "Rule_Schema_Trap_Accuracy (%)": 32.89,
     "Trace_Safety_Trap_Accuracy (%)": 50.0,
     "Eq_Rate (%)": 55.67,
     "Normative_Eq_Rate (%)": 71.0,
     "Trap_Detection_Rate (%)": 25.0,
-    "Macro_Precision": 0.6338,
-    "Macro_Recall": 0.65,
-    "Macro_F1": 0.6386,
-    "Unpenalized_3Class_Macro_Precision": 0.6617,
-    "Unpenalized_3Class_Macro_F1": 0.6485,
-    "Avg_Retry_Rounds": 0.23,
-    "Avg_Verification_Time (s)": 0.0191,
+    "Macro_Precision": 0.6455,
+    "Macro_Recall": 0.66,
+    "Macro_F1": 0.6484,
+    "Unpenalized_3Class_Macro_Precision": 0.6735,
+    "Unpenalized_3Class_Macro_F1": 0.6583,
+    "Avg_Retry_Rounds": 0.19,
+    "Avg_Verification_Time (s)": 0.0049,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
-        "Precision": 0.6783,
-        "Recall": 0.78,
-        "F1-Score": 0.7256,
-        "Unpenalized_Precision": 0.6783,
+        "Precision": 0.6803,
+        "Recall": 0.83,
+        "F1-Score": 0.7477,
+        "Unpenalized_Precision": 0.6803,
         "Crash_Count": 0,
-        "Avg_Retries": 0.34,
-        "Avg_Verification_Time (s)": 0.0226,
+        "Avg_Retries": 0.29,
+        "Avg_Verification_Time (s)": 0.0064,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
-        "Precision": 0.7547,
-        "Recall": 0.8,
-        "F1-Score": 0.7767,
-        "Unpenalized_Precision": 0.7547,
+        "Precision": 0.7879,
+        "Recall": 0.78,
+        "F1-Score": 0.7839,
+        "Unpenalized_Precision": 0.7879,
         "Crash_Count": 0,
-        "Avg_Retries": 0.34,
-        "Avg_Verification_Time (s)": 0.0219,
+        "Avg_Retries": 0.29,
+        "Avg_Verification_Time (s)": 0.0042,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
@@ -342,7 +342,7 @@
         "Unpenalized_Precision": 0.5522,
         "Crash_Count": 12,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0105,
+        "Avg_Verification_Time (s)": 0.0035,
         "Citation_Fidelity (%)": null
       }
     },
@@ -368,7 +368,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Concept\",\"target_activity\":\"A_Pending\",\"activation_attr\":\"CreditScore\",\"activation_op\":\">\",\"activation_val\":0.0,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (PREREQUISITE_INVERSION_AND_OMISSION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): The bank executed 'A_Pending' (Application state milestone indicating final approval and readiness for disbursement.) on Day 1 WITHOUT performing 'A_Concept' (Application state milestone recorded during initial concept and draft intake.) (with CreditScore > 0.0) beforehand (or 'A_Concept' (Application state milestone recorded during initial concept and draft intake.) was only done later on Day 5).' is a violation, but under Article 8(1), Judge determined: The candidate constraint asserts that a credit‑score‑positive \"A_Concept\" milestone must precede \"A_Pending\".  However, the event‑log schema records the CreditScore attribute only on the activity \"O_Create Offer\".  Consequently, the constraint misattributes the credit‑worthiness assessment to a lifecycle stage that never logs the required attribute, violating the operational policy’s mapping of the EU Directive.  This semantic misalignment (attribute domain ownership) renders the constraint semantically mismatched, even though the trace examples satisfy or violate the precedence relation as written. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'A_Pending' occurs, 'A_Concept' when CreditScore > 0.0 must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (PREREQUISITE_INVERSION_AND_OMISSION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): The bank executed 'A_Pending' (Application state milestone indicating final approval and readiness for disbursement.) on Day 1 WITHOUT performing 'A_Concept' (Application state milestone recorded during initial concept and draft intake.) (with CreditScore > 0.0) beforehand (or 'A_Concept' (Application state milestone recorded during initial concept and draft intake.) was only done later on Day 5).' is a violation, but under Article 8(1), Judge determined: The candidate constraint asserts that a credit‑score‑positive \"A_Concept\" milestone must precede \"A_Pending\".  However, the event‑log schema records the CreditScore attribute only on the activity \"O_Create Offer\".  Consequently, the constraint misattributes the credit‑worthiness assessment to a lifecycle stage that never logs the required attribute, violating the operational policy’s mapping of the EU Directive.  This semantic misalignment (attribute domain ownership) renders the constraint semantically mismatched, even though the trace examples satisfy or violate the precedence relation as written. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'A_Pending' occurs, 'A_Concept' when CreditScore > 0.0 must have occurred BEFORE it.)"
         },
         {
           "round": 2,
@@ -422,7 +422,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 8(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"A_Create Application\",\"target_activity\":\"W_Validate application\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
         }
       ],
       "R04": [
@@ -430,31 +430,13 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces that an \"O_Created\" event eventually follows an \"O_Create Offer\" event. The operational policy, however, requires that the system registration of the finalized offer record (O_Created) be the *immediately following* step after the draft offer (O_Create Offer). This immediacy requirement is not captured by the candidate constraint, making it semantically weaker than the policy. Consequently, the candidate constraint does not faithfully represent the policy’s intent, leading to a \"SEMANTIC_MISMATCH\" verdict. Case A satisfies the candidate constraint (O_Created occurs after O_Create Offer) but would violate the policy if any intervening events occurred. Case B violates the candidate constraint by never producing an O_Created event after O_Create Offer. The mismatch is purely semantic, not a threshold or unsupported clause issue. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Created' must eventually occur AFTER it.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces that an \"O_Created\" event eventually follows an \"O_Create Offer\" event. The operational policy, however, requires that the system registration of the finalized offer record (O_Created) be the *immediately following* step after the draft offer (O_Create Offer). This immediacy requirement is not captured by the candidate constraint, making it semantically weaker than the policy. Consequently, the candidate constraint does not faithfully represent the policy’s intent, leading to a \"SEMANTIC_MISMATCH\" verdict. Case A satisfies the candidate constraint (O_Created occurs after O_Create Offer) but would violate the policy if any intervening events occurred. Case B violates the candidate constraint by never producing an O_Created event after O_Create Offer. The mismatch is purely semantic, not a threshold or unsupported clause issue. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Created' must eventually occur AFTER it.)"
         },
         {
           "round": 2,
-          "output": "{}",
-          "status": "FAILED_L1_SYNTAX",
-          "error": "[Layer 1 Schema/Enumeration Violation (OVAS)]: field 'article_id': Field required; field 'template_name': Field required; field 'activation_activity': Field required"
-        },
-        {
-          "round": 3,
-          "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The candidate constraint faithfully captures the requirement that a finalized offer record must be registered immediately after a draft offer is created, as mandated by Article 5(1) and the bank’s operational policy. The trace in Case A violates the 0‑second immediacy bound, and Case B violates the mandatory follow‑up, but these are violations of the constraint, not of the constraint’s correctness. Therefore the constraint is equivalent to the legal and policy requirements. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Created' must eventually occur AFTER it within 0 seconds.)"
-        },
-        {
-          "round": 4,
-          "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The candidate constraint faithfully captures the requirement that a finalized offer record must be registered immediately after a draft offer is created, as mandated by Article 5(1) and the bank’s operational policy. The trace in Case A violates the 0‑second immediacy bound, and Case B violates the mandatory follow‑up, but these are violations of the constraint, not of the constraint’s correctness. Therefore the constraint is equivalent to the legal and policy requirements. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Created' must eventually occur AFTER it within 0 seconds.)"
-        },
-        {
-          "round": 5,
-          "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":0,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (PREREQUISITE_INVERSION_AND_OMISSION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): The bank executed 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) on Day 1 WITHOUT performing 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) beforehand (or 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) was only done later on Day 5).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only requires that if an offer is persisted (O_Created) then a draft must have occurred immediately before it. It does not enforce that a draft (O_Create Offer) must be followed by a persistence. The operational policy, however, states that as soon as a credit proposal is drafted, the immediately following step must be the system registration of the finalized offer. Thus the policy imposes a precedence O_Create Offer → O_Created, whereas the candidate constraint imposes the reverse direction. Consequently, a trace where O_Create Offer occurs without a subsequent O_Created (Case C) is compliant with the candidate rule but violates the policy, indicating a reversed order mismatch. The 0‑second immediacy requirement is consistent between the rule and the policy, so no threshold mismatch is present. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Created' occurs, 'O_Create Offer' must have occurred BEFORE it within 0 seconds.)"
+          "output": "{\"article_id\":\"Article 5(1)\",\"template_name\":\"Chain Response\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":\"O_Created\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
+          "status": "PASSED",
+          "error": null
         }
       ],
       "R09": [
@@ -518,19 +500,31 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it\" only requires eventual completion, whereas the operational policy derived from Article 10(1) mandates that the very next workflow step after the consumer’s formal acceptance of the offer must be the final active agreement status (i.e., an immediate transition to 'A_Complete'). This makes the candidate rule too weak – it allows intervening events between acceptance and completion, which the policy explicitly forbids. Consequently, the constraint is semantically mismatched with the policy, even though it is technically supported by the legal clause and the event dictionary. The synthetic traces comply with the candidate rule (Case A) and violate it (Case B), but they do not satisfy the stricter policy requirement, leading to a semantic mismatch verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it\" only requires eventual completion, whereas the operational policy derived from Article 10(1) mandates that the very next workflow step after the consumer’s formal acceptance of the offer must be the final active agreement status (i.e., an immediate transition to 'A_Complete'). This makes the candidate rule too weak – it allows intervening events between acceptance and completion, which the policy explicitly forbids. Consequently, the constraint is semantically mismatched with the policy, even though it is technically supported by the legal clause and the event dictionary. The synthetic traces comply with the candidate rule (Case A) and violate it (Case B), but they do not satisfy the stricter policy requirement, leading to a semantic mismatch verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it.)"
         },
         {
           "round": 2,
-          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"d\",\"unsupported_by_text\":false}",
+          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Precedence\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint requires that after an 'O_Accepted' event an 'A_Complete' event must eventually occur within 0 calendar days. This allows other events to intervene on the same day, whereas the operational policy explicitly mandates that the very next workflow step after acceptance must be the transition to final active agreement status, i.e., no intervening events. Therefore the candidate constraint is semantically weaker than the policy, leading to a mismatch. Case A fails the constraint (A_Complete occurs the next day, not within 0 days) and Case B fails as well (no A_Complete). The clause is not unsupported; it is a legitimate specialization of the EU Directive. Hence the verdict is SEMANTIC_MISMATCH. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 calendar days.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (PREREQUISITE_INVERSION_AND_OMISSION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): The bank executed 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) on Day 1 WITHOUT performing 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) beforehand (or 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) was only done later on Day 5).' is a violation, but under Article 10(1), Judge determined: The candidate constraint correctly captures the immediate precedence requirement between O_Accepted and A_Complete (within 0 seconds), matching the operational policy that the next workflow step after acceptance must be final active agreement status. However, the constraint is too weak because it only enforces that if A_Complete occurs, O_Accepted must have occurred before it; it does not mandate that A_Complete must occur at all after O_Accepted. Consequently, Case A (non‑immediate completion) and Case C (acceptance without subsequent completion) violate the policy, while the constraint would still consider them compliant. This mismatch between the policy’s mandatory transition and the constraint’s weaker rule constitutes a semantic mismatch, not a threshold or unsupported‑clause issue. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'A_Complete' occurs, 'O_Accepted' must have occurred BEFORE it within 0 seconds.)"
         },
         {
           "round": 3,
-          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Chain Precedence\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
-          "status": "PASSED",
-          "error": null
+          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds\" faithfully implements the bank’s operational policy that requires the very next workflow step after consumer acceptance to be the final active agreement status.  The EU Directive 2008/48/EC Article 10(1) only mandates that credit agreements be drawn on a durable medium and that all parties receive a copy; it does not prescribe any timing.  Therefore the constraint is a legitimate specialization of the policy and does not conflict with the Directive.  In the synthetic trace suite, Case A fails to meet the 0‑second immediacy requirement (A_Complete occurs on Day 2), so it is non‑compliant.  Case B also violates the constraint by never executing A_Complete after O_Accepted.  The verdict \"EQUIVALENT\" reflects that the constraint is equivalent to the policy, even though the provided traces are non‑compliant. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds.)"
+        },
+        {
+          "round": 4,
+          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds\" faithfully implements the bank’s operational policy that requires the very next workflow step after consumer acceptance to be the final active agreement status.  The EU Directive 2008/48/EC Article 10(1) only mandates that credit agreements be drawn on a durable medium and that all parties receive a copy; it does not prescribe any timing.  Therefore the constraint is a legitimate specialization of the policy and does not conflict with the Directive.  In the synthetic trace suite, Case A fails to meet the 0‑second immediacy requirement (A_Complete occurs on Day 2), so it is non‑compliant.  Case B also violates the constraint by never executing A_Complete after O_Accepted.  The verdict \"EQUIVALENT\" reflects that the constraint is equivalent to the policy, even though the provided traces are non‑compliant. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds.)"
+        },
+        {
+          "round": 5,
+          "output": "{\"article_id\":\"Article 10(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Accepted\",\"target_activity\":\"A_Complete\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":0,\"time_unit\":\"s\",\"unsupported_by_text\":false}",
+          "status": "FAILED_L3_ROUNDTRIP",
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds\" faithfully implements the bank’s operational policy that requires the very next workflow step after consumer acceptance to be the final active agreement status.  The EU Directive 2008/48/EC Article 10(1) only mandates that credit agreements be drawn on a durable medium and that all parties receive a copy; it does not prescribe any timing.  Therefore the constraint is a legitimate specialization of the policy and does not conflict with the Directive.  In the synthetic trace suite, Case A fails to meet the 0‑second immediacy requirement (A_Complete occurs on Day 2), so it is non‑compliant.  Case B also violates the constraint by never executing A_Complete after O_Accepted.  The verdict \"EQUIVALENT\" reflects that the constraint is equivalent to the policy, even though the provided traces are non‑compliant. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it within 0 seconds.)"
         }
       ],
       "R22": [
@@ -586,7 +580,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(2)\",\"template_name\":\"Existence\",\"activation_activity\":\"O_Create Offer\",\"target_activity\":null,\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":null,\"time_unit\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires the existence of the activity 'O_Create Offer', which is a workflow milestone unrelated to the EU Directive 2008/48/EC Article 16(2) or the bank’s operational policy on early‑repayment compensation limits. The legal clause and policy concern compensation percentages and timeframes for early repayment, not the creation of loan offers. Therefore the constraint is unsupported by the cited legal source and the operational rule, making the evaluation baseless. (Back-translation: Activity 'O_Create Offer' must occur at least once in the credit case.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires the existence of the activity 'O_Create Offer', which is a workflow milestone unrelated to the EU Directive 2008/48/EC Article 16(2) or the bank’s operational policy on early‑repayment compensation limits. The legal clause and policy concern compensation percentages and timeframes for early repayment, not the creation of loan offers. Therefore the constraint is unsupported by the cited legal source and the operational rule, making the evaluation baseless. (Back-translation: Activity 'O_Create Offer' must occur at least once in the credit case.)"
         }
       ],
       "R29": [
@@ -635,51 +629,51 @@
     "Executable_Rate (%)": 96.67,
     "Raw_Log_Executable_Rate (%)": 92.67,
     "Crash_Rate (%)": 3.33,
-    "Strict_Accuracy (%)": 60.33,
-    "Normative_Accuracy (%)": 72.5,
-    "Normative_Macro_F1": 0.7967,
+    "Strict_Accuracy (%)": 63.67,
+    "Normative_Accuracy (%)": 77.5,
+    "Normative_Macro_F1": 0.8333,
     "Rule_Schema_Trap_Accuracy (%)": 15.79,
     "Trace_Safety_Trap_Accuracy (%)": 100.0,
-    "Eq_Rate (%)": 54.0,
-    "Normative_Eq_Rate (%)": 63.0,
+    "Eq_Rate (%)": 59.33,
+    "Normative_Eq_Rate (%)": 71.0,
     "Trap_Detection_Rate (%)": 36.0,
-    "Macro_Precision": 0.5937,
-    "Macro_Recall": 0.6033,
-    "Macro_F1": 0.5921,
-    "Unpenalized_3Class_Macro_Precision": 0.6136,
-    "Unpenalized_3Class_Macro_F1": 0.603,
+    "Macro_Precision": 0.6291,
+    "Macro_Recall": 0.6367,
+    "Macro_F1": 0.6213,
+    "Unpenalized_3Class_Macro_Precision": 0.649,
+    "Unpenalized_3Class_Macro_F1": 0.6325,
     "Avg_Retry_Rounds": 0.03,
-    "Avg_Verification_Time (s)": 0.0131,
+    "Avg_Verification_Time (s)": 0.0044,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
-        "Precision": 0.5887,
-        "Recall": 0.73,
-        "F1-Score": 0.6518,
-        "Unpenalized_Precision": 0.6134,
+        "Precision": 0.6077,
+        "Recall": 0.79,
+        "F1-Score": 0.687,
+        "Unpenalized_Precision": 0.632,
         "Crash_Count": 5,
         "Avg_Retries": 0.05,
-        "Avg_Verification_Time (s)": 0.0164,
+        "Avg_Verification_Time (s)": 0.0052,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
-        "Precision": 0.6923,
-        "Recall": 0.72,
-        "F1-Score": 0.7059,
-        "Unpenalized_Precision": 0.7273,
+        "Precision": 0.717,
+        "Recall": 0.76,
+        "F1-Score": 0.7379,
+        "Unpenalized_Precision": 0.7525,
         "Crash_Count": 5,
         "Avg_Retries": 0.05,
-        "Avg_Verification_Time (s)": 0.0112,
+        "Avg_Verification_Time (s)": 0.0038,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
-        "Precision": 0.5,
+        "Precision": 0.5625,
         "Recall": 0.36,
-        "F1-Score": 0.4186,
-        "Unpenalized_Precision": 0.5,
+        "F1-Score": 0.439,
+        "Unpenalized_Precision": 0.5625,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0104,
+        "Avg_Verification_Time (s)": 0.0037,
         "Citation_Fidelity (%)": null
       }
     },
@@ -688,8 +682,8 @@
         {
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The candidate constraint correctly enforces the 14‑day withdrawal window after an offer is sent, matching the EU Directive and the bank’s operational policy. However, it also permits a cancellation event to occur without a preceding offer dispatch, which the policy explicitly disallows (cancellation is only allowed within 14 days after receiving the transmitted offer terms). This extra permissiveness creates a semantic mismatch between the constraint and the policy, warranting a \"SEMANTIC_MISMATCH\" verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+          "status": "PASSED",
+          "error": null
         }
       ],
       "R07": [
@@ -753,7 +747,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 8(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"A_Create Application\",\"consequent_activity\":\"W_Validate application\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
         }
       ],
       "R04": [
@@ -761,7 +755,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"IMMEDIATE_PREREQUISITE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"O_Created\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (IMMEDIATE_ADJACENCY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Either 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) occurred without prior 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.), or an intermediate event occurred between 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) and 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) (breaking immediate adjacency).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only requires that if O_Created occurs it must immediately follow O_Create Offer, but it does not mandate that O_Created must occur at all. The operational policy, however, states that as soon as a credit proposal is drafted, the next step must be the system registration of the finalized offer record – i.e., O_Created must always follow O_Create Offer. Thus the constraint is too weak and does not fully capture the policy, resulting in a semantic mismatch. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Immediately before 'O_Created' occurs, 'O_Create Offer' must occur.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (IMMEDIATE_ADJACENCY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Either 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) occurred without prior 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.), or an intermediate event occurred between 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) and 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) (breaking immediate adjacency).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only requires that if O_Created occurs it must immediately follow O_Create Offer, but it does not mandate that O_Created must occur at all. The operational policy, however, states that as soon as a credit proposal is drafted, the next step must be the system registration of the finalized offer record – i.e., O_Created must always follow O_Create Offer. Thus the constraint is too weak and does not fully capture the policy, resulting in a semantic mismatch. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Immediately before 'O_Created' occurs, 'O_Create Offer' must occur.)"
         }
       ],
       "R09": [
@@ -801,7 +795,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"NumberOfTerms\",\"guard_operator\":\">\",\"guard_threshold\":0,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (ATTRIBUTE_BOUNDARY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred, but attribute NumberOfTerms violated the required condition (NumberOfTerms > 0 was FALSE).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces the existence of an O_Create Offer with NumberOfTerms > 0, but the operational policy explicitly requires that this offer be created *before* the loan proposal is delivered to the borrower (i.e., a temporal precedence between O_Create Offer and the subsequent offer‑delivery event). Because the constraint does not capture this ordering requirement, it is semantically weaker than the policy. Therefore the trace that contains only the offer creation (Case C) is incorrectly considered compliant by the constraint, and the constraint is deemed a semantic mismatch. The numeric bound on NumberOfTerms is correctly captured, so there is no threshold mismatch. The policy does not conflict with the directive, so the clause is not unsupported. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Activity 'O_Create Offer' when NumberOfTerms > 0 must occur at least once in the credit case.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (ATTRIBUTE_BOUNDARY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred, but attribute NumberOfTerms violated the required condition (NumberOfTerms > 0 was FALSE).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces the existence of an O_Create Offer with NumberOfTerms > 0, but the operational policy explicitly requires that this offer be created *before* the loan proposal is delivered to the borrower (i.e., a temporal precedence between O_Create Offer and the subsequent offer‑delivery event). Because the constraint does not capture this ordering requirement, it is semantically weaker than the policy. Therefore the trace that contains only the offer creation (Case C) is incorrectly considered compliant by the constraint, and the constraint is deemed a semantic mismatch. The numeric bound on NumberOfTerms is correctly captured, so there is no threshold mismatch. The policy does not conflict with the directive, so the clause is not unsupported. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Activity 'O_Create Offer' when NumberOfTerms > 0 must occur at least once in the credit case.)"
         }
       ],
       "R10": [
@@ -825,7 +819,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"IMMEDIATE_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L1_L2",
-          "error": "Behavioral Profile Grounding Violation: Template 'Chain Response' requires direct adjacency (Directly-Follows > 0) between 'O_Accepted' and 'A_Complete', but they are not directly adjacent in the DFG. Use 'Precedence' or 'Response' instead, or select a directly adjacent pair."
+          "error": "[Behavioral DFG Adjacency Violation]: Template 'Chain Response' requires direct adjacency (Directly-Follows > 0) between 'O_Accepted' and 'A_Complete', but they are not directly adjacent in the DFG. Use 'Precedence' or 'Response' instead, or select a directly adjacent pair."
         }
       ],
       "R22": [
@@ -881,7 +875,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"UNMAPPED_MISSING_IN_LOG\",\"guard_operator\":\"<=\",\"guard_threshold\":1.0,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
+          "error": "[Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Schema (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
         }
       ],
       "R29": [
@@ -927,44 +921,44 @@
     }
   },
   "Full Neuro-Symbolic Pipeline (Đề xuất)": {
-    "Executable_Rate (%)": 96.67,
-    "Raw_Log_Executable_Rate (%)": 92.67,
-    "Crash_Rate (%)": 3.33,
-    "Strict_Accuracy (%)": 67.0,
-    "Normative_Accuracy (%)": 82.5,
-    "Normative_Macro_F1": 0.846,
+    "Executable_Rate (%)": 100.0,
+    "Raw_Log_Executable_Rate (%)": 96.0,
+    "Crash_Rate (%)": 0.0,
+    "Strict_Accuracy (%)": 70.67,
+    "Normative_Accuracy (%)": 88.0,
+    "Normative_Macro_F1": 0.9023,
     "Rule_Schema_Trap_Accuracy (%)": 15.79,
     "Trace_Safety_Trap_Accuracy (%)": 100.0,
-    "Eq_Rate (%)": 56.67,
-    "Normative_Eq_Rate (%)": 67.0,
+    "Eq_Rate (%)": 62.0,
+    "Normative_Eq_Rate (%)": 75.0,
     "Trap_Detection_Rate (%)": 36.0,
-    "Macro_Precision": 0.6986,
-    "Macro_Recall": 0.67,
-    "Macro_F1": 0.6499,
-    "Unpenalized_3Class_Macro_Precision": 0.717,
-    "Unpenalized_3Class_Macro_F1": 0.6609,
-    "Avg_Retry_Rounds": 0.33,
-    "Avg_Verification_Time (s)": 0.0146,
+    "Macro_Precision": 0.7294,
+    "Macro_Recall": 0.7067,
+    "Macro_F1": 0.6824,
+    "Unpenalized_3Class_Macro_Precision": 0.7294,
+    "Unpenalized_3Class_Macro_F1": 0.6824,
+    "Avg_Retry_Rounds": 0.19,
+    "Avg_Verification_Time (s)": 0.0051,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
-        "Precision": 0.6014,
-        "Recall": 0.86,
-        "F1-Score": 0.7078,
-        "Unpenalized_Precision": 0.6232,
-        "Crash_Count": 5,
-        "Avg_Retries": 0.5,
-        "Avg_Verification_Time (s)": 0.0127,
+        "Precision": 0.637,
+        "Recall": 0.93,
+        "F1-Score": 0.7561,
+        "Unpenalized_Precision": 0.637,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.29,
+        "Avg_Verification_Time (s)": 0.0062,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
-        "Precision": 0.7117,
-        "Recall": 0.79,
-        "F1-Score": 0.7488,
-        "Unpenalized_Precision": 0.7453,
-        "Crash_Count": 5,
-        "Avg_Retries": 0.5,
-        "Avg_Verification_Time (s)": 0.0166,
+        "Precision": 0.7685,
+        "Recall": 0.83,
+        "F1-Score": 0.7981,
+        "Unpenalized_Precision": 0.7685,
+        "Crash_Count": 0,
+        "Avg_Retries": 0.29,
+        "Avg_Verification_Time (s)": 0.0048,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
@@ -974,7 +968,7 @@
         "Unpenalized_Precision": 0.7826,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.013,
+        "Avg_Verification_Time (s)": 0.0043,
         "Citation_Fidelity (%)": null
       }
     },
@@ -983,30 +977,6 @@
         {
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The candidate constraint correctly enforces the 14‑day withdrawal window after an offer is sent, matching the EU Directive and the bank’s operational policy. However, it also permits a cancellation event to occur without a preceding offer dispatch, which the policy explicitly disallows (cancellation is only allowed within 14 days after receiving the transmitted offer terms). This extra permissiveness creates a semantic mismatch between the constraint and the policy, warranting a \"SEMANTIC_MISMATCH\" verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-        },
-        {
-          "round": 2,
-          "output": "{\n    \"article_id\": \"Article 14(1)\",\n    \"deontic_modality\": \"PROHIBITION\",\n    \"temporal_relation\": \"PREREQUISITE_BEFORE\",\n    \"anchor_activity\": \"O_Sent (mail and online)\",\n    \"consequent_activity\": \"A_Cancelled\",\n    \"attribute_guard\": null,\n    \"guard_operator\": null,\n    \"guard_threshold\": null,\n    \"deadline_days\": null,\n    \"unsupported_by_text\": false\n  },\n  {\n    \"article_id\": \"Article 14(1)\",\n    \"deontic_modality\": \"PERMISSION_RIGHT\",\n    \"temporal_relation\": \"MANDATORY_RESPONSE\",\n    \"anchor_activity\": \"O_Sent (mail and online)\",\n    \"consequent_activity\": \"A_Cancelled\",\n    \"attribute_guard\": null,\n    \"guard_operator\": null,\n    \"guard_threshold\": null,\n    \"deadline_days\": 14,\n    \"unsupported_by_text\": false\n  }",
-          "status": "FAILED_L1_L2",
-          "error": "[Layer 1 JSON Decode Error]: Output is not valid JSON (Extra data: line 12 column 4 (char 366))."
-        },
-        {
-          "round": 3,
-          "output": "{\n    \"article_id\": \"Article 14(1)\",\n    \"deontic_modality\": \"PROHIBITION\",\n    \"temporal_relation\": \"PREREQUISITE_BEFORE\",\n    \"anchor_activity\": \"O_Sent (mail and online)\",\n    \"consequent_activity\": \"A_Cancelled\",\n    \"attribute_guard\": null,\n    \"guard_operator\": null,\n    \"guard_threshold\": null,\n    \"deadline_days\": null,\n    \"unsupported_by_text\": false\n  },\n  {\n    \"article_id\": \"Article 14(1)\",\n    \"deontic_modality\": \"OBLIGATION\",\n    \"temporal_relation\": \"MANDATORY_RESPONSE\",\n    \"anchor_activity\": \"O_Sent (mail and online)\",\n    \"consequent_activity\": \"A_Cancelled\",\n    \"attribute_guard\": null,\n    \"guard_operator\": null,\n    \"guard_threshold\": null,\n    \"deadline_days\": 14,\n    \"unsupported_by_text\": false\n  }",
-          "status": "FAILED_L1_L2",
-          "error": "[Layer 1 JSON Decode Error]: Output is not valid JSON (Extra data: line 12 column 4 (char 366))."
-        },
-        {
-          "round": 4,
-          "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The candidate constraint correctly enforces the 14‑day withdrawal window after an offer is sent, matching the EU Directive and the bank’s operational policy. However, it also permits a cancellation event to occur without a preceding offer dispatch, which the policy explicitly disallows (cancellation is only allowed within 14 days after receiving the transmitted offer terms). This extra permissiveness creates a semantic mismatch between the constraint and the policy, warranting a \"SEMANTIC_MISMATCH\" verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-        },
-        {
-          "round": 5,
-          "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PROHIBITION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"A_Cancelled\",\"consequent_activity\":\"O_Sent (mail and online)\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
           "status": "PASSED",
           "error": null
         }
@@ -1072,7 +1042,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 8(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"A_Create Application\",\"consequent_activity\":\"W_Validate application\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint requires that the work‑item task \"W_Validate application\" can only occur after the milestone \"A_Create Application\".  The EU Directive 2008/48/EC Article 8(1) and the bank’s operational policy only mandate that a loan request be registered (i.e. \"A_Create Application\") before the *initial risk assessment* on a borrowing file.  The policy does not refer to the post‑offer verification task \"W_Validate application\" at all, nor does the Directive impose any ordering on that activity.  Consequently the constraint is not supported by the policy or the Directive and is considered baseless.  The trace cases themselves satisfy or violate the constraint, but the constraint itself is not a valid rule derived from the legal or operational requirements. (Back-translation: Whenever 'W_Validate application' occurs, 'A_Create Application' must have occurred BEFORE it.)"
         }
       ],
       "R04": [
@@ -1080,7 +1050,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"IMMEDIATE_PREREQUISITE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"O_Created\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (IMMEDIATE_ADJACENCY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Either 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) occurred without prior 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.), or an intermediate event occurred between 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) and 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) (breaking immediate adjacency).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only requires that if O_Created occurs it must immediately follow O_Create Offer, but it does not mandate that O_Created must occur at all. The operational policy, however, states that as soon as a credit proposal is drafted, the next step must be the system registration of the finalized offer record – i.e., O_Created must always follow O_Create Offer. Thus the constraint is too weak and does not fully capture the policy, resulting in a semantic mismatch. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Immediately before 'O_Created' occurs, 'O_Create Offer' must occur.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (IMMEDIATE_ADJACENCY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Either 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) occurred without prior 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.), or an intermediate event occurred between 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) and 'O_Created' (Offer lifecycle event logged when the finalized offer document is persisted in the system.) (breaking immediate adjacency).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only requires that if O_Created occurs it must immediately follow O_Create Offer, but it does not mandate that O_Created must occur at all. The operational policy, however, states that as soon as a credit proposal is drafted, the next step must be the system registration of the finalized offer record – i.e., O_Created must always follow O_Create Offer. Thus the constraint is too weak and does not fully capture the policy, resulting in a semantic mismatch. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Immediately before 'O_Created' occurs, 'O_Create Offer' must occur.)"
         },
         {
           "round": 2,
@@ -1126,7 +1096,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"NumberOfTerms\",\"guard_operator\":\">\",\"guard_threshold\":0,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (ATTRIBUTE_BOUNDARY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred, but attribute NumberOfTerms violated the required condition (NumberOfTerms > 0 was FALSE).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces the existence of an O_Create Offer with NumberOfTerms > 0, but the operational policy explicitly requires that this offer be created *before* the loan proposal is delivered to the borrower (i.e., a temporal precedence between O_Create Offer and the subsequent offer‑delivery event). Because the constraint does not capture this ordering requirement, it is semantically weaker than the policy. Therefore the trace that contains only the offer creation (Case C) is incorrectly considered compliant by the constraint, and the constraint is deemed a semantic mismatch. The numeric bound on NumberOfTerms is correctly captured, so there is no threshold mismatch. The policy does not conflict with the directive, so the clause is not unsupported. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Activity 'O_Create Offer' when NumberOfTerms > 0 must occur at least once in the credit case.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (ATTRIBUTE_BOUNDARY_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred, but attribute NumberOfTerms violated the required condition (NumberOfTerms > 0 was FALSE).' is a violation, but under Article 5(1), Judge determined: The candidate constraint only enforces the existence of an O_Create Offer with NumberOfTerms > 0, but the operational policy explicitly requires that this offer be created *before* the loan proposal is delivered to the borrower (i.e., a temporal precedence between O_Create Offer and the subsequent offer‑delivery event). Because the constraint does not capture this ordering requirement, it is semantically weaker than the policy. Therefore the trace that contains only the offer creation (Case C) is incorrectly considered compliant by the constraint, and the constraint is deemed a semantic mismatch. The numeric bound on NumberOfTerms is correctly captured, so there is no threshold mismatch. The policy does not conflict with the directive, so the clause is not unsupported. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Activity 'O_Create Offer' when NumberOfTerms > 0 must occur at least once in the credit case.)"
         },
         {
           "round": 2,
@@ -1156,31 +1126,31 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"IMMEDIATE_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L1_L2",
-          "error": "Behavioral Profile Grounding Violation: Template 'Chain Response' requires direct adjacency (Directly-Follows > 0) between 'O_Accepted' and 'A_Complete', but they are not directly adjacent in the DFG. Use 'Precedence' or 'Response' instead, or select a directly adjacent pair."
+          "error": "[Behavioral DFG Adjacency Violation]: Template 'Chain Response' requires direct adjacency (Directly-Follows > 0) between 'O_Accepted' and 'A_Complete', but they are not directly adjacent in the DFG. Use 'Precedence' or 'Response' instead, or select a directly adjacent pair."
         },
         {
           "round": 2,
           "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it\" only requires eventual completion, whereas the operational policy derived from Article 10(1) mandates that the very next workflow step after the consumer’s formal acceptance of the offer must be the final active agreement status (i.e., an immediate transition to 'A_Complete'). This makes the candidate rule too weak – it allows intervening events between acceptance and completion, which the policy explicitly forbids. Consequently, the constraint is semantically mismatched with the policy, even though it is technically supported by the legal clause and the event dictionary. The synthetic traces comply with the candidate rule (Case A) and violate it (Case B), but they do not satisfy the stricter policy requirement, leading to a semantic mismatch verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it.)"
+          "status": "FAILED_L1_L2",
+          "error": "[Behavioral Causal Inversion Violation]: Template 'Response(O_Accepted, A_Complete)' requires 'O_Accepted' to occur before 'A_Complete', but in the empirical Process Behavioral Profile 'A_Complete' strictly precedes 'O_Accepted' (100.0% across 17228 cases). Swap anchor_activity/consequent_activity or select activities consistent with lifecycle causality."
         },
         {
           "round": 3,
-          "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
+          "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"A_Complete\",\"consequent_activity\":\"O_Accepted\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) occurred in the loan case, but follow-up event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint \"Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it\" only requires eventual completion, whereas the operational policy derived from Article 10(1) mandates that the very next workflow step after the consumer’s formal acceptance of the offer must be the final active agreement status (i.e., an immediate transition to 'A_Complete'). This makes the candidate rule too weak – it allows intervening events between acceptance and completion, which the policy explicitly forbids. Consequently, the constraint is semantically mismatched with the policy, even though it is technically supported by the legal clause and the event dictionary. The synthetic traces comply with the candidate rule (Case A) and violate it (Case B), but they do not satisfy the stricter policy requirement, leading to a semantic mismatch verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Complete' must eventually occur AFTER it.)"
+          "error": "[Counterfactual Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) occurred in the loan case, but follow-up event 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 10(1), Judge determined: The candidate constraint enforces a Response relation where A_Complete must be followed by O_Accepted. However, the operational policy derived from Article 10(1) requires that once the consumer formally accepts the finalized offer (O_Accepted), the next workflow step must transition the case into final active agreement status. The policy does not mandate that an application completion (A_Complete) precede offer acceptance. Thus the direction of the constraint is reversed relative to the policy, leading to a semantic mismatch. The trace cases A and B satisfy the candidate constraint, but the constraint itself is not aligned with the policy, warranting a \"REVERSED_ORDER\" verdict. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'A_Complete' occurs, 'O_Accepted' must eventually occur AFTER it.)"
         },
         {
           "round": 4,
           "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (PREREQUISITE_INVERSION_AND_OMISSION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): The bank executed 'A_Complete' (Application state milestone recorded when application workflow submission reaches completion.) on Day 1 WITHOUT performing 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) beforehand (or 'O_Accepted' (Offer lifecycle event logged when the loan offer is marked accepted.) was only done later on Day 5).' is a violation, but under Article 10(1), Judge determined: The candidate constraint only requires that an offer acceptance (O_Accepted) precede the completion milestone (A_Complete). The operational policy, however, mandates that the very next workflow step after the consumer’s formal acceptance of the finalized offer must be the final active agreement status, i.e., an immediate transition to A_Complete. This immediate adjacency requirement is not captured by the precedence rule, making the constraint too weak. Consequently, all three scenarios violate the policy: Case A allows intermediate events, Case B violates the precedence rule, and Case C omits the mandatory final status. The mismatch is semantic, not a threshold or unsupported‑clause issue. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'A_Complete' occurs, 'O_Accepted' must have occurred BEFORE it.)"
+          "status": "FAILED_L1_L2",
+          "error": "[Behavioral Causal Inversion Violation]: Template 'Precedence(O_Accepted, A_Complete)' requires 'O_Accepted' to occur before 'A_Complete', but in the empirical Process Behavioral Profile 'A_Complete' strictly precedes 'O_Accepted' (100.0% across 17228 cases). Swap anchor_activity/consequent_activity or select activities consistent with lifecycle causality."
         },
         {
           "round": 5,
-          "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"IMMEDIATE_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Complete\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
-          "status": "FAILED_L1_L2",
-          "error": "Behavioral Profile Grounding Violation: Template 'Chain Response' requires direct adjacency (Directly-Follows > 0) between 'O_Accepted' and 'A_Complete', but they are not directly adjacent in the DFG. Use 'Precedence' or 'Response' instead, or select a directly adjacent pair."
+          "output": "{\"article_id\":\"Article 10(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"A_Complete\",\"consequent_activity\":\"O_Accepted\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
+          "status": "PASSED",
+          "error": null
         }
       ],
       "R22": [
@@ -1236,7 +1206,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"UNMAPPED_MISSING_IN_LOG\",\"guard_operator\":\"<=\",\"guard_threshold\":1.0,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
+          "error": "[Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Schema (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 1.0 must occur at least once in the credit case.)"
         }
       ],
       "R29": [

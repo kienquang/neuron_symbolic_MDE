@@ -16,8 +16,8 @@
       "Eq. (%)": 50.0,
       "Strengthened (%)": 10.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 20.0,
-      "Wrong Activity (%)": 20.0,
+      "Reversed (%)": 10.0,
+      "Wrong Activity (%)": 30.0,
       "Vacuous (%)": 0.0,
       "Abstained (%)": 0.0,
       "Crash (%)": 0.0
@@ -27,8 +27,8 @@
       "Eq. (%)": 63.64,
       "Strengthened (%)": 4.55,
       "Weakened (%)": 4.55,
-      "Reversed (%)": 9.09,
-      "Wrong Activity (%)": 18.18,
+      "Reversed (%)": 4.55,
+      "Wrong Activity (%)": 22.73,
       "Vacuous (%)": 0.0,
       "Abstained (%)": 0.0,
       "Crash (%)": 0.0
@@ -51,8 +51,8 @@
       "Eq. (%)": 50.0,
       "Strengthened (%)": 10.0,
       "Weakened (%)": 0.0,
-      "Reversed (%)": 10.0,
-      "Wrong Activity (%)": 20.0,
+      "Reversed (%)": 0.0,
+      "Wrong Activity (%)": 30.0,
       "Vacuous (%)": 0.0,
       "Abstained (%)": 10.0,
       "Crash (%)": 0.0
@@ -62,8 +62,8 @@
       "Eq. (%)": 63.64,
       "Strengthened (%)": 4.55,
       "Weakened (%)": 4.55,
-      "Reversed (%)": 4.55,
-      "Wrong Activity (%)": 18.18,
+      "Reversed (%)": 0.0,
+      "Wrong Activity (%)": 22.73,
       "Vacuous (%)": 0.0,
       "Abstained (%)": 4.55,
       "Crash (%)": 0.0
@@ -87,8 +87,8 @@
         "Eq. (%)": 40.0,
         "Strengthened (%)": 20.0,
         "Weakened (%)": 0.0,
-        "Reversed (%)": 20.0,
-        "Wrong Activity (%)": 20.0,
+        "Reversed (%)": 0.0,
+        "Wrong Activity (%)": 40.0,
         "Vacuous (%)": 0.0,
         "Abstained (%)": 0.0,
         "Crash (%)": 0.0
@@ -98,8 +98,8 @@
         "Eq. (%)": 54.55,
         "Strengthened (%)": 9.09,
         "Weakened (%)": 9.09,
-        "Reversed (%)": 9.09,
-        "Wrong Activity (%)": 18.18,
+        "Reversed (%)": 0.0,
+        "Wrong Activity (%)": 27.27,
         "Vacuous (%)": 0.0,
         "Abstained (%)": 0.0,
         "Crash (%)": 0.0
@@ -161,7 +161,7 @@
       "Total_Items": 300
     },
     {
-      "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
+      "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)",
       "Executable_Rate (%)": 100.0,
       "Raw_Log_Executable_Rate (%)": 100.0,
       "Crash_Rate (%)": 0.0,
@@ -183,21 +183,21 @@
       "Executable_Rate (%)": 100.0,
       "Raw_Log_Executable_Rate (%)": 96.0,
       "Crash_Rate (%)": 0.0,
-      "Strict_Accuracy (%)": 83.33,
-      "Normative_Accuracy (%)": 87.5,
-      "Normative_Macro_F1": 0.9113,
+      "Strict_Accuracy (%)": 86.0,
+      "Normative_Accuracy (%)": 91.5,
+      "Normative_Macro_F1": 0.9335,
       "Rule_Schema_Trap_Accuracy (%)": 67.11,
       "Trace_Safety_Trap_Accuracy (%)": 100.0,
       "Normative_Eq_Rate (%)": 65.0,
       "Trap_Detection_Rate (%)": 75.0,
       "Eq_Rate (%)": 68.33,
-      "Conformance_F1": 0.832,
-      "Macro_Precision": 0.8343,
-      "Macro_Recall": 0.8333,
+      "Conformance_F1": 0.8582,
+      "Macro_Precision": 0.8647,
+      "Macro_Recall": 0.86,
       "Total_Items": 300
     },
     {
-      "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
+      "Configuration": "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)",
       "Executable_Rate (%)": 100.0,
       "Raw_Log_Executable_Rate (%)": 100.0,
       "Crash_Rate (%)": 0.0,
@@ -219,23 +219,23 @@
       "Executable_Rate (%)": 100.0,
       "Raw_Log_Executable_Rate (%)": 96.0,
       "Crash_Rate (%)": 0.0,
-      "Strict_Accuracy (%)": 83.33,
-      "Normative_Accuracy (%)": 87.5,
-      "Normative_Macro_F1": 0.9113,
+      "Strict_Accuracy (%)": 86.0,
+      "Normative_Accuracy (%)": 91.5,
+      "Normative_Macro_F1": 0.9335,
       "Rule_Schema_Trap_Accuracy (%)": 67.11,
       "Trace_Safety_Trap_Accuracy (%)": 100.0,
       "Normative_Eq_Rate (%)": 65.0,
       "Trap_Detection_Rate (%)": 75.0,
       "Eq_Rate (%)": 68.33,
-      "Conformance_F1": 0.832,
-      "Macro_Precision": 0.8343,
-      "Macro_Recall": 0.8333,
+      "Conformance_F1": 0.8582,
+      "Macro_Precision": 0.8647,
+      "Macro_Recall": 0.86,
       "Total_Items": 300
     }
   ],
   "table2_rq2_by_split": {
     "dev": {
-      "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)": {
+      "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)": {
         "Items": 150,
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 100.0,
@@ -252,7 +252,7 @@
         "Macro_Recall": 0.6,
         "Macro_F1": 0.4808
       },
-      "- Pre-Verification (Tắt Tầng 1 & Tầng 2)": {
+      "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)": {
         "Items": 150,
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 100.0,
@@ -274,38 +274,38 @@
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 92.0,
         "Crash_Rate (%)": 0.0,
-        "Strict_Accuracy (%)": 82.0,
-        "Normative_Accuracy (%)": 86.0,
-        "Normative_Macro_F1": 0.8954,
+        "Strict_Accuracy (%)": 87.33,
+        "Normative_Accuracy (%)": 94.0,
+        "Normative_Macro_F1": 0.9398,
         "Rule_Schema_Trap_Accuracy (%)": 65.79,
         "Trace_Safety_Trap_Accuracy (%)": 100.0,
         "Normative_Eq_Rate (%)": 56.0,
         "Trap_Detection_Rate (%)": 74.0,
         "Eq_Rate (%)": 62.0,
-        "Macro_Precision": 0.8209,
-        "Macro_Recall": 0.82,
-        "Macro_F1": 0.8184
+        "Macro_Precision": 0.8886,
+        "Macro_Recall": 0.8733,
+        "Macro_F1": 0.8714
       },
       "Full Neuro-Symbolic Pipeline (Đề xuất)": {
         "Items": 150,
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 92.0,
         "Crash_Rate (%)": 0.0,
-        "Strict_Accuracy (%)": 82.0,
-        "Normative_Accuracy (%)": 86.0,
-        "Normative_Macro_F1": 0.8954,
+        "Strict_Accuracy (%)": 87.33,
+        "Normative_Accuracy (%)": 94.0,
+        "Normative_Macro_F1": 0.9398,
         "Rule_Schema_Trap_Accuracy (%)": 65.79,
         "Trace_Safety_Trap_Accuracy (%)": 100.0,
         "Normative_Eq_Rate (%)": 56.0,
         "Trap_Detection_Rate (%)": 74.0,
         "Eq_Rate (%)": 62.0,
-        "Macro_Precision": 0.8209,
-        "Macro_Recall": 0.82,
-        "Macro_F1": 0.8184
+        "Macro_Precision": 0.8886,
+        "Macro_Recall": 0.8733,
+        "Macro_F1": 0.8714
       }
     },
     "heldout_test": {
-      "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)": {
+      "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)": {
         "Items": 150,
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 100.0,
@@ -322,7 +322,7 @@
         "Macro_Recall": 0.62,
         "Macro_F1": 0.496
       },
-      "- Pre-Verification (Tắt Tầng 1 & Tầng 2)": {
+      "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)": {
         "Items": 150,
         "Executable_Rate (%)": 100.0,
         "Raw_Log_Executable_Rate (%)": 100.0,
@@ -377,41 +377,41 @@
   },
   "table3_rq3_metrics": {
     "ENTAILED (Tuân thủ)": {
-      "Precision": 0.8142,
-      "Recall": 0.92,
-      "F1-Score": 0.8638,
-      "Unpenalized_Precision": 0.8142,
+      "Precision": 0.8205,
+      "Recall": 0.96,
+      "F1-Score": 0.8848,
+      "Unpenalized_Precision": 0.8205,
       "Crash_Count": 0,
-      "Avg_Retries": 0.16,
-      "Avg_Verification_Time (s)": 0.0079,
+      "Avg_Retries": 0.0,
+      "Avg_Verification_Time (s)": 0.0064,
       "Citation_Fidelity (%)": null
     },
     "CONTRADICTED (Vi phạm)": {
-      "Precision": 0.8646,
-      "Recall": 0.83,
-      "F1-Score": 0.8469,
-      "Unpenalized_Precision": 0.8646,
+      "Precision": 0.87,
+      "Recall": 0.87,
+      "F1-Score": 0.87,
+      "Unpenalized_Precision": 0.87,
       "Crash_Count": 0,
-      "Avg_Retries": 0.16,
-      "Avg_Verification_Time (s)": 0.0052,
+      "Avg_Retries": 0.0,
+      "Avg_Verification_Time (s)": 0.005,
       "Citation_Fidelity (%)": null
     },
     "BASELESS (Ảo giác / Thiếu bằng chứng Φ)": {
-      "Precision": 0.8242,
+      "Precision": 0.9036,
       "Recall": 0.75,
-      "F1-Score": 0.7853,
-      "Unpenalized_Precision": 0.8242,
+      "F1-Score": 0.8197,
+      "Unpenalized_Precision": 0.9036,
       "Crash_Count": 0,
       "Avg_Retries": 0.0,
-      "Avg_Verification_Time (s)": 0.0023,
+      "Avg_Verification_Time (s)": 0.0019,
       "Citation_Fidelity (%)": null
     },
     "Trung bình Toàn hệ thống (Overall)": {
-      "Precision": 0.8343,
-      "Recall": 0.8333,
-      "F1-Score": 0.832,
-      "Avg_Retries": 0.11,
-      "Avg_Verification_Time (s)": 0.0051,
+      "Precision": 0.8647,
+      "Recall": 0.86,
+      "F1-Score": 0.8582,
+      "Avg_Retries": 0.0,
+      "Avg_Verification_Time (s)": 0.0044,
       "Citation_Fidelity (%)": null
     }
   }

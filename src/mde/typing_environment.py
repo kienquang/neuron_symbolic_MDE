@@ -1,9 +1,8 @@
 """
-Bước 2.2: Kiểm tra Thực thể & Kiểu dữ liệu Tĩnh (Tầng 2 - Static Checker)
-Tham khảo Mục 3.3 bài OCL2026 (repo OVAS):
-- Khởi tạo môi trường kiểu gắn ngữ cảnh (Context-Bound Typing Environment Γ) từ process_schema.json.
-- Hàm tra cứu thuộc tính & thực thể δ(C, p) trên phân hệ quy trình (Activity, Case, Event).
-- Kiểm tra tương thích kiểu (Type Conformance) cho biểu thức điều kiện thuộc tính trước khi đưa xuống Declare4Py.
+Bộ Kiểm chứng Lược đồ Quy trình & Tính khả dụng Nhân quả Thuộc tính (Process Schema & Causal Attribute Validator):
+- Khởi tạo từ điển hoạt động, thuộc tính mức Case/Event và quan hệ vòng đời từ `process_schema.json`.
+- Kiểm tra tính hợp lệ thực thể hoạt động, phạm vi thuộc tính (Case vs Event), tương thích kiểu toán tử
+  và tính khả dụng nhân quả (Causal Attribute Availability) của thuộc tính sự kiện theo Behavioral Profile.
 """
 
 from difflib import get_close_matches
@@ -11,17 +10,17 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from .constraint_ast import (
     DeclareConstraintAST,
     TemporalDirection,
-    validate_layer1_ast,
+    validate_declare_ast,
 )
 
 ORDERING_OPERATORS = {"<", "<=", ">", ">="}
 EQUALITY_OPERATORS = {"==", "!="}
 
 
-class ProcessTypingEnvironment:
+class ProcessSchemaValidator:
     """
-    Context-Bound Typing Environment Γ cho Khai phá Quy trình (Process Mining),
-    chuyển thể từ OVAS (OCL2026, Section 3.3) trên lược đồ process_schema.json.
+    Bộ kiểm chứng lược đồ & tính khả dụng nhân quả cho Khai phá Quy trình (Process Mining),
+    xây dựng trực tiếp trên `process_schema.json` (bao gồm Behavioral Profile của Event Log).
     """
 
     def __init__(self, process_schema: Dict[str, Any]) -> None:
@@ -85,8 +84,8 @@ class ProcessTypingEnvironment:
         hint = f" Did you mean: {suggestions}?" if suggestions else ""
         return (
             False,
-            f"Navigational Violation in δ(Activity, '{activity_name}'): "
-            f"Activity '{activity_name}' does not exist in Process Metamodel Γ.{hint} "
+            f"Navigational Violation for activity '{activity_name}': "
+            f"Activity '{activity_name}' does not exist in Process Schema.{hint} "
             f"Valid activities are: {self.valid_activities}.",
         )
 
@@ -94,9 +93,7 @@ class ProcessTypingEnvironment:
         self, context: str, prop: str
     ) -> Tuple[bool, Union[Tuple[str, str, List[str]], str]]:
         """
-        Hàm tra cứu thuộc tính δ(C, p) từ OVAS (Mục 3.3):
-        - C ∈ {'Case', 'Event', 'Process', 'Any'}
-        - p là tên thuộc tính dữ liệu (activation_attr).
+        Tra cứu thuộc tính dữ liệu theo ngữ cảnh (Case / Event / Process) trên Process Schema.
         Trả về (True, (origin_scope, mapped_type, samples)) nếu hợp lệ,
         hoặc (False, diagnostic_error) nếu thuộc tính không tồn tại.
         """
@@ -120,14 +117,14 @@ class ProcessTypingEnvironment:
         if context == "Case" and clean_prop in self._event_attr_lookup:
             return (
                 False,
-                f"Scope Mismatch in δ(Case, '{prop}'): Attribute '{prop}' is defined at Event scope, "
-                f"not Case scope in Typing Environment Γ.",
+                f"Scope Mismatch for '{prop}': Attribute '{prop}' is defined at Event scope, "
+                f"not Case scope in Process Schema.",
             )
         if context == "Event" and clean_prop in self._case_attr_lookup:
             return (
                 False,
-                f"Scope Mismatch in δ(Event, '{prop}'): Attribute '{prop}' is defined at Case scope, "
-                f"not Event scope in Typing Environment Γ.",
+                f"Scope Mismatch for '{prop}': Attribute '{prop}' is defined at Case scope, "
+                f"not Event scope in Process Schema.",
             )
 
         all_valid_attrs = list(self.case_attributes.keys()) + list(
@@ -137,8 +134,8 @@ class ProcessTypingEnvironment:
         hint = f" Closest valid attributes: {suggestions}." if suggestions else ""
         return (
             False,
-            f"Navigational Violation in δ({context}, '{prop}'): "
-            f"Attribute '{prop}' is undefined in Typing Environment Γ.{hint} "
+            f"Navigational Violation for attribute '{prop}' ({context} scope): "
+            f"Attribute '{prop}' is undefined in Process Schema.{hint} "
             f"Valid attributes: {all_valid_attrs}.",
         )
 
@@ -150,7 +147,7 @@ class ProcessTypingEnvironment:
         context: str = "Process",
     ) -> Tuple[bool, Optional[str]]:
         """
-        Kiểm tra quy tắc tương thích kiểu (Type Conformance) của OVAS:
+        Kiểm tra quy tắc tương thích kiểu toán tử – giá trị cho biểu thức điều kiện thuộc tính:
         - Thuộc tính kiểu String hoặc Boolean không được phép dùng toán tử so sánh thứ tự (<, <=, >, >=).
         - Thuộc tính kiểu Float/Integer bắt buộc phải so sánh với giá trị số (int/float).
         - Thuộc tính kiểu Boolean chỉ được so sánh với True/False.
@@ -164,7 +161,7 @@ class ProcessTypingEnvironment:
         if attr_type in ("String", "Boolean") and operator in ORDERING_OPERATORS:
             return (
                 False,
-                f"Type Conformance Violation in Γ: Attribute '{attr_name}' ({scope} scope) "
+                f"Type Conformance Violation: Attribute '{attr_name}' ({scope} scope) "
                 f"has type '{attr_type}' (samples: {samples}), which does not support ordering operator '{operator}'. "
                 f"Only equality operators ('==', '!=') are permitted for '{attr_type}'.",
             )
@@ -182,7 +179,7 @@ class ProcessTypingEnvironment:
             if not is_numeric:
                 return (
                     False,
-                    f"Type Conformance Violation in Γ: Attribute '{attr_name}' has numeric type '{attr_type}' "
+                    f"Type Conformance Violation: Attribute '{attr_name}' has numeric type '{attr_type}' "
                     f"(samples: {samples}), but was compared against non-numeric value {repr(value)}.",
                 )
 
@@ -196,7 +193,7 @@ class ProcessTypingEnvironment:
             if not valid_bool:
                 return (
                     False,
-                    f"Type Conformance Violation in Γ: Attribute '{attr_name}' has type 'Boolean' "
+                    f"Type Conformance Violation: Attribute '{attr_name}' has type 'Boolean' "
                     f"(samples: {samples}), but got incompatible value {repr(value)}.",
                 )
 
@@ -208,16 +205,16 @@ class ProcessTypingEnvironment:
         retrieved_chunk: Optional[Dict[str, Any]] = None,
     ) -> Tuple[bool, Optional[str]]:
         """
-        Thực thi toàn bộ kiểm tra tĩnh Tầng 2 (Layer 2 Static Type & Entity Checker) trên AST.
+        Thực thi kiểm tra lược đồ quy trình, kiểu dữ liệu & tính khả dụng nhân quả thuộc tính trên AST.
         """
         errors: List[str] = []
 
-        # 1. Kiểm tra activation_activity bằng δ(Activity, a)
+        # 1. Kiểm tra activation_activity
         ok_act, msg_act = self.delta_activity(ast_obj.activation_activity)
         if not ok_act and msg_act:
             errors.append(msg_act)
 
-        # 2. Kiểm tra target_activity (nếu có) bằng δ(Activity, b)
+        # 2. Kiểm tra target_activity (nếu có)
         if ast_obj.target_activity is not None:
             ok_tgt, msg_tgt = self.delta_activity(ast_obj.target_activity)
             if not ok_tgt and msg_tgt:
@@ -228,13 +225,12 @@ class ProcessTypingEnvironment:
                     f"cannot be identical ('{ast_obj.activation_activity}')."
                 )
 
-        # 3. Kiểm tra thuộc tính dữ liệu và ép kiểu bằng δ(C, p) & Type Conformance
+        # 3. Kiểm tra thuộc tính dữ liệu, tương thích kiểu & tính khả dụng nhân quả (Causal Attribute Availability)
         if ast_obj.activation_attr is not None:
             clean_attr = ast_obj.activation_attr.strip()
             if clean_attr.startswith(("A.", "T.", "a.", "t.")):
                 clean_attr = clean_attr[2:]
 
-            # Phân biệt context Case vs Event theo lược đồ Γ
             if clean_attr.startswith("case:") or clean_attr in self._case_attr_lookup:
                 attr_context = "Case"
             elif clean_attr in self._event_attr_lookup:
@@ -257,12 +253,28 @@ class ProcessTypingEnvironment:
                     and len(app_acts) > 0
                     and ast_obj.activation_activity not in app_acts
                 ):
-                    errors.append(
-                        f"Event-Attribute Domain/Vacuity Violation in Γ: Event attribute '{clean_attr}' "
-                        f"is never populated (0 non-null records) on activity '{ast_obj.activation_activity}'. "
-                        f"In Process Metamodel Γ, '{clean_attr}' is only recorded on activities: {app_acts}. "
-                        f"Please select an anchor/activation activity from {app_acts}."
+                    # Bổ sung chẩn đoán thứ tự nhân quả từ Behavioral Profile (nếu activation xảy ra trước khi thuộc tính phát sinh)
+                    bp_pairs = self.schema.get("behavioral_profile", {}).get("strict_causal_pairs", [])
+                    strict_before_origin = any(
+                        p.get("from") == ast_obj.activation_activity
+                        and p.get("to") in app_acts
+                        and p.get("order_ratio", 0.0) >= 0.99
+                        for p in bp_pairs
                     )
+                    if strict_before_origin:
+                        errors.append(
+                            f"Causal Attribute Availability Violation: Event attribute '{clean_attr}' is only "
+                            f"populated later in the lifecycle on {app_acts}, which strictly follow "
+                            f"'{ast_obj.activation_activity}' in the Behavioral Profile (attribute does not yet exist "
+                            f"under causal evaluation). Anchor the rule on an activity in {app_acts}."
+                        )
+                    else:
+                        errors.append(
+                            f"Event-Attribute Lifecycle Domain Violation: Event attribute '{clean_attr}' "
+                            f"is never populated (0 non-null records) on activity '{ast_obj.activation_activity}'. "
+                            f"In the Process Schema, '{clean_attr}' is only recorded on activities: {app_acts}. "
+                            f"Please select an anchor/activation activity from {app_acts}."
+                        )
 
         # 4. Kiểm tra tính nhất quán giữa bước phân rã Req2LTL (nếu có) và Template được chọn
         if ast_obj.decomposition is not None:
@@ -314,37 +326,38 @@ class ProcessTypingEnvironment:
                 )
 
         if errors:
-            formatted = "\n".join(f"- [Layer 2 Static Error]: {e}" for e in errors)
+            formatted = "\n".join(f"- [Process Schema Validation Error]: {e}" for e in errors)
             return False, formatted
 
         return True, None
 
 
-def check_layer1_and_layer2(
+# Backward-compatible class alias
+ProcessTypingEnvironment = ProcessSchemaValidator
+
+
+def validate_ast_against_process_schema(
     raw_response: Union[str, Dict[str, Any]],
     process_schema: Dict[str, Any],
     retrieved_chunk: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, Union[DeclareConstraintAST, str]]:
     """
-    Hàm kiểm chứng tích hợp Tầng 1 (JSON Schema + Closed Enumeration) và
-    Tầng 2 (Typing Environment Γ + δ(C, p) + Type Conformance).
+    Hàm kiểm chứng hợp nhất cấu trúc DeclareConstraintAST với Lược đồ Quy trình & Tính khả dụng Thuộc tính.
     Trả về:
-      - (True, DeclareConstraintAST) nếu vượt qua cả 2 tầng (trả về AST mới chuẩn hóa).
-      - (False, diagnostic_feedback_str) nếu phát hiện lỗi ở Tầng 1 hoặc Tầng 2.
+      - (True, DeclareConstraintAST) nếu hợp lệ (trả về AST mới đã chuẩn hóa).
+      - (False, diagnostic_feedback_str) nếu phát hiện vi phạm cấu trúc hoặc lược đồ.
     """
-    # Kiểm tra Tầng 1
-    is_l1_valid, l1_result = validate_layer1_ast(raw_response)
-    if not is_l1_valid:
-        return False, str(l1_result)
+    is_ast_valid, ast_result = validate_declare_ast(raw_response)
+    if not is_ast_valid:
+        return False, str(ast_result)
 
-    ast_obj = l1_result  # type: ignore[assignment]
+    ast_obj = ast_result  # type: ignore[assignment]
     assert isinstance(ast_obj, DeclareConstraintAST)
 
-    # Kiểm tra Tầng 2 (không làm đột biến AST đầu vào)
-    gamma = ProcessTypingEnvironment(process_schema)
-    is_l2_valid, l2_error = gamma.validate_ast(ast_obj, retrieved_chunk=retrieved_chunk)
-    if not is_l2_valid:
-        return False, str(l2_error)
+    validator = ProcessSchemaValidator(process_schema)
+    is_schema_valid, schema_error = validator.validate_ast(ast_obj, retrieved_chunk=retrieved_chunk)
+    if not is_schema_valid:
+        return False, str(schema_error)
 
     # Trả về AST mới (immutable pattern) nếu có tiền tố A./T.
     if ast_obj.activation_attr is not None:
@@ -361,3 +374,7 @@ def check_layer1_and_layer2(
             ast_obj = ast_obj.model_copy(update={"article_id": expected_id})
 
     return True, ast_obj
+
+
+# Backward-compatible function alias
+check_layer1_and_layer2 = validate_ast_against_process_schema

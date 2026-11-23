@@ -54,7 +54,7 @@ class TestUnitMock(unittest.TestCase):
         )
         ok1, err1 = check_layer1_and_layer2(broken_t1, self.process_schema, chunk)
         self.assertFalse(ok1)
-        self.assertIn("Layer 1", str(err1))
+        self.assertIn("AST Schema Violation", str(err1))
 
         # 2. Đưa vào Tên hoạt động bịa đặt không có trong Log Schema (Lỗi Tầng 2 Unknown Activity)
         broken_t2_act = json.dumps(

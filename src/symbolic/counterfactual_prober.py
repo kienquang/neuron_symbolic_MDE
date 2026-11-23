@@ -391,7 +391,7 @@ def verify_via_counterfactual_probing(
     if not ok_num and num_verdict and num_diag:
         return (
             False,
-            f"[Layer 3 Semantic {num_verdict}]: {num_diag} (Back-translation: {verbalized_rule})",
+            f"[Counterfactual Semantic {num_verdict}]: {num_diag} (Back-translation: {verbalized_rule})",
         )
 
     # Nạp process_schema nếu chưa truyền vào
@@ -490,7 +490,7 @@ Return strictly JSON:
     except Exception as e:
         return (
             False,
-            f"[Layer 3 Counterfactual Probe Error]: Blind Judge returned non-JSON verdict ({e}). "
+            f"[Counterfactual Probe Error]: Blind Judge returned non-JSON verdict ({e}). "
             f"Raw output: {str(raw_res)[:200]}",
         )
 
@@ -510,7 +510,7 @@ Return strictly JSON:
     ):
         return (
             False,
-            f"[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: {explanation} (Back-translation: {verbalized_rule})",
+            f"[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: {explanation} (Back-translation: {verbalized_rule})",
         )
     if (
         verdict_tag == "EQUIVALENT"
@@ -530,7 +530,7 @@ Return strictly JSON:
     return (
         False,
         (
-            f"[Layer 3 Semantic {err_tag}]: [Counterfactual Mutation Disagreement ({mutants['mutation_operator']})]: "
+            f"[Counterfactual Semantic {err_tag}]: [Counterfactual Mutation Disagreement ({mutants['mutation_operator']})]: "
             f"Your synthesized rule claims '{mutants['tau_minus_story']}' is a violation, "
             f"but under {retrieved_chunk.get('article_id', '')}, Judge determined: {explanation} "
             f"Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), "

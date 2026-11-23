@@ -230,7 +230,7 @@ def extract_bpic2017_schema(
 
     all_activities = sorted(df["concept:name"].dropna().unique().tolist())
 
-    # 3. Trích xuất Kiểu dữ liệu của các Thuộc tính (Typing Environment Γ cho Tầng 2)
+    # 3. Trích xuất Kiểu dữ liệu & Miền hoạt động áp dụng của các Thuộc tính (Process Schema)
     case_attributes: Dict[str, Dict[str, Any]] = {}
     event_attributes: Dict[str, Dict[str, Any]] = {}
     for col in df.columns:

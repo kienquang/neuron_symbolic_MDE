@@ -49,8 +49,8 @@ except ImportError:
         return precisions, recalls, f1s, supports
 
 
-from src.mde.constraint_ast import DeclareConstraintAST, validate_layer1_ast
-from src.mde.typing_environment import ProcessTypingEnvironment
+from src.mde.constraint_ast import DeclareConstraintAST, validate_declare_ast
+from src.mde.typing_environment import ProcessSchemaValidator
 from src.symbolic.verbalizer_roundtrip import (
     check_roundtrip_fidelity,
     extract_clause_numeric_entities,
@@ -64,26 +64,30 @@ from src.evaluation.grounded_auditor import (
 )
 
 
-def check_layer1_and_layer2(
+def validate_ast_against_schema(
     raw_json: str,
     process_schema: Dict[str, Any],
     chunk: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, Any]:
     """
-    Kiểm tra tiền thực thi Tầng 1 (JSON Schema & Closed Enumeration) và Tầng 2 (Context-Bound Typing Environment Γ & δ).
+    Kiểm tra cấu trúc DeclareConstraintAST và lược đồ quy trình (ProcessSchemaValidator).
     Trả về (True, ast_dict) nếu hợp lệ, hoặc (False, diagnostic_error_msg) nếu vi phạm.
     """
-    ok_l1, res_l1 = validate_layer1_ast(raw_json)
-    if not ok_l1:
-        return False, str(res_l1)
+    ok_ast, res_ast = validate_declare_ast(raw_json)
+    if not ok_ast:
+        return False, str(res_ast)
 
-    ast_obj: DeclareConstraintAST = res_l1  # type: ignore[assignment]
-    typing_env = ProcessTypingEnvironment(process_schema)
-    ok_l2, msg_l2 = typing_env.validate_ast(ast_obj, retrieved_chunk=chunk)
-    if not ok_l2:
-        return False, str(msg_l2)
+    ast_obj: DeclareConstraintAST = res_ast  # type: ignore[assignment]
+    schema_validator = ProcessSchemaValidator(process_schema)
+    ok_schema, msg_schema = schema_validator.validate_ast(ast_obj, retrieved_chunk=chunk)
+    if not ok_schema:
+        return False, str(msg_schema)
 
     return True, ast_obj.model_dump()
+
+
+# Backward-compatible alias
+check_layer1_and_layer2 = validate_ast_against_schema
 
 
 def has_valid_activities_in_schema(
@@ -115,7 +119,7 @@ def is_executable_against_log_schema(
         clean_attr = ast_obj.activation_attr.strip()
         if clean_attr.startswith(("A.", "T.", "a.", "t.")):
             clean_attr = clean_attr[2:]
-        typing_env = ProcessTypingEnvironment(process_schema)
+        typing_env = ProcessSchemaValidator(process_schema)
         if clean_attr.startswith("case:") or clean_attr in typing_env._case_attr_lookup:
             attr_context = "Case"
         elif clean_attr in typing_env._event_attr_lookup:
@@ -147,7 +151,7 @@ def classify_semantic_equivalence(
     log_df: pd.DataFrame,
 ) -> str:
     """
-    Phân loại kết quả tổng hợp ràng buộc vào đúng các nhóm lỗi của Bảng 1 (RQ1 - theo Mục 3.4.6 & 4.2 của OCL2026):
+    Phân loại kết quả tổng hợp ràng buộc vào đúng các nhóm lỗi của Bảng 1 (RQ1 - CEGIS & Behavioral Equivalence Tiers):
     - 'EQ': Khớp hoàn toàn về mẫu DECLARE, tên hoạt động, toán tử số học và ngưỡng thời gian/tiền tệ.
     - 'STRENGTHENED': Quá chặt (VD: sinh Chain Precedence thay vì Precedence, hoặc thu hẹp ngưỡng).
     - 'WEAKENED': Quá lỏng (VD: bỏ sót giới hạn thời gian time_max hoặc nới lỏng time_max).
@@ -752,9 +756,9 @@ def run_ablation_experiment(
 ) -> dict:
     """
     Run automated ablation evaluation across the 3-way pipeline switches:
-    - enable_l1_l2: Layer 1/2 Deontic MDE + OVAS typing + Behavioral Profile.
+    - enable_l1_l2: Behavioral-Aware Deontic MDE Compiler + Process Schema Validator + Behavioral Profile.
     - enable_self_correction: Iterative self-correction loop (up to max_retry).
-    - enable_l3_roundtrip: Layer 3 Counterfactual Probing & epistemic safety guard Phi.
+    - enable_l3_roundtrip: Counterfactual Trace Mutation Probing & epistemic safety guard Phi.
     - evaluate_explanations: Generate and audit Step 4.3 natural-language explanations.
     """
     if llm_client is None:
@@ -860,7 +864,7 @@ def run_ablation_experiment(
                                 k: v for k, v in raw_parsed.items()
                                 if k in DeclareConstraintAST.model_fields
                             }
-                            ok_l1_u, res_l1_u = validate_layer1_ast(cleaned_p)
+                            ok_l1_u, res_l1_u = validate_declare_ast(cleaned_p)
                             if ok_l1_u and has_valid_activities_in_schema(res_l1_u, process_schema):
                                 ast_obj = res_l1_u
                                 roundtrip_ok = False

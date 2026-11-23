@@ -1,5 +1,5 @@
 {
-  "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)": {
+  "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)": {
     "Executable_Rate (%)": 90.67,
     "Raw_Log_Executable_Rate (%)": 90.67,
     "Crash_Rate (%)": 9.33,
@@ -17,7 +17,7 @@
     "Unpenalized_3Class_Macro_Precision": 0.7473,
     "Unpenalized_3Class_Macro_F1": 0.71,
     "Avg_Retry_Rounds": 0.0,
-    "Avg_Verification_Time (s)": 0.0042,
+    "Avg_Verification_Time (s)": 0.0022,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
@@ -27,7 +27,7 @@
         "Unpenalized_Precision": 0.8182,
         "Crash_Count": 8,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0064,
+        "Avg_Verification_Time (s)": 0.0031,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
@@ -37,7 +37,7 @@
         "Unpenalized_Precision": 0.7158,
         "Crash_Count": 8,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0034,
+        "Avg_Verification_Time (s)": 0.0021,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
@@ -47,7 +47,7 @@
         "Unpenalized_Precision": 0.7079,
         "Crash_Count": 12,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0017,
+        "Avg_Verification_Time (s)": 0.0008,
         "Citation_Fidelity (%)": null
       }
     },
@@ -294,7 +294,7 @@
       ]
     }
   },
-  "- Pre-Verification (Tắt Tầng 1 & Tầng 2)": {
+  "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)": {
     "Executable_Rate (%)": 90.67,
     "Raw_Log_Executable_Rate (%)": 90.67,
     "Crash_Rate (%)": 9.33,
@@ -312,7 +312,7 @@
     "Unpenalized_3Class_Macro_Precision": 0.8487,
     "Unpenalized_3Class_Macro_F1": 0.7955,
     "Avg_Retry_Rounds": 0.03,
-    "Avg_Verification_Time (s)": 0.0055,
+    "Avg_Verification_Time (s)": 0.0035,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
@@ -322,7 +322,7 @@
         "Unpenalized_Precision": 0.8675,
         "Crash_Count": 8,
         "Avg_Retries": 0.04,
-        "Avg_Verification_Time (s)": 0.0088,
+        "Avg_Verification_Time (s)": 0.0054,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
@@ -332,7 +332,7 @@
         "Unpenalized_Precision": 0.9067,
         "Crash_Count": 8,
         "Avg_Retries": 0.04,
-        "Avg_Verification_Time (s)": 0.0058,
+        "Avg_Verification_Time (s)": 0.0039,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
@@ -342,7 +342,7 @@
         "Unpenalized_Precision": 0.7719,
         "Crash_Count": 12,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0005,
+        "Avg_Verification_Time (s)": 0.0003,
         "Citation_Fidelity (%)": null
       }
     },
@@ -440,7 +440,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 13(1)\",\"template_name\":\"Response\",\"activation_activity\":\"O_Sent\",\"target_activity\":\"O_Cancelled\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\",\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 30d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent' occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 36 (35 calendar days elapsed, exceeding the 30-day window).' is a violation, but under Article 13(1), Judge determined: The 30‑day bound in the candidate constraint matches the one‑month limit in Article 13(1) and the bank’s operational policy, so the quantitative threshold is correct. However, the legal provision and policy give the consumer a *right* to terminate within 30 days; they do **not** require termination for every offer sent. The candidate constraint incorrectly forces a mandatory 'O_Cancelled' event after every 'O_Sent' (a Response pattern), whereas the correct semantics would be a conditional or precedence rule (if cancellation occurs, it must be within 30 days). Consequently the directionality is reversed: the policy permits 'O_Sent' without a subsequent 'O_Cancelled', but the candidate flags such traces as violations (Case C). This semantic mismatch leads to a REVERSED_ORDER verdict, and both Case A and Case B are not evaluated as compliant/violating under the intended legal meaning. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 30d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent' occurred on Day 1, and EITHER (i) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) NEVER occurred in the loan case, OR (ii) 'O_Cancelled' (Offer lifecycle event logged when the loan offer is marked cancelled.) occurred on Day 36 (35 calendar days elapsed, exceeding the 30-day window).' is a violation, but under Article 13(1), Judge determined: The 30‑day bound in the candidate constraint matches the one‑month limit in Article 13(1) and the bank’s operational policy, so the quantitative threshold is correct. However, the legal provision and policy give the consumer a *right* to terminate within 30 days; they do **not** require termination for every offer sent. The candidate constraint incorrectly forces a mandatory 'O_Cancelled' event after every 'O_Sent' (a Response pattern), whereas the correct semantics would be a conditional or precedence rule (if cancellation occurs, it must be within 30 days). Consequently the directionality is reversed: the policy permits 'O_Sent' without a subsequent 'O_Cancelled', but the candidate flags such traces as violations (Case C). This semantic mismatch leads to a REVERSED_ORDER verdict, and both Case A and Case B are not evaluated as compliant/violating under the intended legal meaning. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
         },
         {
           "round": 2,
@@ -542,7 +542,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 18(2)\",\"template_name\":\"Response\",\"activation_activity\":\"A_Validating\",\"target_activity\":\"W_Call incomplete files\",\"activation_attr\":null,\"activation_op\":null,\"activation_val\":null,\"time_min\":null,\"time_max\":30,\"time_unit\":\"d\",\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
         }
       ],
       "R27": [
@@ -599,51 +599,51 @@
     "Executable_Rate (%)": 100.0,
     "Raw_Log_Executable_Rate (%)": 96.0,
     "Crash_Rate (%)": 0.0,
-    "Strict_Accuracy (%)": 81.67,
-    "Normative_Accuracy (%)": 79.0,
-    "Normative_Macro_F1": 0.8443,
+    "Strict_Accuracy (%)": 85.0,
+    "Normative_Accuracy (%)": 84.0,
+    "Normative_Macro_F1": 0.8789,
     "Rule_Schema_Trap_Accuracy (%)": 82.89,
     "Trace_Safety_Trap_Accuracy (%)": 100.0,
-    "Eq_Rate (%)": 71.0,
-    "Normative_Eq_Rate (%)": 63.0,
+    "Eq_Rate (%)": 76.33,
+    "Normative_Eq_Rate (%)": 71.0,
     "Trap_Detection_Rate (%)": 87.0,
-    "Macro_Precision": 0.827,
-    "Macro_Recall": 0.8167,
-    "Macro_F1": 0.8166,
-    "Unpenalized_3Class_Macro_Precision": 0.827,
-    "Unpenalized_3Class_Macro_F1": 0.8166,
+    "Macro_Precision": 0.8591,
+    "Macro_Recall": 0.85,
+    "Macro_F1": 0.85,
+    "Unpenalized_3Class_Macro_Precision": 0.8591,
+    "Unpenalized_3Class_Macro_F1": 0.85,
     "Avg_Retry_Rounds": 0.0,
-    "Avg_Verification_Time (s)": 0.0062,
+    "Avg_Verification_Time (s)": 0.0038,
     "Citation_Fidelity (%)": null,
     "Per_Class_Metrics": {
       "ENTAILED": {
-        "Precision": 0.787,
-        "Recall": 0.85,
-        "F1-Score": 0.8173,
-        "Unpenalized_Precision": 0.787,
+        "Precision": 0.7982,
+        "Recall": 0.91,
+        "F1-Score": 0.8505,
+        "Unpenalized_Precision": 0.7982,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0083,
+        "Avg_Verification_Time (s)": 0.0057,
         "Citation_Fidelity (%)": null
       },
       "CONTRADICTED": {
-        "Precision": 0.9241,
-        "Recall": 0.73,
-        "F1-Score": 0.8156,
-        "Unpenalized_Precision": 0.9241,
+        "Precision": 0.9506,
+        "Recall": 0.77,
+        "F1-Score": 0.8508,
+        "Unpenalized_Precision": 0.9506,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0086,
+        "Avg_Verification_Time (s)": 0.0044,
         "Citation_Fidelity (%)": null
       },
       "BASELESS": {
-        "Precision": 0.7699,
+        "Precision": 0.8286,
         "Recall": 0.87,
-        "F1-Score": 0.8169,
-        "Unpenalized_Precision": 0.7699,
+        "F1-Score": 0.8488,
+        "Unpenalized_Precision": 0.8286,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0018,
+        "Avg_Verification_Time (s)": 0.0012,
         "Citation_Fidelity (%)": null
       }
     },
@@ -652,8 +652,8 @@
         {
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The EU Directive 2008/48/EC (Art.14(1)) gives the consumer an *optional* 14‑day withdrawal right after receipt of the contractual terms. The bank policy mirrors this by allowing cancellation within 14 days, but does not require it. The candidate constraint, however, imposes a mandatory response: whenever an offer is sent (O_Sent (mail and online)), an A_Cancelled event must occur within 14 days. This reverses the intended semantics – it turns an optional consumer right into a compulsory action. Consequently, a trace where the offer is sent and no cancellation follows (or cancellation occurs after 14 days) is flagged as a violation by the candidate rule, even though the legal and policy texts would consider it permissible. Hence the constraint is semantically mismatched (reversed order). The numeric bound (14 days) is correct, so no THRESHOLD_MISMATCH. The clause is supported, so is_unsupported_clause is false. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
+          "status": "PASSED",
+          "error": null
         }
       ],
       "R07": [
@@ -797,7 +797,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 14(3)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"A_Cancelled\",\"consequent_activity\":\"O_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":30,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: Article 14(3) of Directive 2008/48/EC obliges the consumer, after exercising the right of withdrawal, to repay the credit within 30 calendar days. The 30‑day period therefore applies to the consumer's repayment obligation, not to any creditor action such as cancelling the credit proposal. The bank's operational policy re‑interprets this deadline as a requirement that the creditor must cancel the related offer within 30 days after the consumer's cancellation (A_Cancelled → O_Cancelled). This is a misattribution of the statutory duty and a fabrication of a creditor obligation that the Directive does not prescribe. Consequently the candidate constraint is not supported by the legal clause, making it baseless. Because the constraint itself is unsupported, the compliance assessment does not evaluate the synthetic traces as compliant or violating; both flags are set to false. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: Article 14(3) of Directive 2008/48/EC obliges the consumer, after exercising the right of withdrawal, to repay the credit within 30 calendar days. The 30‑day period therefore applies to the consumer's repayment obligation, not to any creditor action such as cancelling the credit proposal. The bank's operational policy re‑interprets this deadline as a requirement that the creditor must cancel the related offer within 30 days after the consumer's cancellation (A_Cancelled → O_Cancelled). This is a misattribution of the statutory duty and a fabrication of a creditor obligation that the Directive does not prescribe. Consequently the candidate constraint is not supported by the legal clause, making it baseless. Because the constraint itself is unsupported, the compliance assessment does not evaluate the synthetic traces as compliant or violating; both flags are set to false. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
         }
       ],
       "R21": [
@@ -813,7 +813,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"O_Sent (mail and online)\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The EU Directive 2008/48/EC (Art.5(1)) and the bank's operational policy require that *once a formalised credit offer has been persisted* (i.e., the O_Created event), the pre‑contractual information must be transmitted to the consumer. The candidate constraint ties the obligation to the earlier O_Create Offer event, which is only a draft stage and not the \"formalised\" offer referred to in the policy. Consequently, the constraint mis‑identifies the trigger activity. In the compliant trace (Case A) the dispatch occurs after the draft, satisfying the candidate rule but not the actual legal requirement; in the mutant trace (Case B) the lack of dispatch after the draft does not constitute a breach of the legal duty because the duty is triggered by O_Created, not O_Create Offer. Therefore the candidate constraint is semantically mismatched with the legal and policy obligations. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The EU Directive 2008/48/EC (Art.5(1)) and the bank's operational policy require that *once a formalised credit offer has been persisted* (i.e., the O_Created event), the pre‑contractual information must be transmitted to the consumer. The candidate constraint ties the obligation to the earlier O_Create Offer event, which is only a draft stage and not the \"formalised\" offer referred to in the policy. Consequently, the constraint mis‑identifies the trigger activity. In the compliant trace (Case A) the dispatch occurs after the draft, satisfying the candidate rule but not the actual legal requirement; in the mutant trace (Case B) the lack of dispatch after the draft does not constitute a breach of the legal duty because the duty is triggered by O_Created, not O_Create Offer. Therefore the candidate constraint is semantically mismatched with the legal and policy obligations. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
         }
       ],
       "R08": [
@@ -829,7 +829,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint ties the consumer's acceptance event (O_Accepted) to a creditor‑side milestone (A_Pending) and imposes a 14‑day deadline. While the 14‑day numeric bound matches the period mentioned in Article 14(1) and the operational policy, the legal provision concerns the consumer's right to withdraw, not a creditor obligation to move the loan to a pending‑disbursement state. This constitutes a duty‑holder misattribution: the Directive grants a right to the consumer, whereas the policy creates a new, unrelated creditor duty. Consequently the clause is unsupported by the Directive and is classified as BASELESS, even though the synthetic traces themselves (Case A compliant, Case B violating) correctly respect the 14‑day bound. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint ties the consumer's acceptance event (O_Accepted) to a creditor‑side milestone (A_Pending) and imposes a 14‑day deadline. While the 14‑day numeric bound matches the period mentioned in Article 14(1) and the operational policy, the legal provision concerns the consumer's right to withdraw, not a creditor obligation to move the loan to a pending‑disbursement state. This constitutes a duty‑holder misattribution: the Directive grants a right to the consumer, whereas the policy creates a new, unrelated creditor duty. Consequently the clause is unsupported by the Directive and is classified as BASELESS, even though the synthetic traces themselves (Case A compliant, Case B violating) correctly respect the 14‑day bound. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
         }
       ],
       "R25": [
@@ -837,7 +837,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 18(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"A_Validating\",\"consequent_activity\":\"W_Call incomplete files\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":30,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
         }
       ],
       "R27": [
@@ -845,7 +845,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"UNMAPPED_MISSING_IN_LOG\",\"guard_operator\":\"<=\",\"guard_threshold\":0.01,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 0.01 must occur at least once in the credit case.)"
+          "error": "[Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Schema (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 0.01 must occur at least once in the credit case.)"
         }
       ],
       "R29": [
@@ -861,7 +861,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(4)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":\"OfferedAmount\",\"guard_operator\":\">\",\"guard_threshold\":10000,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint enforces that an 'O_Create Offer' with OfferedAmount > 10,000 must precede 'A_Pending'. This numeric bound (EUR 10,000) originates from Article 16(4) of Directive 2008/48/EC, but the legal provision concerns the maximum threshold for compensation claims on early repayment, not a minimum financed principal for loan approval. The operational policy therefore misattributes the legal numeric limit to a different substantive duty (loan amount eligibility). Because the policy fabricates a requirement that is not mandated by the Directive, the clause is unsupported (BASELESS). Under the stated constraint, the compliant trace (Case A) satisfies the precedence and the mutant trace (Case B) violates it, but the overall verdict reflects the legal incompatibility. (Back-translation: Whenever 'A_Pending' occurs, 'O_Create Offer' when OfferedAmount > 10000 must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint enforces that an 'O_Create Offer' with OfferedAmount > 10,000 must precede 'A_Pending'. This numeric bound (EUR 10,000) originates from Article 16(4) of Directive 2008/48/EC, but the legal provision concerns the maximum threshold for compensation claims on early repayment, not a minimum financed principal for loan approval. The operational policy therefore misattributes the legal numeric limit to a different substantive duty (loan amount eligibility). Because the policy fabricates a requirement that is not mandated by the Directive, the clause is unsupported (BASELESS). Under the stated constraint, the compliant trace (Case A) satisfies the precedence and the mutant trace (Case B) violates it, but the overall verdict reflects the legal incompatibility. (Back-translation: Whenever 'A_Pending' occurs, 'O_Create Offer' when OfferedAmount > 10000 must have occurred BEFORE it.)"
         }
       ],
       "R26": [
@@ -877,7 +877,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 2(3)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":90,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the bank's operational policy: after an 'O_Sent (mail and online)' event, an 'A_Pending' event must occur within 90 calendar days. Case A satisfies this (Day 1 → Day 90) and Case B breaches it (either no A_Pending or Day 96), so the trace evaluation itself is internally consistent. However, Article 2(3) of Directive 2008/48/EC only limits the *repayment* period of short‑term credit to three months; it does not impose a deadline on the creditor's activation or approval of the credit. The bank's policy therefore misattributes the numeric bound to a different duty holder (the creditor) and creates a requirement that is not grounded in the legal text. According to principle 4, this constitutes a duty‑holder/numeric misattribution, making the clause unsupported. Consequently, the overall verdict is BASELESS while the individual case compliance flags remain true for the internal policy. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Pending' must eventually occur AFTER it within 90 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the bank's operational policy: after an 'O_Sent (mail and online)' event, an 'A_Pending' event must occur within 90 calendar days. Case A satisfies this (Day 1 → Day 90) and Case B breaches it (either no A_Pending or Day 96), so the trace evaluation itself is internally consistent. However, Article 2(3) of Directive 2008/48/EC only limits the *repayment* period of short‑term credit to three months; it does not impose a deadline on the creditor's activation or approval of the credit. The bank's policy therefore misattributes the numeric bound to a different duty holder (the creditor) and creates a requirement that is not grounded in the legal text. According to principle 4, this constitutes a duty‑holder/numeric misattribution, making the clause unsupported. Consequently, the overall verdict is BASELESS while the individual case compliance flags remain true for the internal policy. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Pending' must eventually occur AFTER it within 90 calendar days.)"
         }
       ],
       "R30": [
@@ -894,42 +894,42 @@
     "Executable_Rate (%)": 100.0,
     "Raw_Log_Executable_Rate (%)": 96.0,
     "Crash_Rate (%)": 0.0,
-    "Strict_Accuracy (%)": 87.67,
-    "Normative_Accuracy (%)": 88.0,
-    "Normative_Macro_F1": 0.8976,
+    "Strict_Accuracy (%)": 88.33,
+    "Normative_Accuracy (%)": 89.0,
+    "Normative_Macro_F1": 0.9077,
     "Rule_Schema_Trap_Accuracy (%)": 82.89,
     "Trace_Safety_Trap_Accuracy (%)": 100.0,
-    "Eq_Rate (%)": 77.0,
-    "Normative_Eq_Rate (%)": 72.0,
+    "Eq_Rate (%)": 79.67,
+    "Normative_Eq_Rate (%)": 76.0,
     "Trap_Detection_Rate (%)": 87.0,
-    "Macro_Precision": 0.8837,
-    "Macro_Recall": 0.8767,
-    "Macro_F1": 0.877,
-    "Unpenalized_3Class_Macro_Precision": 0.8837,
-    "Unpenalized_3Class_Macro_F1": 0.877,
-    "Avg_Retry_Rounds": 0.11,
-    "Avg_Verification_Time (s)": 0.0075,
-    "Citation_Fidelity (%)": 77.0,
+    "Macro_Precision": 0.892,
+    "Macro_Recall": 0.8833,
+    "Macro_F1": 0.8836,
+    "Unpenalized_3Class_Macro_Precision": 0.892,
+    "Unpenalized_3Class_Macro_F1": 0.8836,
+    "Avg_Retry_Rounds": 0.03,
+    "Avg_Verification_Time (s)": 0.0042,
+    "Citation_Fidelity (%)": 79.67,
     "Per_Class_Metrics": {
       "ENTAILED": {
-        "Precision": 0.8034,
-        "Recall": 0.94,
-        "F1-Score": 0.8664,
-        "Unpenalized_Precision": 0.8034,
+        "Precision": 0.8067,
+        "Recall": 0.96,
+        "F1-Score": 0.8767,
+        "Unpenalized_Precision": 0.8067,
         "Crash_Count": 0,
-        "Avg_Retries": 0.17,
-        "Avg_Verification_Time (s)": 0.0101,
-        "Citation_Fidelity (%)": 72.0
+        "Avg_Retries": 0.05,
+        "Avg_Verification_Time (s)": 0.0067,
+        "Citation_Fidelity (%)": 76.0
       },
       "CONTRADICTED": {
-        "Precision": 0.9318,
+        "Precision": 0.9535,
         "Recall": 0.82,
-        "F1-Score": 0.8723,
-        "Unpenalized_Precision": 0.9318,
+        "F1-Score": 0.8817,
+        "Unpenalized_Precision": 0.9535,
         "Crash_Count": 0,
-        "Avg_Retries": 0.17,
-        "Avg_Verification_Time (s)": 0.01,
-        "Citation_Fidelity (%)": 72.0
+        "Avg_Retries": 0.05,
+        "Avg_Verification_Time (s)": 0.0046,
+        "Citation_Fidelity (%)": 76.0
       },
       "BASELESS": {
         "Precision": 0.9158,
@@ -938,7 +938,7 @@
         "Unpenalized_Precision": 0.9158,
         "Crash_Count": 0,
         "Avg_Retries": 0.0,
-        "Avg_Verification_Time (s)": 0.0023,
+        "Avg_Verification_Time (s)": 0.0013,
         "Citation_Fidelity (%)": 87.0
       }
     },
@@ -947,24 +947,6 @@
         {
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The EU Directive 2008/48/EC (Art.14(1)) gives the consumer an *optional* 14‑day withdrawal right after receipt of the contractual terms. The bank policy mirrors this by allowing cancellation within 14 days, but does not require it. The candidate constraint, however, imposes a mandatory response: whenever an offer is sent (O_Sent (mail and online)), an A_Cancelled event must occur within 14 days. This reverses the intended semantics – it turns an optional consumer right into a compulsory action. Consequently, a trace where the offer is sent and no cancellation follows (or cancellation occurs after 14 days) is flagged as a violation by the candidate rule, even though the legal and policy texts would consider it permissible. Hence the constraint is semantically mismatched (reversed order). The numeric bound (14 days) is correct, so no THRESHOLD_MISMATCH. The clause is supported, so is_unsupported_clause is false. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-        },
-        {
-          "round": 2,
-          "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (MANDATORY_RESPONSE_AND_DEADLINE_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred on Day 1, and EITHER (i) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) NEVER occurred in the loan case, OR (ii) 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) occurred on Day 20 (19 calendar days elapsed, exceeding the 14-day window).' is a violation, but under Article 14(1), Judge determined: The EU Directive 2008/48/EC (Art.14(1)) gives the consumer an *optional* 14‑day withdrawal right after receipt of the contractual terms. The bank policy mirrors this by allowing cancellation within 14 days, but does not require it. The candidate constraint, however, imposes a mandatory response: whenever an offer is sent (O_Sent (mail and online)), an A_Cancelled event must occur within 14 days. This reverses the intended semantics – it turns an optional consumer right into a compulsory action. Consequently, a trace where the offer is sent and no cancellation follows (or cancellation occurs after 14 days) is flagged as a violation by the candidate rule, even though the legal and policy texts would consider it permissible. Hence the constraint is semantically mismatched (reversed order). The numeric bound (14 days) is correct, so no THRESHOLD_MISMATCH. The clause is supported, so is_unsupported_clause is false. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must eventually occur AFTER it within 14 calendar days.)"
-        },
-        {
-          "round": 3,
-          "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"A_Cancelled\",\"consequent_activity\":\"O_Sent (mail and online)\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
-          "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic REVERSED_ORDER]: [Counterfactual Mutation Disagreement (PREREQUISITE_WINDOW_BOUNDARY_MUTATION (+5 days over 14d))]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Target event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) was executed on Day 20 after 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.) on Day 1 (19 calendar days elapsed, exceeding the 14-day window, or 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) occurred without prior 'A_Cancelled' (Application state milestone recorded when the loan application is closed as cancelled.)).' is a violation, but under Article 14(1), Judge determined: Article 14(1) of Directive 2008/48/EC gives the consumer a 14‑day withdrawal right *after* the consumer receives the offer (or the contract is concluded). The bank's operational policy mirrors this: the consumer may cancel within 14 calendar days *after* the transmitted offer is received. The candidate constraint, however, states the opposite – it requires that the cancellation event (A_Cancelled) occur *before* the offer dispatch event (O_Sent (mail and online)) and within 14 days. This reverses the temporal direction mandated by the legal provision. Consequently, the compliant trace (Case A) is actually a violation of the legal rule, and the mutant trace (Case B) is not the relevant failure mode; the constraint itself is semantically inverted. Therefore the appropriate verdict is REVERSED_ORDER, with both case flags set to false. The clause is supported (no unsupported legal content), but the constraint mis‑orders the required precedence. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Cancelled' must have occurred BEFORE it within 14 calendar days.)"
-        },
-        {
-          "round": 4,
-          "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"PERMISSION_RIGHT\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
           "status": "PASSED",
           "error": null
         }
@@ -1110,7 +1092,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 14(3)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"A_Cancelled\",\"consequent_activity\":\"O_Cancelled\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":30,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: Article 14(3) of Directive 2008/48/EC obliges the consumer, after exercising the right of withdrawal, to repay the credit within 30 calendar days. The 30‑day period therefore applies to the consumer's repayment obligation, not to any creditor action such as cancelling the credit proposal. The bank's operational policy re‑interprets this deadline as a requirement that the creditor must cancel the related offer within 30 days after the consumer's cancellation (A_Cancelled → O_Cancelled). This is a misattribution of the statutory duty and a fabrication of a creditor obligation that the Directive does not prescribe. Consequently the candidate constraint is not supported by the legal clause, making it baseless. Because the constraint itself is unsupported, the compliance assessment does not evaluate the synthetic traces as compliant or violating; both flags are set to false. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: Article 14(3) of Directive 2008/48/EC obliges the consumer, after exercising the right of withdrawal, to repay the credit within 30 calendar days. The 30‑day period therefore applies to the consumer's repayment obligation, not to any creditor action such as cancelling the credit proposal. The bank's operational policy re‑interprets this deadline as a requirement that the creditor must cancel the related offer within 30 days after the consumer's cancellation (A_Cancelled → O_Cancelled). This is a misattribution of the statutory duty and a fabrication of a creditor obligation that the Directive does not prescribe. Consequently the candidate constraint is not supported by the legal clause, making it baseless. Because the constraint itself is unsupported, the compliance assessment does not evaluate the synthetic traces as compliant or violating; both flags are set to false. (Back-translation: Whenever 'A_Cancelled' occurs, 'O_Cancelled' must eventually occur AFTER it within 30 calendar days.)"
         }
       ],
       "R21": [
@@ -1126,7 +1108,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 5(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"O_Sent (mail and online)\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "FAILED_L3_ROUNDTRIP",
-          "error": "[Layer 3 Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The EU Directive 2008/48/EC (Art.5(1)) and the bank's operational policy require that *once a formalised credit offer has been persisted* (i.e., the O_Created event), the pre‑contractual information must be transmitted to the consumer. The candidate constraint ties the obligation to the earlier O_Create Offer event, which is only a draft stage and not the \"formalised\" offer referred to in the policy. Consequently, the constraint mis‑identifies the trigger activity. In the compliant trace (Case A) the dispatch occurs after the draft, satisfying the candidate rule but not the actual legal requirement; in the mutant trace (Case B) the lack of dispatch after the draft does not constitute a breach of the legal duty because the duty is triggered by O_Created, not O_Create Offer. Therefore the candidate constraint is semantically mismatched with the legal and policy obligations. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
+          "error": "[Counterfactual Semantic SEMANTIC_MISMATCH]: [Counterfactual Mutation Disagreement (MISSING_RESPONSE_MUTATION)]: Your synthesized rule claims 'Counterfactual Case B (Mutant Trace τ-): Trigger event 'O_Create Offer' (Offer lifecycle event logged when a loan offer record is drafted with financial terms.) occurred in the loan case, but follow-up event 'O_Sent (mail and online)' (Offer dispatch event logged when an offer is sent via postal mail and online portal.) was NEVER executed afterwards before the case closed.' is a violation, but under Article 5(1), Judge determined: The EU Directive 2008/48/EC (Art.5(1)) and the bank's operational policy require that *once a formalised credit offer has been persisted* (i.e., the O_Created event), the pre‑contractual information must be transmitted to the consumer. The candidate constraint ties the obligation to the earlier O_Create Offer event, which is only a draft stage and not the \"formalised\" offer referred to in the policy. Consequently, the constraint mis‑identifies the trigger activity. In the compliant trace (Case A) the dispatch occurs after the draft, satisfying the candidate rule but not the actual legal requirement; in the mutant trace (Case B) the lack of dispatch after the draft does not constitute a breach of the legal duty because the duty is triggered by O_Created, not O_Create Offer. Therefore the candidate constraint is semantically mismatched with the legal and policy obligations. Hint: Check if you confused PREREQUISITE_BEFORE (Precedence) with MANDATORY_RESPONSE (Response), symmetric MUTUAL_EXCLUSION (Not Co-Existence) vs directional PROHIBITION + MANDATORY_RESPONSE/PREREQUISITE_BEFORE (Not Response / Not Precedence), omitted consequent_activity via UNARY_CONDITION, or selected the wrong lifecycle activity. (Back-translation: Whenever 'O_Create Offer' occurs, 'O_Sent (mail and online)' must eventually occur AFTER it.)"
         },
         {
           "round": 2,
@@ -1148,7 +1130,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 14(1)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Accepted\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":14,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint ties the consumer's acceptance event (O_Accepted) to a creditor‑side milestone (A_Pending) and imposes a 14‑day deadline. While the 14‑day numeric bound matches the period mentioned in Article 14(1) and the operational policy, the legal provision concerns the consumer's right to withdraw, not a creditor obligation to move the loan to a pending‑disbursement state. This constitutes a duty‑holder misattribution: the Directive grants a right to the consumer, whereas the policy creates a new, unrelated creditor duty. Consequently the clause is unsupported by the Directive and is classified as BASELESS, even though the synthetic traces themselves (Case A compliant, Case B violating) correctly respect the 14‑day bound. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint ties the consumer's acceptance event (O_Accepted) to a creditor‑side milestone (A_Pending) and imposes a 14‑day deadline. While the 14‑day numeric bound matches the period mentioned in Article 14(1) and the operational policy, the legal provision concerns the consumer's right to withdraw, not a creditor obligation to move the loan to a pending‑disbursement state. This constitutes a duty‑holder misattribution: the Directive grants a right to the consumer, whereas the policy creates a new, unrelated creditor duty. Consequently the clause is unsupported by the Directive and is classified as BASELESS, even though the synthetic traces themselves (Case A compliant, Case B violating) correctly respect the 14‑day bound. (Back-translation: Whenever 'O_Accepted' occurs, 'A_Pending' must eventually occur AFTER it within 14 calendar days.)"
         }
       ],
       "R25": [
@@ -1156,7 +1138,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 18(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"A_Validating\",\"consequent_activity\":\"W_Call incomplete files\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":30,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the 30‑day deadline of Article 18(2) but repurposes it for a different legal duty: staff calling borrowers about missing documents after the application reaches the A_Validating state. Article 18(2) obliges the creditor to inform the consumer of a significant credit‑overrun, not to perform internal file‑completion outreach. This constitutes a misattribution of the statutory requirement, i.e., the operational policy is not a legitimate specialization of the Directive provision. Consequently the clause is unsupported (BASELESS) even though the synthetic traces themselves respect the numeric bound. (Back-translation: Whenever 'A_Validating' occurs, 'W_Call incomplete files' must eventually occur AFTER it within 30 calendar days.)"
         }
       ],
       "R27": [
@@ -1164,7 +1146,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(2)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"UNARY_CONDITION\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":null,\"attribute_guard\":\"UNMAPPED_MISSING_IN_LOG\",\"guard_operator\":\"<=\",\"guard_threshold\":0.01,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Metamodel Γ (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 0.01 must occur at least once in the credit case.)"
+          "error": "[Semantic BASELESS]: [Deontic MDE Compiler -> MISSING_LOG_EVIDENCE_PHI_VIOLATION]: Clause 'Article 16(2)' requires a quantitative metric/attribute that is absent from the Process Schema (UNMAPPED_MISSING_IN_LOG). (Back-translation: Activity 'O_Create Offer' when UNMAPPED_MISSING_IN_LOG <= 0.01 must occur at least once in the credit case.)"
         }
       ],
       "R29": [
@@ -1180,7 +1162,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 16(4)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"PREREQUISITE_BEFORE\",\"anchor_activity\":\"O_Create Offer\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":\"OfferedAmount\",\"guard_operator\":\">\",\"guard_threshold\":10000,\"deadline_days\":null,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint enforces that an 'O_Create Offer' with OfferedAmount > 10,000 must precede 'A_Pending'. This numeric bound (EUR 10,000) originates from Article 16(4) of Directive 2008/48/EC, but the legal provision concerns the maximum threshold for compensation claims on early repayment, not a minimum financed principal for loan approval. The operational policy therefore misattributes the legal numeric limit to a different substantive duty (loan amount eligibility). Because the policy fabricates a requirement that is not mandated by the Directive, the clause is unsupported (BASELESS). Under the stated constraint, the compliant trace (Case A) satisfies the precedence and the mutant trace (Case B) violates it, but the overall verdict reflects the legal incompatibility. (Back-translation: Whenever 'A_Pending' occurs, 'O_Create Offer' when OfferedAmount > 10000 must have occurred BEFORE it.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint enforces that an 'O_Create Offer' with OfferedAmount > 10,000 must precede 'A_Pending'. This numeric bound (EUR 10,000) originates from Article 16(4) of Directive 2008/48/EC, but the legal provision concerns the maximum threshold for compensation claims on early repayment, not a minimum financed principal for loan approval. The operational policy therefore misattributes the legal numeric limit to a different substantive duty (loan amount eligibility). Because the policy fabricates a requirement that is not mandated by the Directive, the clause is unsupported (BASELESS). Under the stated constraint, the compliant trace (Case A) satisfies the precedence and the mutant trace (Case B) violates it, but the overall verdict reflects the legal incompatibility. (Back-translation: Whenever 'A_Pending' occurs, 'O_Create Offer' when OfferedAmount > 10000 must have occurred BEFORE it.)"
         }
       ],
       "R26": [
@@ -1196,7 +1178,7 @@
           "round": 1,
           "output": "{\"article_id\":\"Article 2(3)\",\"deontic_modality\":\"OBLIGATION\",\"temporal_relation\":\"MANDATORY_RESPONSE\",\"anchor_activity\":\"O_Sent (mail and online)\",\"consequent_activity\":\"A_Pending\",\"attribute_guard\":null,\"guard_operator\":null,\"guard_threshold\":null,\"deadline_days\":90,\"unsupported_by_text\":false}",
           "status": "DETECTED_BASELESS_TRAP",
-          "error": "[Layer 3 Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the bank's operational policy: after an 'O_Sent (mail and online)' event, an 'A_Pending' event must occur within 90 calendar days. Case A satisfies this (Day 1 → Day 90) and Case B breaches it (either no A_Pending or Day 96), so the trace evaluation itself is internally consistent. However, Article 2(3) of Directive 2008/48/EC only limits the *repayment* period of short‑term credit to three months; it does not impose a deadline on the creditor's activation or approval of the credit. The bank's policy therefore misattributes the numeric bound to a different duty holder (the creditor) and creates a requirement that is not grounded in the legal text. According to principle 4, this constitutes a duty‑holder/numeric misattribution, making the clause unsupported. Consequently, the overall verdict is BASELESS while the individual case compliance flags remain true for the internal policy. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Pending' must eventually occur AFTER it within 90 calendar days.)"
+          "error": "[Counterfactual Semantic BASELESS]: [Counterfactual Probe -> BASELESS]: The candidate constraint mirrors the bank's operational policy: after an 'O_Sent (mail and online)' event, an 'A_Pending' event must occur within 90 calendar days. Case A satisfies this (Day 1 → Day 90) and Case B breaches it (either no A_Pending or Day 96), so the trace evaluation itself is internally consistent. However, Article 2(3) of Directive 2008/48/EC only limits the *repayment* period of short‑term credit to three months; it does not impose a deadline on the creditor's activation or approval of the credit. The bank's policy therefore misattributes the numeric bound to a different duty holder (the creditor) and creates a requirement that is not grounded in the legal text. According to principle 4, this constitutes a duty‑holder/numeric misattribution, making the clause unsupported. Consequently, the overall verdict is BASELESS while the individual case compliance flags remain true for the internal policy. (Back-translation: Whenever 'O_Sent (mail and online)' occurs, 'A_Pending' must eventually occur AFTER it within 90 calendar days.)"
         }
       ],
       "R30": [

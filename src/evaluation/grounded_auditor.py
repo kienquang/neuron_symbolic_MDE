@@ -3,8 +3,8 @@ Bước 4.3: Sinh Báo cáo Giải trình có Khóa Nguồn (Grounded Audit Repo
 Tham khảo:
 - Bài "Grounding LLM Explanations for Process Mining" (CEUR Vol-4259)
 - Bài "Know Your Limits" (arXiv:2606.16118)
-- Bài OCL2026 (OVAS):
-  Không để LLM tự suy luận kết quả kiểm chứng (chống "scope laundering").
+- Nguyên tắc tách biệt thẩm quyền (Anti-Scope-Laundering Guard):
+  Không để LLM tự suy luận kết quả kiểm chứng.
   Ép LLM chỉ được diễn đạt lại Justification Tree đã tính sẵn ở Bước 4.2 ở mức temperature = 0.0,
   kèm hàm hậu kiểm (Post-hoc Grounding Guard) đối chiếu 100% mã case_id, trạng thái, số ngày và số hiệu Article.
 """
@@ -250,7 +250,7 @@ MANDATORY RULES:
 [JUSTIFICATION TREE JSON]:
 {tree_json_str}
 """
-    # Chạy ở temperature = 0.0 theo chuẩn thực nghiệm của bài OCL2026
+    # Chạy ở temperature = 0.0 để đảm bảo diễn đạt tất định (deterministic grounding)
     explanation_text = llm_client.chat(prompt, temperature=0.0)
 
     # Chốt chặn Hậu kiểm (Post-hoc Grounding Guard)

@@ -122,7 +122,7 @@ class TestDeonticMDEAndCounterfactualProbing(unittest.TestCase):
             process_schema=self.process_schema,
         )
         self.assertEqual(status_bp, "COMPILE_ERROR")
-        self.assertIn("Behavioral Profile Grounding Violation", str(err_bp))
+        self.assertIn("Behavioral DFG Adjacency Violation", str(err_bp))
 
         # IMMEDIATE_PREREQUISITE trên cặp nối tiếp trực tiếp (O_Create Offer -> O_Created) biên dịch thành công
         status_ok, res_ok = compile_deontic_to_declare4py(

@@ -1,7 +1,7 @@
 """
 Bước 4.1: Kiểm tra Tập điều kiện An toàn Φ & Phân loại 3 Trạng thái (ENTAILED / CONTRADICTED / BASELESS)
 Tham khảo:
-- Bài OCL2026 (OVAS): Mục 3.4.2 – 3.4.3 (Value-Condition Separation <v, Φ> & Null-dereference safety guard)
+- Cơ chế tách Giá trị - Điều kiện An toàn (Value-Condition Separation <v, Φ> & Null-dereference safety guard)
 - Bài RT4CHART (arXiv:2603.27752): Khung phân loại 3 trạng thái (ENTAILED, CONTRADICTED, BASELESS)
 """
 
@@ -30,7 +30,7 @@ def evaluate_trace_safety_and_status(
 ) -> Dict[str, Any]:
     """
     Bước 4.1: Áp dụng cơ chế tách Giá trị - Điều kiện An toàn (Value-Condition Separation <v, Φ>)
-    của OVAS kết hợp phân loại 3 trạng thái của RT4CHART trên từng hồ sơ vay (Trace).
+    kết hợp phân loại 3 trạng thái của RT4CHART trên từng hồ sơ vay (Trace).
     """
     if not isinstance(case_df, pd.DataFrame) or case_df.empty:
         return {
@@ -88,7 +88,7 @@ def evaluate_trace_safety_and_status(
             }
 
     # 3. Kiểm tra Tập điều kiện an toàn Φ đối với sự kiện kích hoạt mang điều kiện thuộc tính (Null-dereference guard - VD: R29)
-    # Theo chuẩn OVAS và logic hình thức: Nếu quy tắc yêu cầu kiểm tra giá trị thuộc tính trên một sự kiện,
+    # Theo chuẩn logic hình thức an toàn kiểu (Three-Valued Safety Semantics): Nếu quy tắc yêu cầu kiểm tra giá trị thuộc tính trên một sự kiện,
     # nhưng sự kiện đó hoàn toàn không phát sinh trong hồ sơ, ta không thể giải tham chiếu giá trị (Null-dereference)
     # -> Phân loại là BASELESS (INAPPLICABLE_TRACE_NO_ACTIVATION).
     # Ngược lại, đối với ràng buộc dòng điều khiển thuần túy (Control-Flow): Nếu sự kiện kích hoạt không xuất hiện,

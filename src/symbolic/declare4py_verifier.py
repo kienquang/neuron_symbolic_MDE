@@ -3,7 +3,7 @@ Bước 3.2 & 3.3: Trọng tài Kiểm tra Tuân thủ Tất định bằng Decl
 Kiểm tra Tính Không Rỗng (Log-Grounded Vacuity Check) và Trích xuất Bản chụp Phản ví dụ (Counterexample Snapshot).
 Tham khảo:
 - Repo Declare4Py (ProcessModels/DeclareModel.py & Utils/Declare/Checkers.py)
-- Bài OCL2026 (OVAS): Mục 3.4.6 (Vacuity Check & Concrete Deterministic State Snapshot)
+- Kiểm tra tính không rỗng (Log-Grounded Vacuity Check) và trích xuất bản chụp trạng thái phản ví dụ tất định
 - Bài arXiv:2510.07161 (Janus evaluation metrics: activations, fulfillments, violations)
 """
 
@@ -497,7 +497,7 @@ def extract_concrete_trace_snapshots(
     ast_obj: Any,
 ) -> List[Dict[str, Any]]:
     """
-    Bước 3.3: Trích xuất bản chụp trạng thái cụ thể (Concrete State Snapshot - theo Mục 3.4.6 của OVAS)
+    Bước 3.3: Trích xuất bản chụp trạng thái cụ thể (Concrete Deterministic State Snapshot)
     cho các hồ sơ vi phạm để chuyển sang Bước 4 (Giải trình tất định).
     """
     snapshots: List[Dict[str, Any]] = []
@@ -593,7 +593,7 @@ def run_layer3_declare4py_verifier(
     decl_line: str,
 ) -> Tuple[bool, Dict[str, Any]]:
     """
-    Bước 3.2: Thực thi Declare4Py conformance checking & Vacuity Check (Mục 3.4.6 bài OCL2026)
+    Bước 3.2: Thực thi Declare4Py conformance checking & Log-Grounded Vacuity Check
     trên toàn bộ 31.509 hồ sơ của BPI Challenge 2017.
     """
     # 1. Ghi dòng ràng buộc chuẩn ra file .decl tạm thời theo định dạng của Declare4Py
@@ -643,12 +643,12 @@ def run_layer3_declare4py_verifier(
             else:
                 satisfied_cases.append(case_id)
 
-    # 4. KIỂM TRA TÍNH KHÔNG RỖNG (Vacuity Check - kế thừa Mục 3.4.6 của bài OCL2026):
+    # 4. KIỂM TRA TÍNH KHÔNG RỖNG (Log-Grounded Vacuity Check):
     if total_activations == 0:
         return False, {
             "error_type": "VACUOUS_CONSTRAINT",
             "feedback": (
-                f"[Layer 3 Vacuity Failure]: The constraint '{decl_line}' had 0 activations across all "
+                f"[Log-Grounded Vacuity Failure]: The constraint '{decl_line}' had 0 activations across all "
                 f"{len(check_results)} cases in the BPIC 2017 log. Please select a valid activation activity "
                 f"or relax the attribute condition."
             ),

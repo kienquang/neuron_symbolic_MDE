@@ -2,11 +2,11 @@
 Client Kết nối Model Thực tế (Groq / OpenAI / Gemini / Ollama) kèm Bộ nhớ đệm (Disk Cache)
 và Bộ ghi nhận Nhật ký Tự sửa Thật (Trajectory Logging) cho 30 Quy tắc Chuẩn (R01–R30).
 
-Thiết kế bám sát Mục 4.1.2 của bài OCL2026 (OVAS):
+Thiết kế bám sát giao thức thực nghiệm tái lập (Deterministic Reproducibility Protocol):
 - Cố định temperature = 0.0 để đảm bảo tính tất định (determinism).
 - Lưu phản hồi vào Disk Cache (`real_llm_cache.json`) theo mã băm SHA-256 của `(model, messages, temperature)`
   để tái lập thực nghiệm 100% và không tốn quota API khi chạy lại.
-- Lưu toàn bộ lịch sử sai–sửa (`trajectory`) qua Tầng 1, Tầng 2 và Tầng 3 (Roundtrip & Vacuity) để đưa vào bài báo.
+- Lưu toàn bộ lịch sử sai–sửa (`trajectory`) qua Trình biên dịch Deontic Hướng Hành vi, Counterfactual Probing và Vacuity Check để đưa vào bài báo.
 - TUYỆT ĐỐI KHÔNG chứa bất kỳ câu mớm bẫy viết cứng (`phi_auditor_claims`) hay gợi ý đáp án nào:
   Chỉ truyền duy nhất 2 thông tin nguyên bản là Văn bản luật thô (`retrieved_chunk['text']`) và Lược đồ quy trình (`process_schema`).
 """
@@ -695,7 +695,7 @@ def run_single_rule_with_real_llm(
                         "error": str(res_or_err),
                     }
                 )
-                print(f"      [Round {attempt} Feedback (Deontic MDE / Γ)]: {res_or_err}")
+                print(f"      [Round {attempt} Feedback (Behavioral Deontic Compiler)]: {res_or_err}")
                 messages.append({"role": "assistant", "content": raw_output_str})
                 messages.append(
                     {

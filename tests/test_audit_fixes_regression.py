@@ -54,6 +54,8 @@ class _StubB2LLMClient:
 
 class TestAuditFixesRegression(unittest.TestCase):
     def test_counterfactual_prober_rejects_reversed_order_even_when_case_flags_agree(self):
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
 
@@ -87,6 +89,8 @@ class TestAuditFixesRegression(unittest.TestCase):
         self.assertIn("REVERSED_ORDER", msg)
 
     def test_counterfactual_prober_routes_unsupported_equivalent_contradiction_to_baseless(self):
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
 
@@ -119,6 +123,8 @@ class TestAuditFixesRegression(unittest.TestCase):
         self.assertIn("BASELESS", msg)
 
     def test_deontic_mde_exemption_with_null_temporal_relation_compiles_cleanly(self):
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
 
@@ -258,6 +264,8 @@ class TestAuditFixesRegression(unittest.TestCase):
         self.assertNotEqual(eq_status, "VACUOUS")
 
     def test_b2_without_l3_does_not_get_hidden_abstention_shortcut(self):
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
         chunk = {
@@ -328,6 +336,8 @@ class TestAuditFixesRegression(unittest.TestCase):
                 )
 
     def test_deontic_mde_compiler_abstention_precedence_and_prohibition_immediate(self):
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
 
@@ -400,8 +410,10 @@ class TestAuditFixesRegression(unittest.TestCase):
         )
         self.assertFalse(ok_num)
         self.assertEqual(kind_num, "BASELESS")
-        self.assertIn("Layer 3 Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT", msg_num)
+        self.assertIn("Numeric Entity Guard -> POLICY_STATUTE_NUMERIC_CONFLICT", msg_num)
         self.assertNotIn("Deontic MDE Compiler ->", msg_num)
+
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
 
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
@@ -469,6 +481,8 @@ class TestAuditFixesRegression(unittest.TestCase):
             def chat(self, messages, **kwargs):
                 return "not valid json output"
 
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
         ok_probe, msg_probe = verify_via_counterfactual_probing(
@@ -507,6 +521,8 @@ class TestAuditFixesRegression(unittest.TestCase):
             self.assertEqual(out, '{"a": "ok"}')
             self.assertEqual(len(seen_formats), 2)
             self.assertEqual(seen_formats[1]["type"], "json_schema")
+
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
 
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
@@ -617,6 +633,8 @@ class TestAuditFixesRegression(unittest.TestCase):
         self.assertEqual(classify_semantic_equivalence(cand_14h, gold_14d, sample_log), "STRENGTHENED")
         self.assertEqual(classify_semantic_equivalence(cand_24h, gold_1d, sample_log), "EQ")
 
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
         with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
             process_schema = json.load(f)
 
@@ -655,9 +673,9 @@ class TestAuditFixesRegression(unittest.TestCase):
 
             def verify_roundtrip(self, ast_dict, chunk):
                 return False, (
-                    "[Layer 3 Blind Judge -> SEMANTIC_MISMATCH]: rejected"
+                    "[Counterfactual Blind Judge -> SEMANTIC_MISMATCH]: rejected"
                     if self.reject_kind != "BASELESS"
-                    else "[Layer 3 Blind Judge -> BASELESS]: baseless"
+                    else "[Counterfactual Blind Judge -> BASELESS]: baseless"
                 )
 
             def explain_violation(self, *args, **kwargs):
@@ -1098,9 +1116,9 @@ class TestAuditFixesRegression(unittest.TestCase):
         t0 = pd.Timestamp("2026-01-01T10:00:00Z")
         sample_log = pd.DataFrame(
             [
-                {"case:concept:name": "C1", "concept:name": "W_Call after offers", "time:timestamp": t0},
-                {"case:concept:name": "C1", "concept:name": "A_Validating", "time:timestamp": t0 + pd.Timedelta(minutes=5)},
-                {"case:concept:name": "C1", "concept:name": "W_Validate application", "time:timestamp": t0 + pd.Timedelta(minutes=10)},
+                {"case:concept:name": "C1", "concept:name": "O_Sent (mail and online)", "time:timestamp": t0},
+                {"case:concept:name": "C1", "concept:name": "W_Call after offers", "time:timestamp": t0 + pd.Timedelta(minutes=5)},
+                {"case:concept:name": "C1", "concept:name": "A_Validating", "time:timestamp": t0 + pd.Timedelta(minutes=10)},
             ]
         )
         chunk = {"article_id": "Article 8", "article_title": "Creditworthiness", "text": "Assessment prior to validation."}
@@ -1111,8 +1129,8 @@ class TestAuditFixesRegression(unittest.TestCase):
             "gold_ast": {
                 "article_id": "Article 8",
                 "template_name": "Precedence",
-                "activation_activity": "A_Validating",
-                "target_activity": "W_Call after offers",
+                "activation_activity": "W_Call after offers",
+                "target_activity": "A_Validating",
             },
         }
 
@@ -1123,8 +1141,8 @@ class TestAuditFixesRegression(unittest.TestCase):
                         "article_id": "Article 8",
                         "deontic_modality": "OBLIGATION",
                         "temporal_relation": "PREREQUISITE_BEFORE",
-                        "anchor_activity": "W_Validate application",
-                        "consequent_activity": "W_Call after offers",
+                        "anchor_activity": "O_Sent (mail and online)",
+                        "consequent_activity": "A_Validating",
                         "unsupported_by_text": False,
                     }
                 )
@@ -1607,6 +1625,144 @@ class TestAuditFixesRegression(unittest.TestCase):
             self.assertGreater((t_b - t_a).total_seconds() / 86400.0, 14.0)
             self.assertLess(t_b.weekday(), 5, "Shifted timestamp should avoid weekend")
             self.assertNotEqual(t_b.strftime("%H:%M:%S"), t_first.strftime("%H:%M:%S"))
+
+    def test_behavioral_deontic_compiler_guards_and_permission_modality(self) -> None:
+        """
+        Verify Level-2 Behavioral-Aware Deontic M2M Compiler checks:
+        1. PERMISSION_RIGHT + MANDATORY_RESPONSE -> Precedence (non-obligatory precondition semantics).
+        2. Strict Causal Inversion Guard (Precedence/Response reversing strict_causal_pairs).
+        3. Vacuous Reversed Prohibition Guard (Not Precedence on reversed strict causal pair).
+        4. Behavioral Mutual-Exclusion Conflict & Lifecycle Contradiction guards.
+        5. Causal Attribute Availability violation diagnostic via ProcessSchemaValidator.
+        """
+        from src.mde.deontic_mde_compiler import compile_deontic_to_declare4py
+
+        with open(ROOT_DIR / "data" / "processed" / "process_schema.json", "r", encoding="utf-8") as f:
+            process_schema = json.load(f)
+
+        # 1. PERMISSION_RIGHT + MANDATORY_RESPONSE compiles to Precedence (time-bounded right)
+        st_perm, res_perm = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 15(1)",
+                "deontic_modality": "PERMISSION_RIGHT",
+                "temporal_relation": "MANDATORY_RESPONSE",
+                "anchor_activity": "O_Sent (mail and online)",
+                "consequent_activity": "O_Cancelled",
+                "deadline_days": 30,
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_perm, "COMPILED_OK")
+        self.assertIsInstance(res_perm, dict)
+        self.assertEqual(res_perm["template_name"], "Precedence")
+        self.assertEqual(res_perm["time_max"], 30)
+
+        # 2. Strict Causal Inversion Guard: A_Accepted strictly follows A_Create Application (100%)
+        st_inv, err_inv = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 8(1)",
+                "deontic_modality": "OBLIGATION",
+                "temporal_relation": "PREREQUISITE_BEFORE",
+                "anchor_activity": "A_Accepted",
+                "consequent_activity": "A_Create Application",
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_inv, "COMPILE_ERROR")
+        self.assertIn("Behavioral Causal Inversion Violation", str(err_inv))
+
+        # 3. Vacuous Reversed Prohibition Guard: Not Precedence(A_Cancelled, O_Sent (mail and online))
+        st_vac, err_vac = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 14(1)",
+                "deontic_modality": "PROHIBITION",
+                "temporal_relation": "PREREQUISITE_BEFORE",
+                "anchor_activity": "A_Cancelled",
+                "consequent_activity": "O_Sent (mail and online)",
+                "deadline_days": 14,
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_vac, "COMPILE_ERROR")
+        self.assertIn("Behavioral Vacuous Reversed Prohibition", str(err_vac))
+
+        # 4. Behavioral Mutual-Exclusion Conflict: Response(O_Accepted, A_Cancelled)
+        st_mut, err_mut = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 14(1)",
+                "deontic_modality": "OBLIGATION",
+                "temporal_relation": "MANDATORY_RESPONSE",
+                "anchor_activity": "O_Accepted",
+                "consequent_activity": "A_Cancelled",
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_mut, "COMPILE_ERROR")
+        self.assertIn("Behavioral Mutual-Exclusion Conflict", str(err_mut))
+
+        # 5. Behavioral Lifecycle Contradiction: Not Co-Existence(O_Create Offer, O_Created)
+        st_lc, err_lc = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 10(1)",
+                "deontic_modality": "PROHIBITION",
+                "temporal_relation": "MUTUAL_EXCLUSION",
+                "anchor_activity": "O_Create Offer",
+                "consequent_activity": "O_Created",
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_lc, "COMPILE_ERROR")
+        self.assertIn("Behavioral Lifecycle Contradiction", str(err_lc))
+
+        # 6. Causal Attribute Availability Violation: OfferedAmount anchored on A_Create Application
+        st_attr, err_attr = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 2(2)(c)",
+                "deontic_modality": "OBLIGATION",
+                "temporal_relation": "UNARY_CONDITION",
+                "anchor_activity": "A_Create Application",
+                "attribute_guard": "OfferedAmount",
+                "guard_operator": ">=",
+                "guard_threshold": 200.0,
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_attr, "COMPILE_ERROR")
+        self.assertIn("Causal Attribute Availability Violation", str(err_attr))
+        self.assertIn("O_Create Offer", str(err_attr))
+
+        # 7. Zero false positives on valid rules (Precedence & Not Co-Existence)
+        st_ok1, _ = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 14(1)",
+                "deontic_modality": "PERMISSION_RIGHT",
+                "temporal_relation": "PREREQUISITE_BEFORE",
+                "anchor_activity": "O_Sent (mail and online)",
+                "consequent_activity": "A_Cancelled",
+                "deadline_days": 14,
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        st_ok2, _ = compile_deontic_to_declare4py(
+            {
+                "article_id": "Article 14(3)",
+                "deontic_modality": "PROHIBITION",
+                "temporal_relation": "MUTUAL_EXCLUSION",
+                "anchor_activity": "A_Cancelled",
+                "consequent_activity": "A_Pending",
+                "unsupported_by_text": False,
+            },
+            process_schema=process_schema,
+        )
+        self.assertEqual(st_ok1, "COMPILED_OK")
+        self.assertEqual(st_ok2, "COMPILED_OK")
 
 
 if __name__ == "__main__":

@@ -182,8 +182,8 @@ for it in items_all:
     })
 
 ablation_modes = [
-    ("Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)", dict(max_retry=1, enable_l1_l2=False, enable_l3_roundtrip=False, evaluate_explanations=False)),
-    ("- Pre-Verification (Tắt Tầng 1 & Tầng 2)", dict(max_retry=5, enable_l1_l2=False, enable_l3_roundtrip=True, evaluate_explanations=False)),
+    ("Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)", dict(max_retry=1, enable_l1_l2=False, enable_l3_roundtrip=False, evaluate_explanations=False)),
+    ("- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)", dict(max_retry=5, enable_l1_l2=False, enable_l3_roundtrip=True, evaluate_explanations=False)),
     ("- Self-Correction Loop (Tắt Vòng lặp Tự sửa)", dict(max_retry=1, enable_l1_l2=True, enable_l3_roundtrip=True, evaluate_explanations=False)),
     ("Full Neuro-Symbolic Pipeline (Đề xuất)", dict(max_retry=5, enable_l1_l2=True, enable_l3_roundtrip=True, evaluate_explanations=eval_explanations)),
 ]
@@ -293,8 +293,8 @@ for name, kwargs in ablation_modes:
             "Macro_F1": s_res["Macro_F1"],
         }
 
-b2_p = ablation_results["Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)"]
-nopre_p = ablation_results["- Pre-Verification (Tắt Tầng 1 & Tầng 2)"]
+b2_p = ablation_results["Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)"]
+nopre_p = ablation_results["- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)"]
 nosc_p = ablation_results["- Self-Correction Loop (Tắt Vòng lặp Tự sửa)"]
 full_p = ablation_results["Full Neuro-Symbolic Pipeline (Đề xuất)"]
 
@@ -326,7 +326,7 @@ eval_tables_payload = {
             "Total_Items": 300,
         },
         {
-            "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
+            "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)",
             "Executable_Rate (%)": b2_p["Executable_Rate (%)"],
             "Raw_Log_Executable_Rate (%)": b2_p["Raw_Log_Executable_Rate (%)"],
             "Crash_Rate (%)": b2_p["Crash_Rate (%)"],
@@ -362,7 +362,7 @@ eval_tables_payload = {
             "Total_Items": 300,
         },
         {
-            "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
+            "Configuration": "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)",
             "Executable_Rate (%)": nopre_p["Executable_Rate (%)"],
             "Raw_Log_Executable_Rate (%)": nopre_p["Raw_Log_Executable_Rate (%)"],
             "Crash_Rate (%)": nopre_p["Crash_Rate (%)"],
@@ -420,12 +420,12 @@ print(f"Updated {eval_tables_json_path} successfully!")
 
 dev_full_m = split_ablation_breakdown["dev"]["Full Neuro-Symbolic Pipeline (Đề xuất)"]
 held_full_m = split_ablation_breakdown["heldout_test"]["Full Neuro-Symbolic Pipeline (Đề xuất)"]
-dev_b2_m = split_ablation_breakdown["dev"]["Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)"]
-held_b2_m = split_ablation_breakdown["heldout_test"]["Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)"]
+dev_b2_m = split_ablation_breakdown["dev"]["Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)"]
+held_b2_m = split_ablation_breakdown["heldout_test"]["Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)"]
 dev_nosc_m = split_ablation_breakdown["dev"]["- Self-Correction Loop (Tắt Vòng lặp Tự sửa)"]
 held_nosc_m = split_ablation_breakdown["heldout_test"]["- Self-Correction Loop (Tắt Vòng lặp Tự sửa)"]
-dev_nopre_m = split_ablation_breakdown["dev"]["- Pre-Verification (Tắt Tầng 1 & Tầng 2)"]
-held_nopre_m = split_ablation_breakdown["heldout_test"]["- Pre-Verification (Tắt Tầng 1 & Tầng 2)"]
+dev_nopre_m = split_ablation_breakdown["dev"]["- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)"]
+held_nopre_m = split_ablation_breakdown["heldout_test"]["- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)"]
 
 def _fmt_cf(val):
     return f"{val}%" if val is not None else "N/A"
@@ -489,14 +489,14 @@ Thực nghiệm được tái chạy toàn bộ từ đầu sau kiểm toán li�
 
 ## Bảng 1 (Trả lời RQ1): Kiểm chứng Ngữ nghĩa Ràng buộc theo Độ phức tạp (`R01–R22`)
 
-### 1A. Round-1 MDE Synthesis (Tắt vòng lặp L3 & tự sửa)
+### 1A. Round-1 Behavioral Deontic Synthesis (Tắt Counterfactual Probe & tự sửa)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt (%) ↓ | Quá Lỏng (%) ↓ | Đảo Chiều (%) ↓ | Sai Hoạt động (%) ↓ | Từ chối / Lỗi khác (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Tier 1: Control-Flow Only** | **{o1_t1.get('Eq. (%)')}%** | {o1_t1.get('Strengthened (%)')}% | {o1_t1.get('Weakened (%)')}% | {o1_t1.get('Reversed (%)')}% | {o1_t1.get('Wrong Activity (%)')}% | {_other_err_pct(o1_t1)}% |
 | **Tier 2: Temporal & Data-Aware** | **{o1_t2.get('Eq. (%)')}%** | {o1_t2.get('Strengthened (%)')}% | {o1_t2.get('Weakened (%)')}% | {o1_t2.get('Reversed (%)')}% | {o1_t2.get('Wrong Activity (%)')}% | {_other_err_pct(o1_t2)}% |
 | **Overall Pipeline** | **{o1_all.get('Eq. (%)')}%** | {o1_all.get('Strengthened (%)')}% | {o1_all.get('Weakened (%)')}% | {o1_all.get('Reversed (%)')}% | {o1_all.get('Wrong Activity (%)')}% | {_other_err_pct(o1_all)}% |
 
-### 1B. Full Pipeline (Bật đầy đủ Kiến trúc 3 tầng L1–L2–L3 & tự sửa)
+### 1B. Full Pipeline (Bật Behavioral Deontic Compiler + Counterfactual Probe + Tự sửa)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt (%) ↓ | Quá Lỏng (%) ↓ | Đảo Chiều (%) ↓ | Sai Hoạt động (%) ↓ | Từ chối / Lỗi khác (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Tier 1: Control-Flow Only** | **{f1_t1.get('Eq. (%)')}%** | {f1_t1.get('Strengthened (%)')}% | {f1_t1.get('Weakened (%)')}% | {f1_t1.get('Reversed (%)')}% | {f1_t1.get('Wrong Activity (%)')}% | {_other_err_pct(f1_t1)}% |
@@ -511,15 +511,15 @@ Thực nghiệm được tái chạy toàn bộ từ đầu sau kiểm toán li�
 | Cấu hình Thực nghiệm (Configuration) | Thực thi Hợp lệ (%) ↑ | Norm Eq (`R01–R22` %) ↑ | Trap Detect (`R23–R30` %) ↑ | Accuracy (%) ↑ | Macro-F1 ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | {b1_row_label} | N/A | N/A | {b1_trap_cell} | {b1_acc_cell} | {b1_f1_cell} |
-| Baseline 2: One-Shot LLM-to-DECLARE *(Không kiểm tra 3 tầng)* | {b2_p['Executable_Rate (%)']}% | {b2_p['Normative_Eq_Rate (%)']}% | {b2_p['Trap_Detection_Rate (%)']}% | {b2_p['Strict_Accuracy (%)']}% | **{b2_p['Macro_F1']}** |
+| Baseline 2: One-Shot LLM-to-DECLARE *(Không qua Compiler & Counterfactual)* | {b2_p['Executable_Rate (%)']}% | {b2_p['Normative_Eq_Rate (%)']}% | {b2_p['Trap_Detection_Rate (%)']}% | {b2_p['Strict_Accuracy (%)']}% | **{b2_p['Macro_F1']}** |
 | - Self-Correction Loop *(Tắt Vòng lặp Tự sửa)* | {nosc_p['Executable_Rate (%)']}% | {nosc_p['Normative_Eq_Rate (%)']}% | {nosc_p['Trap_Detection_Rate (%)']}% | {nosc_p['Strict_Accuracy (%)']}% | **{nosc_p['Macro_F1']}** |
-| - Pre-Verification *(Tắt Tầng 1 & Tầng 2)* | {nopre_p['Executable_Rate (%)']}% | {nopre_p['Normative_Eq_Rate (%)']}% | {nopre_p['Trap_Detection_Rate (%)']}% | {nopre_p['Strict_Accuracy (%)']}% | **{nopre_p['Macro_F1']}** |
+| - Behavioral Deontic Compiler *(Tắt Biên dịch Deontic & Behavioral Profile)* | {nopre_p['Executable_Rate (%)']}% | {nopre_p['Normative_Eq_Rate (%)']}% | {nopre_p['Trap_Detection_Rate (%)']}% | {nopre_p['Strict_Accuracy (%)']}% | **{nopre_p['Macro_F1']}** |
 | **Full Neuro-Symbolic Pipeline (Đề xuất)** | **{full_p['Executable_Rate (%)']}%** | **{full_p['Normative_Eq_Rate (%)']}%** | **{full_p['Trap_Detection_Rate (%)']}%** | **{full_p['Strict_Accuracy (%)']}%** | **{full_p['Macro_F1']}** |
 
 > *Ghi chú Bảng 2*:
 > - **Tách phân tầng `DEV` vs `HELDOUT_TEST` (Full Pipeline, 150 mẫu/tập)**: `DEV` đạt `Accuracy = {dev_full_m['Strict_Accuracy (%)']}%`, `Macro-F1 = {dev_full_m['Macro_F1']}` (`Trap = {dev_full_m['Trap_Detection_Rate (%)']}%`); `HELDOUT_TEST` đạt `Accuracy = {held_full_m['Strict_Accuracy (%)']}%`, `Macro-F1 = {held_full_m['Macro_F1']}` (`Trap = {held_full_m['Trap_Detection_Rate (%)']}%`).
 > - **Chi tiết bẫy `R23–R30` (Full Pipeline)**: `Rule/Schema Trap = {full_p['Rule_Schema_Trap_Accuracy (%)']}%` (`{len(caught_rule_traps)}/{len(rule_schema_trap_rids)}` loại bẫy luật/lược đồ: `{caught_rule_str}`), `Trace Φ = {full_p['Trace_Safety_Trap_Accuracy (%)']}%` (`{len(trace_trap_rids)}/{len(trace_trap_rids)}` loại bẫy log: `{trace_trap_str}`); tổng hợp `Trap Detect = {full_p['Trap_Detection_Rate (%)']}%`.
-> - **Tỷ lệ `Crash`**: Baseline 2 và `- Pre-Verification` có `Crash = {b2_p['Crash_Rate (%)']}%` (`100% - Exec`); Full Pipeline và `- Self-Correction` có `Crash = {full_p['Crash_Rate (%)']}%`.
+> - **Tỷ lệ `Crash`**: Baseline 2 và `- Behavioral Deontic Compiler` có `Crash = {b2_p['Crash_Rate (%)']}%` (`100% - Exec`); Full Pipeline và `- Self-Correction` có `Crash = {full_p['Crash_Rate (%)']}%`.
 
 ---
 

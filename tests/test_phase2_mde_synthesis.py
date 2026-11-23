@@ -6,7 +6,7 @@ from src.mde.typing_environment import ProcessTypingEnvironment, check_layer1_an
 from src.neural.rag_retriever import DirectiveRAGRetriever
 from src.neural.synthesis_loop import (
     NeuroSymbolicLegalSynthesizerClient,
-    generate_with_ovas_and_req2ltl_loop,
+    generate_with_mde_and_req2ltl_loop,
 )
 
 
@@ -54,10 +54,10 @@ class TestPhase2MDESynthesis(unittest.TestCase):
             }
         )
         self.assertFalse(ok)
-        self.assertIn("Layer 1 Schema/Enumeration Violation", str(err))
+        self.assertIn("AST Schema Violation", str(err))
 
     def test_step2_2_delta_lookup_and_type_conformance(self) -> None:
-        """Kiểm thử Bước 2.2: Hàm tra cứu δ(C, p) và quy tắc tương thích kiểu của OVAS."""
+        """Kiểm thử Bước 2.2: Hàm tra cứu δ(C, p) và quy tắc tương thích kiểu tĩnh."""
         # 1. Chặn hoạt động không tồn tại trong process_schema.json
         ok_act, msg_act = self.gamma.delta_activity("W_Fake_Activity")
         self.assertFalse(ok_act)
@@ -78,16 +78,16 @@ class TestPhase2MDESynthesis(unittest.TestCase):
         self.assertIsNone(msg_float)
 
     def test_step2_3_rag_and_self_correction_loop(self) -> None:
-        """Kiểm thử Bước 2.3: Truy xuất BM25 RAG & Vòng lặp tự sửa lỗi OVAS + Req2LTL + Role-tagged feedback."""
+        """Kiểm thử Bước 2.3: Truy xuất BM25 RAG & Vòng lặp tự sửa lỗi MDE + Req2LTL + Role-tagged feedback."""
         retriever = DirectiveRAGRetriever(self.directive_chunks)
         hits = retriever.retrieve_top_k("14 calendar days withdraw right of withdrawal", top_k=3)
         hit_ids = [h["article_id"] for h in hits]
         self.assertIn("Article 14(1)", hit_ids)
 
-        # Kiểm tra vòng lặp tự sửa lỗi khi Attempt 1 mắc lỗi Tầng 2 trên Article 8(1)
+        # Kiểm tra vòng lặp tự sửa lỗi khi Attempt 1 mắc lỗi Process Schema trên Article 8(1)
         chunk_8_1 = next(c for c in self.directive_chunks if c["article_id"] == "Article 8(1)")
         client = NeuroSymbolicLegalSynthesizerClient(simulate_self_correction=True)
-        ast_obj, trace = generate_with_ovas_and_req2ltl_loop(
+        ast_obj, trace = generate_with_mde_and_req2ltl_loop(
             retrieved_chunk=chunk_8_1,
             process_schema=self.process_schema,
             llm_client=client,

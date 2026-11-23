@@ -1,8 +1,7 @@
 """
-Bước 2.1: Định nghĩa Khuôn mẫu Ràng buộc (Tầng 1 - JSON Schema & AST)
+Định nghĩa Mô hình Ràng buộc Khai báo (Declarative Constraint AST - PSM) cho Declare4Py.
 Kết hợp:
-- Kỹ thuật Closed Enumeration & Polymorphic Discriminator từ OVAS (OCL2026)
-- Định dạng ràng buộc chuẩn của Declare4Py (declare4py/parsers/decl_parser.py)
+- Mô hình AST định kiểu chặt (Typed AST) biên dịch trực tiếp sang dòng lệnh `.decl` của Declare4Py
 - Cấu trúc phân rã ngữ nghĩa trung gian (Semantic Decomposition) từ Req2LTL (ASE 2025)
 """
 
@@ -100,8 +99,8 @@ class SemanticDecomposition(BaseModel):
 
 class DeclareConstraintAST(BaseModel):
     """
-    Tham khảo kỹ thuật Closed Enumeration & Polymorphic Discriminator từ repo OVAS (Mục 3.2)
-    kết hợp với định dạng chuẩn của decl_parser.py trong repo Declare4Py.
+    Khuôn mẫu AST đóng kín (Closed-Enumeration Pydantic Schema)
+    kết hợp với định dạng chuẩn của decl_parser.py trong Declare4Py.
     """
 
     article_id: str = Field(
@@ -131,15 +130,15 @@ class DeclareConstraintAST(BaseModel):
 
     @model_validator(mode="after")
     def validate_structural_invariants(self) -> "DeclareConstraintAST":
-        """Kiểm tra tính hợp lệ cấu trúc Tầng 1 (Arity của Template, bộ ba điều kiện dữ liệu, khoảng thời gian)."""
+        """Kiểm tra tính hợp lệ cấu trúc AST (Arity của Template, bộ ba điều kiện dữ liệu, khoảng thời gian)."""
         if self.template_name in UNARY_TEMPLATES and self.target_activity is not None:
             raise ValueError(
-                f"Layer 1 Structural Error: Unary template '{self.template_name}' "
+                f"AST Structural Error: Unary template '{self.template_name}' "
                 f"must NOT specify 'target_activity' (got '{self.target_activity}')."
             )
         if self.template_name in BINARY_TEMPLATES and not self.target_activity:
             raise ValueError(
-                f"Layer 1 Structural Error: Binary template '{self.template_name}' "
+                f"AST Structural Error: Binary template '{self.template_name}' "
                 f"requires a non-empty 'target_activity'."
             )
 
@@ -151,7 +150,7 @@ class DeclareConstraintAST(BaseModel):
         ]
         if any(attr_fields) and not all(attr_fields):
             raise ValueError(
-                "Layer 1 Structural Error: Data condition requires all three fields "
+                "AST Structural Error: Data condition requires all three fields "
                 "('activation_attr', 'activation_op', 'activation_val') to be set together."
             )
 
@@ -160,7 +159,7 @@ class DeclareConstraintAST(BaseModel):
             min_t = 0 if self.time_min is None else self.time_min
             if min_t < 0 or self.time_max < min_t:
                 raise ValueError(
-                    f"Layer 1 Structural Error: Invalid time interval [{min_t}, {self.time_max}] "
+                    f"AST Structural Error: Invalid time interval [{min_t}, {self.time_max}] "
                     f"(require 0 <= time_min <= time_max)."
                 )
         return self
@@ -229,12 +228,12 @@ def extract_json_payload(raw_text: str) -> str:
     return text
 
 
-def validate_layer1_ast(
+def validate_declare_ast(
     raw_input: Union[str, Dict[str, Any]]
 ) -> Tuple[bool, Union[DeclareConstraintAST, str]]:
     """
-    Kiểm tra Tầng 1 (Layer 1 Syntactic & Closed-Enumeration Schema Check theo OVAS):
-    Đảm bảo đầu ra tuân thủ nghiêm ngặt JSON Schema của DeclareConstraintAST.
+    Kiểm tra cấu trúc & lược đồ AST (Declarative Constraint Schema Check):
+    Đảm bảo đầu ra tuân thủ nghiêm ngặt cấu trúc của DeclareConstraintAST.
     """
     try:
         if isinstance(raw_input, str):
@@ -243,7 +242,7 @@ def validate_layer1_ast(
         elif isinstance(raw_input, dict):
             data = raw_input
         else:
-            return False, f"[Layer 1 Syntax Error]: Unsupported payload type {type(raw_input).__name__}."
+            return False, f"[AST Syntax Error]: Unsupported payload type {type(raw_input).__name__}."
 
         ast_obj = DeclareConstraintAST.model_validate(data)
         return True, ast_obj
@@ -251,7 +250,7 @@ def validate_layer1_ast(
     except json.JSONDecodeError as exc:
         return (
             False,
-            f"[Layer 1 JSON Decode Error]: Output is not valid JSON ({exc}). "
+            f"[AST JSON Decode Error]: Output is not valid JSON ({exc}). "
             f"Please output strictly a JSON object conforming to DeclareConstraintAST.",
         )
     except ValidationError as exc:
@@ -261,5 +260,9 @@ def validate_layer1_ast(
         )
         return (
             False,
-            f"[Layer 1 Schema/Enumeration Violation (OVAS)]: {error_details}",
+            f"[AST Schema Violation]: {error_details}",
         )
+
+
+# Backward-compatible alias
+validate_layer1_ast = validate_declare_ast

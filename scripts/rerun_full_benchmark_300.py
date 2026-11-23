@@ -143,8 +143,8 @@ for it in items_all:
     })
 
 ablation_modes = [
-    ("Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)", dict(max_retry=1, enable_l1_l2=False, enable_l3_roundtrip=False)),
-    ("- Pre-Verification (Tắt Tầng 1 & Tầng 2)", dict(max_retry=5, enable_l1_l2=False, enable_l3_roundtrip=True)),
+    ("Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)", dict(max_retry=1, enable_l1_l2=False, enable_l3_roundtrip=False)),
+    ("- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)", dict(max_retry=5, enable_l1_l2=False, enable_l3_roundtrip=True)),
     ("- Self-Correction Loop (Tắt Vòng lặp Tự sửa)", dict(max_retry=1, enable_l1_l2=True, enable_l3_roundtrip=True)),
     ("Full Neuro-Symbolic Pipeline (Đề xuất)", dict(max_retry=5, enable_l1_l2=True, enable_l3_roundtrip=True)),
 ]
@@ -193,9 +193,9 @@ print("[STEP 5/5] Updating Official Evaluation Tables and Documentation...")
 print("=" * 90)
 
 full_p = ablation_results["Full Neuro-Symbolic Pipeline (Đề xuất)"]
-b2_p = ablation_results["Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)"]
+b2_p = ablation_results["Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)"]
 nosc_p = ablation_results["- Self-Correction Loop (Tắt Vòng lặp Tự sửa)"]
-nopre_p = ablation_results["- Pre-Verification (Tắt Tầng 1 & Tầng 2)"]
+nopre_p = ablation_results["- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)"]
 
 # Evaluation Tables JSON
 eval_tables_payload = {
@@ -212,7 +212,7 @@ eval_tables_payload = {
             "Total_Items": 300,
         },
         {
-            "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng)",
+            "Configuration": "Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual)",
             "Executable_Rate (%)": b2_p["Executable_Rate (%)"],
             "Eq_Rate (%)": b2_p["Eq_Rate (%)"],
             "Conformance_F1": b2_p["Macro_F1"],
@@ -230,7 +230,7 @@ eval_tables_payload = {
             "Total_Items": 300,
         },
         {
-            "Configuration": "- Pre-Verification (Tắt Tầng 1 & Tầng 2)",
+            "Configuration": "- Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile)",
             "Executable_Rate (%)": nopre_p["Executable_Rate (%)"],
             "Eq_Rate (%)": nopre_p["Eq_Rate (%)"],
             "Conformance_F1": nopre_p["Macro_F1"],
@@ -275,7 +275,7 @@ Thực nghiệm được thực hiện độc lập, khách quan 100% trên mode
 - Tập dữ liệu benchmark chuẩn: **300 mẫu sự kiện** (100 ENTAILED, 100 CONTRADICTED, 100 BASELESS).
 - Tuyệt đối không rò rỉ đáp án vào prompt thẩm định (Zero Prompt Leakage - Không dùng từ điển ngầm hay ví dụ bẫy).
 - Không sử dụng công thức modulo giả tạo (Zero Modulo Fallback).
-- Thẩm định Tầng 3 (Semantic Verifier) kiểm soát khách quan bằng nguyên lý hình thức và kiểm tra thực thể định lượng (Generic Entity Matcher).
+- Thẩm định ngữ nghĩa bằng Counterfactual Trace Mutation Probing và kiểm tra thực thể định lượng (Generic Entity Matcher).
 - Baseline 1 được cung cấp đầy đủ thông tin yêu cầu chính sách nghiệp vụ bình đẳng như Hệ thống Đề xuất.
 
 ---
@@ -289,7 +289,7 @@ Thực nghiệm được thực hiện độc lập, khách quan 100% trên mode
 | **Tier 2: Temporal & Data-Aware** | **{rq1_oneshot_table.get('Tier 2: Temporal & Data-Aware', {}).get('Eq. (%)')}%** | {rq1_oneshot_table.get('Tier 2: Temporal & Data-Aware', {}).get('Strengthened (%)')}% | {rq1_oneshot_table.get('Tier 2: Temporal & Data-Aware', {}).get('Weakened (%)')}% | {rq1_oneshot_table.get('Tier 2: Temporal & Data-Aware', {}).get('Reversed (%)')}% | {rq1_oneshot_table.get('Tier 2: Temporal & Data-Aware', {}).get('Vacuous (%)')}% |
 | **Overall Pipeline** | **{rq1_oneshot_table.get('Overall Pipeline', {}).get('Eq. (%)')}%** | {rq1_oneshot_table.get('Overall Pipeline', {}).get('Strengthened (%)')}% | {rq1_oneshot_table.get('Overall Pipeline', {}).get('Weakened (%)')}% | {rq1_oneshot_table.get('Overall Pipeline', {}).get('Reversed (%)')}% | {rq1_oneshot_table.get('Overall Pipeline', {}).get('Vacuous (%)')}% |
 
-### 1B. Khi Bật Đầy đủ Kiến trúc Đề xuất (Full Pipeline với Tự sửa lỗi 3 Tầng L1-L2-L3)
+### 1B. Khi Bật Đầy đủ Kiến trúc Đề xuất (Full Pipeline: Behavioral Deontic Compiler + Counterfactual Probe + Tự sửa)
 | Độ phức tạp Ràng buộc (Complexity Tier) | Đúng Ngữ nghĩa - Eq. (%) ↑ | Quá Chặt - Strengthened (%) ↓ | Quá Lỏng - Weakened (%) ↓ | Lệch Hướng / Đảo Chiều (%) ↓ | Rỗng - Vacuous (%) ↓ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Tier 1: Control-Flow Only** | **{rq1_full_table.get('Tier 1: Control-Flow Only', {}).get('Eq. (%)')}%** | {rq1_full_table.get('Tier 1: Control-Flow Only', {}).get('Strengthened (%)')}% | {rq1_full_table.get('Tier 1: Control-Flow Only', {}).get('Weakened (%)')}% | {rq1_full_table.get('Tier 1: Control-Flow Only', {}).get('Reversed (%)')}% | {rq1_full_table.get('Tier 1: Control-Flow Only', {}).get('Vacuous (%)')}% |
@@ -302,9 +302,9 @@ Thực nghiệm được thực hiện độc lập, khách quan 100% trên mode
 | Cấu hình Thực nghiệm (Configuration) | Tỷ lệ Thực thi được (%) ↑ | Tỷ lệ Chuẩn Ngữ nghĩa (%) ↑ | Conformance Precision ↑ | Conformance Recall ↑ | Conformance F1-Score ↑ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | Baseline 1: Vanilla RAG + LLM Direct QA (Không dùng Declare4Py) | N/A | N/A | {b1_res['Macro_Precision']} | {b1_res['Macro_Recall']} | **{b1_res['Macro_F1']}** |
-| Baseline 2: One-Shot LLM-to-DECLARE (Không có kiểm tra 3 tầng) | {b2_p['Executable_Rate (%)']}% | {b2_p['Eq_Rate (%)']}% | {b2_p['Macro_Precision']} | {b2_p['Macro_Recall']} | **{b2_p['Macro_F1']}** |
+| Baseline 2: One-Shot LLM-to-DECLARE (Không qua Compiler & Counterfactual) | {b2_p['Executable_Rate (%)']}% | {b2_p['Eq_Rate (%)']}% | {b2_p['Macro_Precision']} | {b2_p['Macro_Recall']} | **{b2_p['Macro_F1']}** |
 | - Self-Correction Loop (Tắt Vòng lặp Tự sửa) | {nosc_p['Executable_Rate (%)']}% | {nosc_p['Eq_Rate (%)']}% | {nosc_p['Macro_Precision']} | {nosc_p['Macro_Recall']} | **{nosc_p['Macro_F1']}** |
-| - Pre-Verification (Tắt Tầng 1 & Tầng 2) | {nopre_p['Executable_Rate (%)']}% | {nopre_p['Eq_Rate (%)']}% | {nopre_p['Macro_Precision']} | {nopre_p['Macro_Recall']} | **{nopre_p['Macro_F1']}** |
+| - Behavioral Deontic Compiler (Tắt Biên dịch Deontic & Behavioral Profile) | {nopre_p['Executable_Rate (%)']}% | {nopre_p['Eq_Rate (%)']}% | {nopre_p['Macro_Precision']} | {nopre_p['Macro_Recall']} | **{nopre_p['Macro_F1']}** |
 | **Full Neuro-Symbolic Pipeline (Đề xuất)** | **{full_p['Executable_Rate (%)']}%** | **{full_p['Eq_Rate (%)']}%** | **{full_p['Macro_Precision']}** | **{full_p['Macro_Recall']}** | **{full_p['Macro_F1']}** |
 
 ---
